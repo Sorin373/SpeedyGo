@@ -15,22 +15,20 @@ using namespace std;
 
 NOD_PRODUS_DEPOZIT *head_depozit = nullptr;
 NOD_DETALII_PRODUS *head_produs = nullptr;
+NOD_PRODUS_DEPOZIT_LOCAL *head_local = nullptr;
 
 void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, double vCantitate_Produs)
 {
     NOD_PRODUS_DEPOZIT *newnod = (NOD_PRODUS_DEPOZIT *)malloc(sizeof(NOD_PRODUS_DEPOZIT));
-
     newnod->ID_Produs = strdup(vID_Produs);
     newnod->ID_Depozit = strdup(vID_Depozit);
     newnod->Cantitate_Produs = vCantitate_Produs;
-
     if (head_depozit != nullptr)
     {
         head_depozit->prev_d = newnod;
         newnod->next_d = head_depozit;
         head_depozit->prev_d = newnod;
     }
-
     head_depozit = newnod;
 }
 
@@ -51,6 +49,37 @@ void inserareDateProduse(char *vID_Produs, char *vDenumire_Produs, char *vCatego
     }
 
     head_produs = newnod;
+}
+
+void inserareDateProduseLocal(char *vID_Oras, char *vID_Produs, double vCantitate_Produs_Local)
+{
+    NOD_PRODUS_DEPOZIT_LOCAL *newnod = (NOD_PRODUS_DEPOZIT_LOCAL *)malloc(sizeof(NOD_PRODUS_DEPOZIT_LOCAL));
+
+    newnod->ID_Oras = strdup(vID_Oras);
+    newnod->ID_Produs = strdup(vID_Produs);
+    newnod->cantitate_produs = vCantitate_Produs_Local;
+
+    if (head_local != nullptr)
+    {
+        head_local->prev_l = newnod;
+        newnod->next_l = head_local;
+        head_local->prev_l = newnod;
+    }
+
+    head_local = newnod;
+}
+
+void afisareDateLocal()
+{
+    NOD_PRODUS_DEPOZIT_LOCAL *ptr;
+    ptr = head_local;
+    while (ptr != nullptr)
+    {
+        cout << "ID_Oras: " << ptr->ID_Oras << " ";
+        cout << "ID_Produs: " << ptr->ID_Produs << " ";
+        cout << "Cantitate: " << ptr->cantitate_produs << endl;
+        ptr = ptr->next_l;
+    }
 }
 
 void afisareDateDepozit()
@@ -101,18 +130,16 @@ void accesareDate()
             int idProdus = res->getInt("ID_Produs");
             str = to_string(idProdus);
 
-            char *tempIdProdus = (char *)malloc(str.length());
+            char *tempIdProdus = (char *)malloc(str.length() + 1);
             strcpy(tempIdProdus, str.c_str());
 
             int idProdusDepozit = res->getInt("ID_Depozit");
             str = to_string(idProdusDepozit);
 
-            char *tempIDProdusDepozit = (char *)malloc(str.length());
+            char *tempIDProdusDepozit = (char *)malloc(str.length() + 1);
             strcpy(tempIDProdusDepozit, str.c_str());
 
             double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
-
-            // cout << tempIdProdus << " " << tempIDProdusDepozit << " " << tempCantitate_Produs << endl;
 
             inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempCantitate_Produs);
         }
@@ -126,22 +153,44 @@ void accesareDate()
 
             int idProdus = res->getInt("ID_Produs");
             str = to_string(idProdus);
-            char *tempIdProdus = (char *)malloc(str.length());
+            char *tempIdProdus = (char *)malloc(str.length() + 1);
             strcpy(tempIdProdus, str.c_str());
 
             sqlstr = res->getString("Nume_Produs");
             str = sqlstr.asStdString();
-            char *tempNumeProdus = (char *)malloc(str.length());
+            char *tempNumeProdus = (char *)malloc(str.length() + 1);
             strcpy(tempNumeProdus, str.c_str());
 
             sqlstr = res->getString("Categorie_Produs");
             str = sqlstr.asStdString();
-            char *tempCantegorieProdus = (char *)malloc(str.length());
+            char *tempCantegorieProdus = (char *)malloc(str.length() + 1);
             strcpy(tempCantegorieProdus, str.c_str());
 
             double pret_produs = res->getDouble("Pret_Produs");
 
             inserareDateProduse(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
+        }
+
+        res = stmt->executeQuery("SELECT * FROM date_produs_local");
+
+        while (res->next())
+        {
+            SQLString sqlstr;
+            string str;
+
+            int idOras = res->getInt("ID_Oras");
+            str = to_string(idOras);
+            char *tempIdOras = (char *)malloc(str.length() + 1);
+            strcpy(tempIdOras, str.c_str());
+
+            int idProdus = res->getInt("ID_Produs");
+            str = to_string(idProdus);
+            char *tempIdProdus = (char *)malloc(str.length() + 1);
+            strcpy(tempIdProdus, str.c_str());
+
+            double cantitate_produs_local = res->getDouble("Cantitate_Produs");
+
+            inserareDateProduseLocal(tempIdOras, tempIdProdus, cantitate_produs_local);
         }
 
         delete res;

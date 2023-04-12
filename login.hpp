@@ -9,7 +9,6 @@
 
 using namespace std;
 
-constexpr int MAXL = 256;
 char *username, *parola;
 
 void initForm()
@@ -46,7 +45,7 @@ void verificareDate(unsigned int &MENIU)
 
     if (strcmp(tempUN, "0") == NULL)
         return;
-    
+
     cout << "Parola: ";
     cin >> tempP;
 
@@ -65,12 +64,8 @@ void verificareDate(unsigned int &MENIU)
         sleepcp(1000);
         verificareDate(MENIU);
     }
-    else 
-    {
-        cout << "Bine ai venit!";
+    else
         MENIU = 0;
-    }
-        
 
     free(tempUN);
     free(tempP);
@@ -82,7 +77,7 @@ bool resetareParola()
 }
 
 bool form()
-{   
+{
     initForm();
     unsigned int MENIU;
 

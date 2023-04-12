@@ -10,19 +10,19 @@ using namespace std;
 
 bool autentificare()
 {
-    if (form())
-    {
-        initDrum();
-        accesareDate();
-        return true;
-    }
-    return false;
+    return true;
 }
 
 int main()
-{
+{  
+
+    accesareDate(); 
+    initDrum();
+
+    //afisareDateLocal();
+    
     if (autentificare())
-    {
+    {   
         unsigned int MENIU;
 
         do
@@ -30,7 +30,7 @@ int main()
             clear_screen();
 
             cout << "MENIU | ADMINISTRATOR\n\n"
-                 << "[1] Vizualizarea livrarilor din urmatoarea zi";
+                 << "[1] Vizualizarea livrarilor din urmatoarea zi\n";
 
             cout << "Introduceti optiunea: ";
             cin >> MENIU;
@@ -38,6 +38,8 @@ int main()
             switch (MENIU)
             {
                 case 1:
+                    validare_reaprovizionare();
+                    getch();
                     break;
             }
 
@@ -46,6 +48,11 @@ int main()
         for (unsigned int i = 0; i < MAXN; i++)
             delete[] matrice_drum[i];
         delete[] matrice_drum;
+    }
+    else
+    {
+        cerr << "Nu s-a putut autentifica contul!";
+        return -1;
     }
 
     // afisareDate();
@@ -63,5 +70,10 @@ int main()
         cout << endl;
     }*/
 
+    /*
+    for (unsigned int i = 0; i < MAXN; i++)
+            delete[] matrice_drum[i];
+        delete[] matrice_drum;
+    */
     return 0;
 }
