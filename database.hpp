@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string.h>
 #include "declarations.hpp"
-
 #include <mysql_connection.h>
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
