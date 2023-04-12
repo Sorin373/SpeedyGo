@@ -149,7 +149,7 @@ void accesareDate()
         delete con;
     }
 
-    catch (sql::SQLException &e)
+    catch (SQLException &e)
     {
         cout << e.what() << endl;
     }

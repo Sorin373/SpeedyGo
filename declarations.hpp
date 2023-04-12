@@ -53,7 +53,7 @@ public:
     }
 };
 
-typedef struct oraseRomania
+struct oraseRomania
 {
     char *denumire_oras;
     double latitudine;
