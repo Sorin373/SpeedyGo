@@ -3,44 +3,46 @@
 
 #include "declarations.hpp"
 
-/*Determinarea oraselor in nevoie de reaprovizionare*/
-
-void cautare_stoc_depozite()
-{
-
-}
-
-int determinare_depozit(char *ptr)
-{
-    int ID_Oras = stoi(ptr), cID_Oras = 0;
-    double distanta = 100000;
-    for (unsigned int i = 1; i <= 5; i++)
-        if (matrice_drum[i][ID_Oras] < distanta)
-        {
-            distanta = matrice_drum[i][ID_Oras];
-            cID_Oras = i;
-        }
-    return cID_Oras;
-}
-
-void validare_reaprovizionare()
+void statisticaStoc()
 {
     NOD_PRODUS_DEPOZIT_LOCAL *ptr = head_local;
-
     while (ptr != nullptr)
-    {   
+    {
         if (ptr->cantitate_produs < 50)
         {
-            int id_oras_depozit = determinare_depozit(ptr->ID_Oras);
-            if (id_oras_depozit != 0)
-                cout << orase[id_oras_depozit].denumire_oras << endl;
+            int tempIdOras = stoi(ptr->ID_Oras);
+            if (tempIdOras > 5)
+                matrice_drum[tempIdOras][tempIdOras] = true;
         }
         ptr = ptr->next_l;
     }
+    
+    /*
+    for (unsigned int i = 1; i < 45; i++)
+    {
+        for (unsigned int j = 1; j < 45; j++)
+            if (matrice_drum[i][j] == true)
+                cout << 1;
+            else
+                cout << 0;
+        cout << endl;
+    }
+    */
 }
 
-/*Determinarea traseului optim de a reaproviziona*/
+int detDepozitStart(const int tempID_Oras)
+{
 
-/*Determinarea depozitului cel mai apropiat de orasele in nevoie*/
+}
+
+void determinareStartTraseu()
+{
+    
+}
+
+void determinareTraseu()
+{
+
+}
 
 #endif
