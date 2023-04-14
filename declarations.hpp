@@ -19,8 +19,8 @@ public:
 public:
     NOD_PRODUS_DEPOZIT()
     {
-        ID_Produs = (char *)malloc(MAXL * sizeof(char));
-        ID_Depozit = (char *)malloc(MAXL * sizeof(char));
+        ID_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
+        ID_Depozit = (char *)malloc(MAXL * sizeof(char) + 1);
     }
 
     ~NOD_PRODUS_DEPOZIT()
@@ -43,9 +43,9 @@ public:
 public:
     NOD_DETALII_PRODUS()
     {
-        ID_Produs = (char *)malloc(MAXL * sizeof(char));
-        Denumire_Produs = (char *)malloc(MAXL * sizeof(char));
-        Categorie_Produs = (char *)malloc(MAXL * sizeof(char));
+        ID_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
+        Denumire_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
+        Categorie_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
     }
 
     ~NOD_DETALII_PRODUS()
@@ -55,7 +55,6 @@ public:
         free(Categorie_Produs);
     }
 };
-
 
 class NOD_PRODUS_DEPOZIT_LOCAL
 {
@@ -69,8 +68,8 @@ public:
 public:
     NOD_PRODUS_DEPOZIT_LOCAL()
     {
-        ID_Produs = (char *)malloc(MAXL * sizeof(char));
-        ID_Oras - (char *)malloc(MAXL * sizeof(char));
+        ID_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
+        ID_Oras = (char *)malloc(MAXL * sizeof(char)) + 1;
     }
 
     ~NOD_PRODUS_DEPOZIT_LOCAL()
@@ -79,6 +78,10 @@ public:
         free(ID_Oras);
     }
 };
+
+NOD_PRODUS_DEPOZIT *head_depozit = nullptr;
+NOD_DETALII_PRODUS *head_produs = nullptr;
+NOD_PRODUS_DEPOZIT_LOCAL *head_local = nullptr;
 
 struct oraseRomania
 {
@@ -135,6 +138,7 @@ oraseRomania orase[44] = {
     {"44", "Lupeni", 45.35, 23.25}};
 
 double **matrice_drum = (double **)malloc(MAXN * sizeof(double *));
+bool *vizitat = (bool *)malloc(MAXN * sizeof(bool));
 
 double distantaCalc(double lat1, double lon1, double lat2, double lon2)
 {
@@ -151,18 +155,22 @@ double distantaCalc(double lat1, double lon1, double lat2, double lon2)
     return d;
 }
 
-void initDrum()
+void init()
 {
-    for (unsigned int i = 0; i < MAXN; i++)
+
+    for (unsigned int i = 1; i <= MAXN; i++)
         matrice_drum[i] = (double *)malloc(MAXN * sizeof(double));
 
-    for (unsigned int i = 0; i < MAXN; i++)
-        for (unsigned int j = 0; j < MAXN; j++)
+    for (unsigned int i = 1; i <= MAXN; i++)
+        for (unsigned int j = 1; j <= MAXN; j++)
             matrice_drum[i][j] = 0;
 
-    for (unsigned int i = 0; i < 42; i++)
-        for (unsigned int j = i + 1; j < 43; j++)
+    for (unsigned int i = 1; i < 44; i++)
+        for (unsigned int j = i + 1; j <= 44; j++)
             matrice_drum[i][j] = matrice_drum[j][i] = distantaCalc(orase[i].latitudine, orase[i].longitudine, orase[j].latitudine, orase[j].longitudine);
+    
+    for (unsigned int i = 1; i <= 44; i++)
+        vizitat[i] = false;
 }
 
 #endif

@@ -17,7 +17,7 @@ int main()
 {  
 
     accesareDate(); 
-    initDrum();
+    init();
 
     //afisareDateLocal();
     
@@ -30,7 +30,9 @@ int main()
             clear_screen();
 
             cout << "MENIU | ADMINISTRATOR\n\n"
-                 << "[1] Vizualizarea livrarilor din urmatoarea zi\n";
+                 << "[1]\n" 
+                 << "[2]\n"
+                 << "[3]\n";
 
             cout << "Introduceti optiunea: ";
             cin >> MENIU;
@@ -38,7 +40,26 @@ int main()
             switch (MENIU)
             {
                 case 1:
-                    validare_reaprovizionare();
+                    afisareDateDepozit();
+                    getch();
+                    break;
+                case 2:
+                    afisareDateLocal();
+                    getch();
+                    break;
+                case 3:
+                    afisareDateProdus();
+                    getch();
+                    break;
+                case 4:
+                    statisticaStoc();
+                    /*
+                    for (unsigned int i = 0; i < 45; i++)
+                        cout <<  matrice_drum_aprovizionare[i] << " ";*/
+                    getch();
+                    break;
+                case 5:
+                    determinareTraseu();
                     getch();
                     break;
             }
