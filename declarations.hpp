@@ -1,9 +1,6 @@
 #ifndef DECLARATIONS
 #define DECLARATIONS
 
-#include <iostream>
-#include <cmath>
-
 constexpr int MAXL = 256;
 constexpr unsigned int MAXN = 1000;
 
@@ -140,37 +137,22 @@ oraseRomania orase[44] = {
 double **matrice_drum = (double **)malloc(MAXN * sizeof(double *));
 bool *vizitat = (bool *)malloc(MAXN * sizeof(bool));
 
-double distantaCalc(double lat1, double lon1, double lat2, double lon2)
-{
-    constexpr double R = 6371.0;
-    double lat_rad1 = M_PI * lat1 / 180.0,
-           lon_rad1 = M_PI * lon1 / 180.0,
-           lat_rad2 = M_PI * lat2 / 180.0,
-           lon_rad2 = M_PI * lon2 / 180.0,
-           dlon = lon_rad2 - lon_rad1,
-           dlat = lat_rad2 - lat_rad1,
-           a = pow(sin(dlat / 2), 2) + cos(lat_rad1) * cos(lat_rad2) * pow(sin(dlon / 2), 2),
-           c = 2 * atan2(sqrt(a), sqrt(1 - a)),
-           d = R * c;
-    return d;
-}
+double distantaCalc(double lat1, double lon1, double lat2, double lon2);
 
-void init()
-{
+void init();
 
-    for (unsigned int i = 1; i <= MAXN; i++)
-        matrice_drum[i] = (double *)malloc(MAXN * sizeof(double));
+void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, double vCantitate_Produs);
 
-    for (unsigned int i = 1; i <= MAXN; i++)
-        for (unsigned int j = 1; j <= MAXN; j++)
-            matrice_drum[i][j] = 0;
+void inserareDateProduse(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs);
 
-    for (unsigned int i = 1; i < 44; i++)
-        for (unsigned int j = i + 1; j <= 44; j++)
-            matrice_drum[i][j] = matrice_drum[j][i] = distantaCalc(orase[i].latitudine, orase[i].longitudine, orase[j].latitudine, orase[j].longitudine);
-    
-    for (unsigned int i = 1; i <= 44; i++)
-        vizitat[i] = false;
-}
+void inserareDateProduseLocal(char *vID_Oras, char *vID_Produs, double vCantitate_Produs_Local);
+
+void afisareDateLocal();
+
+void afisareDateDepozit();
+
+void afisareDateProdus();
+
+void statisticaStoc();
 
 #endif

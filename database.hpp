@@ -1,10 +1,8 @@
 #ifndef DATABASE
 #define DATABASE
 
-#include <iostream>
-#include <string.h>
+#include "string.h"
 #include "declarations.hpp"
-#include "logic.hpp"
 #include <mysql_connection.h>
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>

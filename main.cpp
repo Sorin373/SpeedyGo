@@ -59,7 +59,7 @@ int main()
                     getch();
                     break;
                 case 5:
-                    determinareTraseu();
+                    //determinareTraseu();
                     getch();
                     break;
             }

@@ -2,9 +2,29 @@
 #define LOGIC
 
 #include <iostream>
+#include <cmath>
+#include <string.h>
 #include "declarations.hpp"
 
 using namespace std;
+
+void init()
+{
+
+    for (unsigned int i = 1; i <= MAXN; i++)
+        matrice_drum[i] = (double *)malloc(MAXN * sizeof(double));
+
+    for (unsigned int i = 1; i <= MAXN; i++)
+        for (unsigned int j = 1; j <= MAXN; j++)
+            matrice_drum[i][j] = 0;
+
+    for (unsigned int i = 1; i < 44; i++)
+        for (unsigned int j = i + 1; j <= 44; j++)
+            matrice_drum[i][j] = matrice_drum[j][i] = distantaCalc(orase[i].latitudine, orase[i].longitudine, orase[j].latitudine, orase[j].longitudine);
+    
+    for (unsigned int i = 1; i <= 44; i++)
+        vizitat[i] = false;
+}
 
 void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, double vCantitate_Produs)
 {
@@ -94,6 +114,21 @@ void afisareDateProdus()
         cout << "Nume_Produs: " << ptr->Denumire_Produs << endl;
         ptr = ptr->next_p;
     }
+}
+
+double distantaCalc(double lat1, double lon1, double lat2, double lon2)
+{
+    constexpr double R = 6371.0;
+    double lat_rad1 = M_PI * lat1 / 180.0,
+           lon_rad1 = M_PI * lon1 / 180.0,
+           lat_rad2 = M_PI * lat2 / 180.0,
+           lon_rad2 = M_PI * lon2 / 180.0,
+           dlon = lon_rad2 - lon_rad1,
+           dlat = lat_rad2 - lat_rad1,
+           a = pow(sin(dlat / 2), 2) + cos(lat_rad1) * cos(lat_rad2) * pow(sin(dlon / 2), 2),
+           c = 2 * atan2(sqrt(a), sqrt(1 - a)),
+           d = R * c;
+    return d;
 }
 
 void statisticaStoc()
