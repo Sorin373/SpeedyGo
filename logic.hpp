@@ -207,7 +207,6 @@ void statisticaStoc()
         cout << endl;
     }
 
-    cout << "\n\n\n\n\n";
     for (unsigned int i = 1; i < matrice_drum.size(); i++)
     {
         for (unsigned int j = 1; j < matrice_drum.size(); j++)
@@ -220,79 +219,73 @@ void statisticaStoc()
     */
 }
 
-int distantaMinima(vector<double> distanta, vector<bool> vizitat)
+void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    NOD_ORASE *ptr = head_oras;
-
-    double minim = INT_MAX;
-    int minim_index;
-
-    while (ptr != nullptr)
+    for (int i = 0; i < N; i++)
     {
-        int ID_Oras = stoi(ptr->ID_Oras);
-        if (vizitat[ID_Oras] == false && distanta[ID_Oras] <= minim)
+        if (i != start)
         {
-            minim = distanta[ID_Oras];
-            minim_index = ID_Oras;
+            cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". cale: ";
+            vector<int> cale;
+            int node = i;
+            while (node != -1)
+            {
+                cale.push_back(node);
+                node = distanta_minima[node];
+            }
+            reverse(cale.begin(), cale.end());
+            for (int j = 0; j < cale.size(); j++)
+            {
+                cout << cale[j];
+                if (j != cale.size() - 1)
+                    cout << " -> ";
+            }
+            cout << endl;
         }
-        ptr = ptr->next_o;
     }
-    return minim_index;
 }
 
-void afisareSolutieDistanta(vector<double> distanta)
+void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    for (unsigned int i = 6; i <= matrice_drum[0].size(); i++)
-        if (matrice_drum[i][i] > 0)
-            cout << i << " " << distanta[i] << endl;
-}
+    vector<bool> visited(matrice_drum.size(), false);
+    distanta[start] = 0.0;
 
-void dijkstra(int sursa)
-{
-    vector<double> distanta(N);
-    vector<bool> vizitat(N);
-
-    for (unsigned int i = 1; i <= 44; i++)
+    for (int i = 1; i <= matrice_drum.size() - 2; i++)
     {
-        distanta[i] = INT_MAX;
-        vizitat[i] = false;
+        int min_index = -1;
+        double min_dist = numeric_limits<double>::infinity();
+
+        for (int j = 1; j <= matrice_drum.size() - 2; j++)
+        {
+            if (!visited[j] && distanta[j] < min_dist)
+            {
+                min_index = j;
+                min_dist = distanta[j];
+            }
+        }
+
+        visited[min_index] = true;
+
+        for (int j = 1; j <= matrice_drum.size() - 2; j++)
+        {
+            double new_dist = distanta[min_index] + matrice_drum[min_index][j];
+            if (!visited[j] && matrice_drum[min_index][j] > 0 && new_dist < distanta[j])
+            {
+                distanta[j] = new_dist;
+                distanta_minima[j] = min_index;
+            }
+        }
     }
-
-    distanta[sursa] = 0;
-
-    for (unsigned int i = 1; i <= 44 - 1; i++)
-    {
-        int tempDM = distantaMinima(distanta, vizitat);
-        vizitat[tempDM] = true;
-
-        for (unsigned int j = 1; j <= 44; j++)
-            if (!vizitat[j] && matrice_drum[i][j] && distanta[tempDM] != INT_MAX && distanta[tempDM] + matrice_drum[i][j] < distanta[j])
-                distanta[j] = distanta[tempDM] + matrice_drum[i][j];
-    }
-    afisareSolutieDistanta(distanta);
 }
 
 void determinareStartAprovizionare()
 {
-    statisticaStoc();
-    dijkstra(1);
+    vector<int> distanta_minima(N, -1);
+    vector<double> distanta(N, numeric_limits<double>::infinity());
+    int start;
+    cin >> start;
+    dijkstra(start, distanta, distanta_minima);
+    afisareSolutieDistanta(start, distanta, distanta_minima);
 }
-
-/*
-int detDepozitStart(const int tempID_Oras)
-{
-
-}
-
-void determinareStartTraseu()
-{
-
-}
-
-void determinareTraseu()
-{
-
-}
-*/
 
 #endif

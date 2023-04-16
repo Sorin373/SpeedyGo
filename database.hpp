@@ -108,7 +108,7 @@ void accesareDate()
             str = to_string(idOras);
             char *tempIdOras = (char *)malloc(str.length() + 1);
             strcpy(tempIdOras, str.c_str());
-
+            
             sqlstr = res->getString("Denumire_Oras");
             str = sqlstr.asStdString();
             char *tempDenumireOras = (char *)malloc(str.length() + 1);

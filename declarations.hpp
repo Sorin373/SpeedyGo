@@ -2,6 +2,7 @@
 #define DECLARATIONS
 
 #include <vector>
+#include <limits>
 
 constexpr int MAXL = 256, N = 44;
 constexpr unsigned int MAXN = 1000;
@@ -161,7 +162,6 @@ oraseRomania orase[44] = {
     {"44", "Lupeni", 45.35, 23.25}};
 */
 
-//double **matrice_drum = (double **)malloc(MAXN * sizeof(double *));
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 
 double distantaCalc(double lat1, double lon1, double lat2, double lon2);
@@ -184,11 +184,9 @@ void afisareDateProdus();
 
 void statisticaStoc();
 
-int distantaMinima(std::vector<double> distanta, std::vector<bool> vizitat);
+void afisareSolutieDistanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
-void afisareSolutieDistanta(std::vector<double> distanta);
-
-void dijkstra(int sursa);
+void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
 void determinareStartAprovizionare();
 
