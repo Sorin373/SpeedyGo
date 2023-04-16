@@ -2,13 +2,16 @@
 #define LOGIC
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
+#include <vector>
 #include <limits.h>
 #include <string.h>
-#include <vector>
 #include "declarations.hpp"
+#include <nlohmann/json.hpp>
 
 using namespace std;
+using json = nlohmann::json;
 
 double distantaCalc(double lat1, double lon1, double lat2, double lon2)
 {
@@ -25,28 +28,74 @@ double distantaCalc(double lat1, double lon1, double lat2, double lon2)
     return d;
 }
 
-void _init_()
+bool _init_()
 {
-    NOD_ORASE *ptr = head_oras;
-    while (ptr != nullptr)
+    ifstream file_json("distance_matrix.json");
+    if (!file_json.is_open())
     {
-        int ID_Oras = stoi(ptr->ID_Oras);
-        NOD_ORASE *tempPtr = head_oras;
-        while (tempPtr != nullptr)
+        cerr << "Eroare\n";
+        return false;
+    }
+    else
+    {
+        json data;
+        try
         {
-            int sID_Oras = stoi(tempPtr->ID_Oras);
-            if (ID_Oras != sID_Oras)
-            {
-                if (sID_Oras >= N)
-                    matrice_drum.resize(sID_Oras + 1);
-                if (matrice_drum[sID_Oras].size() <= ID_Oras)
-                    matrice_drum[sID_Oras].resize(ID_Oras + 1);
-
-                matrice_drum[ID_Oras][sID_Oras] = matrice_drum[sID_Oras][ID_Oras] = distantaCalc(ptr->latitudine, ptr->longitudine, tempPtr->latitudine, tempPtr->longitudine);
-            }
-            tempPtr = tempPtr->next_o;
+            file_json >> data;
         }
-        ptr = ptr->next_o;
+        catch (json::parse_error &e)
+        {
+            std::cerr << e.what() << '\n';
+            return false;
+        }
+        
+        for (json::iterator i = data.begin(); i != data.end(); i++)
+        {
+            char *pereche_orase = (char *)malloc(MAXL * sizeof(char) + 1);
+            strcpy(pereche_orase, i.key().c_str());
+            char *ptr = strtok(pereche_orase, "_");
+            char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
+            char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
+            int ID_Oras1, ID_Oras2;
+            bool nume_oras = true;
+
+            if (ptr != NULL)
+            {
+                strcpy(oras1, ptr);
+                ptr = strtok(NULL, "_");
+            }
+
+            if (ptr != NULL)
+                strcpy(oras2, ptr);
+
+            NOD_ORASE *p = head_oras;
+            bool exit = false;
+            while (p != nullptr && !exit)
+            {
+                if (strcasecmp(p->denumire_oras, oras1) == 0)
+                {
+                    exit = true;
+                    ID_Oras1 = stoi(p->ID_Oras);
+                }
+                p = p->next_o;
+            }
+
+            exit = false;
+            p = head_oras;
+
+            while (p != nullptr && !exit)
+            {
+                if (strcasecmp(p->denumire_oras, oras2) == 0)
+                {
+                    exit = true;
+                    ID_Oras2 = stoi(p->ID_Oras);
+                }
+                p = p->next_o;
+            }
+            
+            matrice_drum[ID_Oras1][ID_Oras2] = matrice_drum[ID_Oras2][ID_Oras1] = i.value();
+        }
+        return true;
     }
 }
 
@@ -221,7 +270,7 @@ void statisticaStoc()
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < N - 1; i++)
     {
         if (i != start)
         {
@@ -286,6 +335,9 @@ void determinareStartAprovizionare()
     cin >> start;
     dijkstra(start, distanta, distanta_minima);
     afisareSolutieDistanta(start, distanta, distanta_minima);
+
+    distanta_minima.clear();
+    distanta.clear();
 }
 
 #endif

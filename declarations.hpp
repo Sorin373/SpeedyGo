@@ -4,7 +4,7 @@
 #include <vector>
 #include <limits>
 
-constexpr int MAXL = 256, N = 44;
+constexpr int MAXL = 256, N = 45;
 constexpr unsigned int MAXN = 1000;
 
 class NOD_PRODUS_DEPOZIT
@@ -166,7 +166,7 @@ std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 
 double distantaCalc(double lat1, double lon1, double lat2, double lon2);
 
-void _init_();
+bool _init_();
 
 void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, double vCantitate_Produs);
 

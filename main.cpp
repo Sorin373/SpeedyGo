@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "database.hpp"
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
@@ -16,8 +15,13 @@ bool autentificare()
 int main()
 {  
 
-    accesareDate(); 
-    _init_();
+    accesareDate();
+
+    if (!_init_())
+    {
+        cerr << "Eroare!";
+        return -1;
+    }
     
     if (autentificare())
     {   
@@ -50,7 +54,7 @@ int main()
                     getch();
                     break;
                 case 4:
-                    statisticaStoc();
+                    afisareDateOrase();
                     getch();
                     break;
                 case 5:
