@@ -80,7 +80,6 @@ void accesareDate()
 
         while (res->next())
         {
-            SQLString sqlstr;
             string str;
 
             int idOras = res->getInt("ID_Oras");
@@ -98,11 +97,33 @@ void accesareDate()
             inserareDateProduseLocal(tempIdOras, tempIdProdus, cantitate_produs_local);
         }
 
+        res = stmt->executeQuery("SELECT * FROM orase");
+
+        while (res->next())
+        {
+            SQLString sqlstr;
+            string str;
+
+            int idOras = res->getInt("ID_Oras");
+            str = to_string(idOras);
+            char *tempIdOras = (char *)malloc(str.length() + 1);
+            strcpy(tempIdOras, str.c_str());
+
+            sqlstr = res->getString("Denumire_Oras");
+            str = sqlstr.asStdString();
+            char *tempDenumireOras = (char *)malloc(str.length() + 1);
+            strcpy(tempDenumireOras, str.c_str());
+
+            double tempLat = res->getDouble("latitudine");
+            double tempLong = res->getDouble("longitudine");
+
+            insearareDateOrase(tempIdOras, tempDenumireOras, tempLat, tempLong);
+        }   
+
         delete res;
         delete stmt;
         delete con;
     }
-
     catch (SQLException &e)
     {
         cout << e.what() << endl;

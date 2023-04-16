@@ -3,7 +3,7 @@
 #include "database.hpp"
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
-#include "login.hpp"
+//#include "login.hpp"
 #include "logic.hpp"
 
 using namespace std;
@@ -17,7 +17,7 @@ int main()
 {  
 
     accesareDate(); 
-    init();
+    _init_();
 
     //afisareDateLocal();
     
@@ -60,15 +60,12 @@ int main()
                     break;
                 case 5:
                     //determinareTraseu();
+                    determinareStartAprovizionare();
                     getch();
                     break;
             }
 
         } while (MENIU != 0);
-
-        for (unsigned int i = 0; i < MAXN; i++)
-            delete[] matrice_drum[i];
-        delete[] matrice_drum;
     }
     else
     {

@@ -1,7 +1,9 @@
 #ifndef DECLARATIONS
 #define DECLARATIONS
 
-constexpr int MAXL = 256;
+#include <vector>
+
+constexpr int MAXL = 256, N = 44;
 constexpr unsigned int MAXN = 1000;
 
 class NOD_PRODUS_DEPOZIT
@@ -76,14 +78,38 @@ public:
     }
 };
 
-NOD_PRODUS_DEPOZIT *head_depozit = nullptr;
-NOD_DETALII_PRODUS *head_produs = nullptr;
-NOD_PRODUS_DEPOZIT_LOCAL *head_local = nullptr;
-
-struct oraseRomania
+class NOD_ORASE
 {
+public:
     char *ID_Oras;
     char *denumire_oras;
+    double latitudine;
+    double longitudine;
+    NOD_ORASE *prev_o;
+    NOD_ORASE *next_o;
+public:
+    NOD_ORASE()
+    {
+        ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
+        denumire_oras = (char *)malloc(MAXL * sizeof(char) + 1);
+    }
+    ~NOD_ORASE()
+    {
+        free(ID_Oras);
+        free(denumire_oras);
+    }
+};
+
+NOD_PRODUS_DEPOZIT *head_depozit = nullptr, *tail_depozit = nullptr;
+NOD_DETALII_PRODUS *head_produs = nullptr, *tail_produs = nullptr;
+NOD_PRODUS_DEPOZIT_LOCAL *head_local = nullptr, *tail_local = nullptr;
+NOD_ORASE *head_oras = nullptr, *tail_oras = nullptr;
+
+/*
+struct oraseRomania
+{
+    char ID_Oras[100];
+    char denumire_oras[100];
     double latitudine;
     double longitudine;
 };
@@ -133,19 +159,22 @@ oraseRomania orase[44] = {
     {"42", "Caracal", 44.1167, 24.35},
     {"43", "Sighetu Marmației", 47.9333, 23.8833},
     {"44", "Lupeni", 45.35, 23.25}};
+*/
 
-double **matrice_drum = (double **)malloc(MAXN * sizeof(double *));
-bool *vizitat = (bool *)malloc(MAXN * sizeof(bool));
+//double **matrice_drum = (double **)malloc(MAXN * sizeof(double *));
+std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 
 double distantaCalc(double lat1, double lon1, double lat2, double lon2);
 
-void init();
+void _init_();
 
 void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, double vCantitate_Produs);
 
 void inserareDateProduse(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs);
 
 void inserareDateProduseLocal(char *vID_Oras, char *vID_Produs, double vCantitate_Produs_Local);
+
+void insearareDateOrase(char *vID_Oras, char *vDenumire_Oras, double vLatitudine, double vLongitudine);
 
 void afisareDateLocal();
 
@@ -154,5 +183,13 @@ void afisareDateDepozit();
 void afisareDateProdus();
 
 void statisticaStoc();
+
+int distantaMinima(std::vector<double> distanta, std::vector<bool> vizitat);
+
+void afisareSolutieDistanta(std::vector<double> distanta);
+
+void dijkstra(int sursa);
+
+void determinareStartAprovizionare();
 
 #endif
