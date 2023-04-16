@@ -11,8 +11,9 @@
 #include <nlohmann/json.hpp>
 
 using namespace std;
-using json = nlohmann::json;
+using namespace nlohmann;
 
+/*
 double distantaCalc(double lat1, double lon1, double lat2, double lon2)
 {
     constexpr double R = 6371.0;
@@ -27,6 +28,7 @@ double distantaCalc(double lat1, double lon1, double lat2, double lon2)
            d = R * c;
     return d;
 }
+*/
 
 bool _init_()
 {
