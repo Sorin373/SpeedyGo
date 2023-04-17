@@ -84,13 +84,12 @@ bool _init_()
     }
 }
 
-void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, char *vID_Oras, char *vTip_Depozit, double vCantitate_Produs)
+void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, char *vID_Oras, double vCantitate_Produs)
 {
     NOD_DEPOZIT *newnod = (NOD_DEPOZIT *)malloc(sizeof(NOD_DEPOZIT));
     newnod->ID_Produs = strdup(vID_Produs);
     newnod->ID_Depozit = strdup(vID_Depozit);
     newnod->ID_Oras = strdup(vID_Oras);
-    newnod->tip_depozit = strdup(vTip_Depozit);
     newnod->Cantitate_Produs = vCantitate_Produs;
 
     if (head_depozit == nullptr)
@@ -128,12 +127,13 @@ void inserareDateProduse(char *vID_Produs, char *vDenumire_Produs, char *vCatego
     }
 }
 
-void insearareDateOrase(char *vID_Oras, char *vDenumire_Oras, double vLatitudine, double vLongitudine)
+void insearareDateOrase(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine)
 {
     NOD_ORASE *newnod = (NOD_ORASE *)malloc(sizeof(NOD_ORASE));
 
     newnod->ID_Oras = strdup(vID_Oras);
     newnod->denumire_oras = strdup(vDenumire_Oras);
+    newnod->tip_depozit = strdup(vTip_Depozit);
     newnod->latitudine = vLatitudine;
     newnod->longitudine = vLongitudine;
 
@@ -157,7 +157,8 @@ void afisareDateOrase()
     while (ptr != nullptr)
     {
         cout << "ID_Oras: " << ptr->ID_Oras << " ";
-        cout << "Denumire: " << ptr->denumire_oras << endl;
+        cout << "Denumire: " << ptr->denumire_oras << " ";
+        cout << "Tip: " << ptr->tip_depozit << endl;
         ptr = ptr->next_o;
     }
 }
@@ -171,8 +172,7 @@ void afisareDateDepozit()
         cout << "ID_Produs: " << ptr->ID_Produs << ", ";
         cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
         cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-        cout << "ID_oras: " << ptr->ID_Oras << ", "; 
-        cout << "Tip: " << ptr->tip_depozit << endl;
+        cout << "ID_oras: " << ptr->ID_Oras << endl; 
         ptr = ptr->next_d;
     }
 }
@@ -206,7 +206,7 @@ void statisticaStoc()
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    for (unsigned int i = 1; i < N - 1; i++)
+    for (unsigned int i = 1; i <= N - 1; i++)
     {
         if (i != start)
         {
@@ -232,15 +232,15 @@ void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &di
 
 void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    vector<bool> visited(matrice_drum.size(), false);
+    vector<bool> visited(matrice_drum.size() - 1, false);
     distanta[start] = 0.0;
 
-    for (unsigned int i = 1; i <= matrice_drum.size() - 2; i++)
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
     {
         int min_index = -1;
         double min_dist = numeric_limits<double>::infinity();
 
-        for (unsigned int j = 1; j <= matrice_drum.size() - 2; j++)
+        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
             if (!visited[j] && distanta[j] < min_dist)
             {
                 min_index = j;
@@ -249,7 +249,7 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
         visited[min_index] = true;
 
-        for (unsigned int j = 1; j <= matrice_drum.size() - 2; j++)
+        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
         {
             double distanta_noua = distanta[min_index] + matrice_drum[min_index][j];
             if (!visited[j] && matrice_drum[min_index][j] > 0 && distanta_noua < distanta[j])
@@ -263,15 +263,32 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
 void determinareStartAprovizionare()
 {
-    vector<int> distanta_minima(N, -1);
-    vector<double> distanta(N, numeric_limits<double>::infinity());
-    int start;
-    cin >> start;
-    dijkstra(start, distanta, distanta_minima);
-    afisareSolutieDistanta(start, distanta, distanta_minima);
+    NOD_ORASE *ptr = head_oras;
+    while (ptr != nullptr)
+    {
+        if (strcasecmp(ptr->tip_depozit, "centralizat") == 0)
+        {   
+            int ID = stoi(ptr->ID_Oras);
+            depozite_centralizate[ID] = true;
+            contor_depozite_centralizate++;
+        }
+        ptr = ptr->next_o;
+    }
 
-    distanta_minima.clear();
-    distanta.clear();
+    for (unsigned int i = 1; i <= contor_depozite_centralizate; i++)
+    {
+        vector<int> distanta_minima(N, -1);
+        vector<double> distanta(N, numeric_limits<double>::infinity());
+        if (depozite_centralizate[i])
+        {
+            dijkstra(i, distanta, distanta_minima);
+            afisareSolutieDistanta(i, distanta, distanta_minima);
+            getch();
+            clear_screen();
+        }
+        distanta_minima.clear();
+        distanta.clear();
+    }
 }
 
 #endif

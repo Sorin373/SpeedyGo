@@ -50,14 +50,9 @@ void accesareDate()
             char *tempIdOras = (char *)malloc(str.length() + 1);
             strcpy(tempIdOras, str.c_str());
 
-            sqlstr = res->getString("Tip_Depozit");
-            str = sqlstr.asStdString();
-            char *tempTipDepozit = (char *)malloc(str.length() + 1);
-            strcpy(tempTipDepozit, str.c_str());
-
             double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
 
-            inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempIdOras, tempTipDepozit, tempCantitate_Produs);
+            inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempIdOras, tempCantitate_Produs);
         }
 
         res = stmt->executeQuery("SELECT * FROM date_produse");
@@ -104,10 +99,15 @@ void accesareDate()
             char *tempDenumireOras = (char *)malloc(str.length() + 1);
             strcpy(tempDenumireOras, str.c_str());
 
+            sqlstr = res->getString("Tip_Depozit");
+            str = sqlstr.asStdString();
+            char *tempTipDepozit = (char *)malloc(str.length() + 1);
+            strcpy(tempTipDepozit, str.c_str());
+
             double tempLat = res->getDouble("latitudine");
             double tempLong = res->getDouble("longitudine");
 
-            insearareDateOrase(tempIdOras, tempDenumireOras, tempLat, tempLong);
+            insearareDateOrase(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
         }   
 
         delete res;
