@@ -46,7 +46,6 @@ int main()
                     getch();
                     break;
                 case 2:
-                    afisareDateLocal();
                     getch();
                     break;
                 case 3:

@@ -16,8 +16,10 @@ for i, origin in enumerate(towns):
         if i == j:
             distance_matrix[f"{origin}_{destination}"] = 0
         elif f"{destination}_{origin}" not in distance_matrix:
-            origin_coords = data.loc[data['Denumire_Oras'] == origin, 'coordinates'].iloc[0]
-            destination_coords = data.loc[data['Denumire_Oras'] == destination, 'coordinates'].iloc[0]
+            origin_coords = data.loc[data['Denumire_Oras']
+                                     == origin, 'coordinates'].iloc[0]
+            destination_coords = data.loc[data['Denumire_Oras']
+                                          == destination, 'coordinates'].iloc[0]
             result = gmaps.distance_matrix(origin_coords, destination_coords, mode='driving')[
                 "rows"][0]["elements"][0]["distance"]["value"]
             distance_matrix[f"{origin}_{destination}"] = result / 1000

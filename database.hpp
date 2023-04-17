@@ -26,11 +26,12 @@ void accesareDate()
         con->setSchema("MyDepoChain");
 
         stmt = con->createStatement();
-        res = stmt->executeQuery("SELECT * FROM data");
+        res = stmt->executeQuery("SELECT * FROM date");
 
         while (res->next())
         {
             string str;
+            SQLString sqlstr;
 
             int idProdus = res->getInt("ID_Produs");
             str = to_string(idProdus);
@@ -44,9 +45,19 @@ void accesareDate()
             char *tempIDProdusDepozit = (char *)malloc(str.length() + 1);
             strcpy(tempIDProdusDepozit, str.c_str());
 
+            int idOras = res->getInt("ID_Oras");
+            str = to_string(idOras);
+            char *tempIdOras = (char *)malloc(str.length() + 1);
+            strcpy(tempIdOras, str.c_str());
+
+            sqlstr = res->getString("Tip_Depozit");
+            str = sqlstr.asStdString();
+            char *tempTipDepozit = (char *)malloc(str.length() + 1);
+            strcpy(tempTipDepozit, str.c_str());
+
             double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
 
-            inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempCantitate_Produs);
+            inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempIdOras, tempTipDepozit, tempCantitate_Produs);
         }
 
         res = stmt->executeQuery("SELECT * FROM date_produse");
@@ -74,27 +85,6 @@ void accesareDate()
             double pret_produs = res->getDouble("Pret_Produs");
 
             inserareDateProduse(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
-        }
-
-        res = stmt->executeQuery("SELECT * FROM date_produs_local");
-
-        while (res->next())
-        {
-            string str;
-
-            int idOras = res->getInt("ID_Oras");
-            str = to_string(idOras);
-            char *tempIdOras = (char *)malloc(str.length() + 1);
-            strcpy(tempIdOras, str.c_str());
-
-            int idProdus = res->getInt("ID_Produs");
-            str = to_string(idProdus);
-            char *tempIdProdus = (char *)malloc(str.length() + 1);
-            strcpy(tempIdProdus, str.c_str());
-
-            double cantitate_produs_local = res->getDouble("Cantitate_Produs");
-
-            inserareDateProduseLocal(tempIdOras, tempIdProdus, cantitate_produs_local);
         }
 
         res = stmt->executeQuery("SELECT * FROM orase");
