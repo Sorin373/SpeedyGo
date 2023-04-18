@@ -42,7 +42,9 @@ int main()
             switch (MENIU)
             {
                 case 1:
-                    afisareDateDepozit();
+                    //cautareDepozit();
+                    //afisareDateDepozit();
+                    statisticaStoc();
                     getch();
                     break;
                 case 2:

@@ -172,7 +172,7 @@ void afisareDateDepozit()
         cout << "ID_Produs: " << ptr->ID_Produs << ", ";
         cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
         cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-        cout << "ID_oras: " << ptr->ID_Oras << endl; 
+        cout << "ID_oras: " << ptr->ID_Oras << endl;
         ptr = ptr->next_d;
     }
 }
@@ -189,6 +189,64 @@ void afisareDateProdus()
     }
 }
 
+/*
+void cautareDepozit()
+{
+    char *ID = (char *)malloc(MAXL * sizeof(char));
+    NOD_DEPOZIT *ptr = head_depozit;
+
+    cin >> ID;
+    statisticaStoc();
+    cout << endl;
+    while (ptr != nullptr)
+    {
+        if (strcasecmp(ID, ptr->ID_Depozit) == 0)
+        {
+            cout << "ID_Produs: " << ptr->ID_Produs << ", ";
+            cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
+            cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
+            cout << "ID_oras: " << ptr->ID_Oras << endl;
+        }
+        ptr = ptr->next_d;
+    }
+}
+
+
+void bsort()
+{
+    NOD_DEPOZIT *ptr, *lptr = nullptr;
+    if (head_depozit == nullptr)
+        return;
+    bool vsort = true;
+    do
+    {
+        vsort = true;
+        ptr = head_depozit;
+        while (ptr->next_d != nullptr)
+        {
+            int ID1 = stoi(ptr->ID_Produs);
+            int ID2 = stoi(ptr->next_d->ID_Produs);
+            if (ID1 > ID2)
+            {
+                swap(ptr->ID_Produs, ptr->next_d->ID_Produs);
+                vsort = false;
+            }
+            ptr = ptr->next_d;
+        }
+        lptr = ptr;
+    } while (!vsort);
+    ptr = head_depozit;
+    while (ptr != nullptr)
+    {
+        cout << "ID_Produs: " << ptr->ID_Produs << ", ";
+        cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
+        cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
+        cout << "ID_oras: " << ptr->ID_Oras << endl;
+        ptr = ptr->next_d;
+    }
+}
+*/
+
 void statisticaStoc()
 {
     NOD_DEPOZIT *ptr = head_depozit;
@@ -202,13 +260,30 @@ void statisticaStoc()
         }
         ptr = ptr->next_d;
     }
+
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+        if (matrice_drum[i][i] == true)
+        {
+            ptr = head_depozit;
+            while (ptr != nullptr)
+            {
+                string c = to_string(i);
+                if (strcasecmp(c.c_str(), ptr->ID_Oras) == 0 && ptr->Cantitate_Produs < 50)
+                {
+                    cout << ptr->ID_Depozit << " ";
+                    cout << ptr->ID_Produs << " ";
+                    cout << ptr->Cantitate_Produs << endl;
+                }
+                ptr = ptr->next_d;
+            }
+        }
 }
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
     for (unsigned int i = 1; i <= N - 1; i++)
     {
-        if (i != start)
+        if (i != start && matrice_drum[i][i] == true)
         {
             cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
             vector<int> traseu;
@@ -274,6 +349,8 @@ void determinareStartAprovizionare()
         }
         ptr = ptr->next_o;
     }
+
+    statisticaStoc();
 
     for (unsigned int i = 1; i <= contor_depozite_centralizate; i++)
     {
