@@ -202,7 +202,6 @@ void statisticaStoc()
         ptr = ptr->next;
     }
 
-    /*
     for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
         if (matrice_drum[i][i] == true)
         {
@@ -218,7 +217,7 @@ void statisticaStoc()
                 }
                 ptr = ptr->next;
             }
-        }*/
+        }
 }
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
