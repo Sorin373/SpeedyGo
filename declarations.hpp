@@ -7,99 +7,271 @@
 constexpr int MAXL = 256, N = 45;
 constexpr unsigned int MAXN = 1000;
 
-class NOD_DEPOZIT
+class AUTENTIFICARE
 {
-public:
-    char *ID_Produs;
-    char *ID_Depozit;
-    char *ID_Oras;
-
-    double Cantitate_Produs;
-    NOD_DEPOZIT *prev_d;
-    NOD_DEPOZIT *next_d;
+private:
+    char *host;
+    char *username;
+    char *parola;
 
 public:
-    NOD_DEPOZIT()
+    AUTENTIFICARE(const char *h, const char *u, const char *p)
     {
-        ID_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
-        ID_Depozit = (char *)malloc(MAXL * sizeof(char) + 1);
-        ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
+        host = (char *)malloc(MAXL * sizeof(char) + 1);
+        username = (char *)malloc(MAXL * sizeof(char) + 1);
+        parola = (char *)malloc(MAXL * sizeof(char) + 1);
     }
-
-    ~NOD_DEPOZIT()
+    ~AUTENTIFICARE()
     {
-        free(ID_Produs);
-        free(ID_Depozit);
-        free(ID_Oras);
+        free(host);
+        free(username);
+        free(parola);
     }
 };
 
-class NOD_DETALII_PRODUS
+class DEPOZIT
 {
 public:
-    char *ID_Produs;
-    char *Denumire_Produs;
-    char *Categorie_Produs;
-    double pret_produs;
-    NOD_DETALII_PRODUS *prev_p;
-    NOD_DETALII_PRODUS *next_p;
+    struct NOD_DEPOZIT
+    {
+        char *ID_Produs = nullptr;
+        char *ID_Depozit = nullptr;
+        char *ID_Oras = nullptr;
+        double Cantitate_Produs = 0.0;
+        NOD_DEPOZIT *prev = nullptr;
+        NOD_DEPOZIT *next = nullptr;
+
+        NOD_DEPOZIT(char *vID_Produs, char *vID_Depozit, char *vID_Oras, double vCantitate_Produs)
+        {
+            ID_Produs = strdup(vID_Produs);
+            ID_Depozit = strdup(vID_Depozit);
+            ID_Oras = strdup(vID_Oras);
+            Cantitate_Produs = vCantitate_Produs;
+            prev = nullptr;
+            next = nullptr;
+        }
+
+        ~NOD_DEPOZIT()
+        {
+            free(ID_Produs);
+            free(ID_Depozit);
+            free(ID_Oras);
+        }
+    };
+
+    NOD_DEPOZIT *head_depozit = nullptr;
+    NOD_DEPOZIT *tail_depozit = nullptr;
 
 public:
-    NOD_DETALII_PRODUS()
+    NOD_DEPOZIT *getHead()
     {
-        ID_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
-        Denumire_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
-        Categorie_Produs = (char *)malloc(MAXL * sizeof(char) + 1);
+        return head_depozit;
     }
 
-    ~NOD_DETALII_PRODUS()
+    NOD_DEPOZIT *getTail()
     {
-        free(ID_Produs);
-        free(Denumire_Produs);
-        free(Categorie_Produs);
+        return tail_depozit;
+    }
+
+    void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, char *vID_Oras, double vCantitate_Produs)
+    {
+        NOD_DEPOZIT *newnod = new NOD_DEPOZIT(vID_Produs, vID_Depozit, vID_Oras, vCantitate_Produs);
+
+        if (head_depozit == nullptr)
+        {
+            head_depozit = newnod;
+            tail_depozit = newnod;
+        }
+        else
+        {
+            tail_depozit->next = newnod;
+            newnod->prev = tail_depozit;
+            tail_depozit = newnod;
+        }
+    }
+
+    ~DEPOZIT()
+    {
+        NOD_DEPOZIT *ptr = head_depozit;
+
+        while (ptr != nullptr)
+        {
+            NOD_DEPOZIT *temp = ptr;
+            ptr = ptr->next;
+            delete temp;
+        }
     }
 };
 
-class NOD_ORASE
+class DETALII_PRODUS
 {
 public:
-    char *ID_Oras;
-    char *denumire_oras;
-    char *tip_depozit;
-    double latitudine;
-    double longitudine;
-    NOD_ORASE *prev_o;
-    NOD_ORASE *next_o;
+    struct NOD_DETALII_PRODUS
+    {
+        char *ID_Produs = nullptr;
+        char *Denumire_Produs = nullptr;
+        char *Categorie_Produs = nullptr;
+        double pret_produs = 0.0;
+        NOD_DETALII_PRODUS *next = nullptr;
+        NOD_DETALII_PRODUS *prev = nullptr;
+
+        NOD_DETALII_PRODUS(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs)
+        {
+            ID_Produs = strdup(vID_Produs);
+            Denumire_Produs = strdup(vDenumire_Produs);
+            Categorie_Produs = strdup(vCategorie_Produs);
+            pret_produs = vPret_Produs;
+            next = nullptr;
+            prev = nullptr;
+        }
+
+        ~NOD_DETALII_PRODUS()
+        {
+            free(ID_Produs);
+            free(Denumire_Produs);
+            free(Categorie_Produs);
+        }
+    };
+
+    NOD_DETALII_PRODUS *head_produs = nullptr;
+    NOD_DETALII_PRODUS *tail_produs = nullptr;
+
 public:
-    NOD_ORASE()
+    NOD_DETALII_PRODUS *getHead()
     {
-        ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
-        denumire_oras = (char *)malloc(MAXL * sizeof(char) + 1);
-        tip_depozit = (char *)malloc(MAXL * sizeof(char) + 1);
+        return head_produs;
     }
-    ~NOD_ORASE()
+
+    NOD_DETALII_PRODUS *getTail()
     {
-        free(ID_Oras);
-        free(denumire_oras);
-        free(tip_depozit);
+        return tail_produs;
+    }
+
+    void inserareDateProdus(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs)
+    {
+        NOD_DETALII_PRODUS *newnod = new NOD_DETALII_PRODUS(vID_Produs, vDenumire_Produs, vCategorie_Produs, vPret_Produs);
+
+        if (head_produs == nullptr)
+        {
+            head_produs = newnod;
+            tail_produs = newnod;
+        }
+        else
+        {
+            tail_produs->next = newnod;
+            newnod->prev = tail_produs;
+            tail_produs = newnod;
+        }
+    }
+
+    ~DETALII_PRODUS()
+    {
+        NOD_DETALII_PRODUS *ptr = head_produs;
+
+        while (ptr != nullptr)
+        {
+            NOD_DETALII_PRODUS *temp = ptr;
+            ptr = ptr->next;
+            delete temp;
+        }
     }
 };
 
-NOD_DEPOZIT *head_depozit = nullptr, *tail_depozit = nullptr;
-NOD_DETALII_PRODUS *head_produs = nullptr, *tail_produs = nullptr;
-NOD_ORASE *head_oras = nullptr, *tail_oras = nullptr;
+class ORAS
+{
+public:
+    struct NOD_ORAS
+    {
+        char *ID_Oras = nullptr;
+        char *denumire_oras = nullptr;
+        char *tip_depozit = nullptr;
+        double latitudine = 0.0;
+        double longitudine = 0.0;
+        NOD_ORAS *prev = nullptr;
+        NOD_ORAS *next = nullptr;
+
+        NOD_ORAS(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine)
+        {
+            ID_Oras = strdup(vID_Oras);
+            denumire_oras = strdup(vDenumire_Oras);
+            tip_depozit = strdup(vTip_Depozit);
+            latitudine = vLatitudine;
+            longitudine = vLongitudine;
+            next = nullptr;
+            prev = nullptr;
+        }
+
+        ~NOD_ORAS()
+        {
+            free(ID_Oras);
+            free(denumire_oras);
+            free(tip_depozit);
+        }
+    };
+
+    NOD_ORAS *head_oras = nullptr;
+    NOD_ORAS *tail_oras = nullptr;
+
+public:
+    NOD_ORAS *getHead()
+    {
+        return head_oras;
+    }
+
+    NOD_ORAS *getTail()
+    {
+        return tail_oras;
+    }
+
+    void insearareDateOrase(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine)
+    {
+        NOD_ORAS *newnod = new NOD_ORAS(vID_Oras, vDenumire_Oras, vTip_Depozit, vLatitudine, vLongitudine);
+
+        if (head_oras == nullptr)
+        {
+            head_oras = newnod;
+            tail_oras = newnod;
+        }
+        else
+        {
+            tail_oras->next = newnod;
+            newnod->prev = tail_oras;
+            tail_oras = newnod;
+        }
+    }
+
+    ~ORAS()
+    {
+        NOD_ORAS *ptr = head_oras;
+
+        while (ptr != nullptr)
+        {
+            NOD_ORAS *temp = ptr;
+            ptr = ptr->next;
+            delete temp;
+        }
+    }
+};
+
+DEPOZIT depozit;
+ORAS oras;
+DETALII_PRODUS produs;
 
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
-unsigned int contor_depozite_centralizate = 1;
+int contor_depozite_centralizate = 1;
+
+char getch();
+
+void clear_screen();
+
+void sleepcp(const int ms);
+
+void underline(const unsigned int vWidth);
+
+void autentificare();
 
 bool _init_();
-
-void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, char *vID_Oras, double vCantitate_Produs);
-
-void inserareDateProduse(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs);
-
-void insearareDateOrase(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine);
 
 void afisareDateDepozit();
 
@@ -113,6 +285,6 @@ void afisareSolutieDistanta(int start, std::vector<double> &distanta, std::vecto
 
 void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
-void determinareStartAprovizionare();
+void sistem_aprovizionare();
 
 #endif

@@ -2,19 +2,12 @@
 #include "database.hpp"
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
-//#include "login.hpp"
 #include "logic.hpp"
 
 using namespace std;
 
-bool autentificare()
-{
-    return true;
-}
-
 int main()
 {  
-
     accesareDate();
 
     if (!_init_())
@@ -23,7 +16,7 @@ int main()
         return -1;
     }
     
-    if (autentificare())
+    if (true)
     {   
         unsigned int MENIU;
 
@@ -42,12 +35,11 @@ int main()
             switch (MENIU)
             {
                 case 1:
-                    //cautareDepozit();
-                    //afisareDateDepozit();
-                    statisticaStoc();
+                    afisareDateDepozit();
                     getch();
                     break;
                 case 2:
+                    afisareDateOrase();
                     getch();
                     break;
                 case 3:
@@ -55,16 +47,19 @@ int main()
                     getch();
                     break;
                 case 4:
-                    afisareDateOrase();
+                    sistem_aprovizionare();
                     getch();
                     break;
                 case 5:
-                    determinareStartAprovizionare();
                     getch();
                     break;
             }
 
         } while (MENIU != 0);
+
+        //matrice_drum.clear();
+        //depozite_centralizate.clear();
+
     }
     else
     {

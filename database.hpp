@@ -1,8 +1,14 @@
+/*
+    TO DO
+    FIX mem leak from res ptr
+*/
+
 #ifndef DATABASE
 #define DATABASE
 
 #include "string.h"
 #include "declarations.hpp"
+#include "logic.hpp"
 #include <mysql_connection.h>
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
@@ -27,7 +33,7 @@ void accesareDate()
 
         stmt = con->createStatement();
         res = stmt->executeQuery("SELECT * FROM date");
-
+        
         while (res->next())
         {
             string str;
@@ -35,13 +41,11 @@ void accesareDate()
 
             int idProdus = res->getInt("ID_Produs");
             str = to_string(idProdus);
-
             char *tempIdProdus = (char *)malloc(str.length() + 1);
             strcpy(tempIdProdus, str.c_str());
 
             int idProdusDepozit = res->getInt("ID_Depozit");
             str = to_string(idProdusDepozit);
-
             char *tempIDProdusDepozit = (char *)malloc(str.length() + 1);
             strcpy(tempIDProdusDepozit, str.c_str());
 
@@ -52,9 +56,16 @@ void accesareDate()
 
             double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
 
-            inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempIdOras, tempCantitate_Produs);
-        }
+            depozit.inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempIdOras, tempCantitate_Produs);
 
+            free(tempIdProdus);
+            free(tempIDProdusDepozit);
+            free(tempIdOras);
+        }
+        
+        res->close();
+        stmt->close();
+        stmt = con->createStatement();
         res = stmt->executeQuery("SELECT * FROM date_produse");
 
         while (res->next())
@@ -79,9 +90,16 @@ void accesareDate()
 
             double pret_produs = res->getDouble("Pret_Produs");
 
-            inserareDateProduse(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
+            produs.inserareDateProdus(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
+
+            free(tempIdProdus);
+            free(tempNumeProdus);
+            free(tempCantegorieProdus);
         }
 
+        res->close();
+        stmt->close();
+        stmt = con->createStatement();
         res = stmt->executeQuery("SELECT * FROM orase");
 
         while (res->next())
@@ -107,8 +125,15 @@ void accesareDate()
             double tempLat = res->getDouble("latitudine");
             double tempLong = res->getDouble("longitudine");
 
-            insearareDateOrase(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
-        }   
+            oras.insearareDateOrase(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
+
+            free(tempIdOras);
+            free(tempDenumireOras);
+            free(tempTipDepozit);
+        }
+
+        res->close();
+        stmt->close();
 
         delete res;
         delete stmt;
@@ -116,7 +141,9 @@ void accesareDate()
     }
     catch (SQLException &e)
     {
-        cout << e.what() << endl;
+        cout << "Error code: " << e.getErrorCode() << endl;
+        cout << "Error message: " << e.what() << endl;
+        cout << "SQLState: " << e.getSQLState() << endl;
     }
 }
 
