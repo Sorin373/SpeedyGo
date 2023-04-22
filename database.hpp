@@ -1,6 +1,6 @@
 /*
-    TO DO
-    FIX mem leak from res ptr
+                                TO DO
+    ****************FIX mem leak from res ptr*************
 */
 
 #ifndef DATABASE
