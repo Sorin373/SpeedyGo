@@ -7,15 +7,12 @@
 using namespace std;
 
 int main()
-{  
-    accesareDate();
+{   
+    if (autentificare_cont() == EXIT_FAILURE)
+        return EXIT_FAILURE;
+    else if (accesareDate() == EXIT_FAILURE || _init_() == EXIT_FAILURE)
+        return EXIT_FAILURE;
 
-    if (!_init_())
-    {
-        cerr << "Eroare!";
-        return -1;
-    }
-    
     if (true)
     {   
         unsigned int MENIU;
@@ -64,7 +61,7 @@ int main()
     else
     {
         cerr << "Nu s-a putut autentifica contul!";
-        return -1;
+        return EXIT_FAILURE;
     }
-    return 0;
+    return EXIT_SUCCESS;
 }

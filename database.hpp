@@ -18,7 +18,7 @@
 using namespace sql;
 using namespace std;
 
-void accesareDate()
+bool accesareDate()
 {
     try
     {
@@ -28,12 +28,24 @@ void accesareDate()
         ResultSet *res;
 
         driver = get_driver_instance();
-        con = driver->connect("tcp://localhost:3306", "root", "Sorin!2005");
+        con = driver->connect("tcp://" + 
+                    string(autentificare.get_nod()->host_name), 
+                    string(autentificare.get_nod()->username), 
+                    string(autentificare.get_nod()->parola));
+        
+        if (con == nullptr)
+        {
+            delete res;
+            delete stmt;
+            delete con;
+            return EXIT_FAILURE;
+        }
+            
         con->setSchema("MyDepoChain");
 
         stmt = con->createStatement();
         res = stmt->executeQuery("SELECT * FROM date");
-        
+
         while (res->next())
         {
             string str;
@@ -62,7 +74,7 @@ void accesareDate()
             free(tempIDProdusDepozit);
             free(tempIdOras);
         }
-        
+
         res->close();
         stmt->close();
         stmt = con->createStatement();
@@ -111,7 +123,7 @@ void accesareDate()
             str = to_string(idOras);
             char *tempIdOras = (char *)malloc(str.length() + 1);
             strcpy(tempIdOras, str.c_str());
-            
+
             sqlstr = res->getString("Denumire_Oras");
             str = sqlstr.asStdString();
             char *tempDenumireOras = (char *)malloc(str.length() + 1);
@@ -144,7 +156,9 @@ void accesareDate()
         cout << "Error code: " << e.getErrorCode() << endl;
         cout << "Error message: " << e.what() << endl;
         cout << "SQLState: " << e.getSQLState() << endl;
+        return EXIT_FAILURE;
     }
+    return EXIT_SUCCESS;
 }
 
 #endif

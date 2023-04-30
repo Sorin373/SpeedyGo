@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <limits.h>
+#include <string.h>
+#include <stdlib.h>
 
 constexpr int MAXL = 256, N = 45;
 constexpr unsigned int MAXN = 1000;
@@ -10,22 +12,43 @@ constexpr unsigned int MAXN = 1000;
 class AUTENTIFICARE
 {
 private:
-    char *host;
-    char *username;
-    char *parola;
+    struct NOD_AUTENTIFICARE
+    {
+        char *host_name = nullptr;
+        char *username = nullptr;
+        char *parola = nullptr;
+
+        NOD_AUTENTIFICARE(char *host_name, char *username, char *parola)
+        {
+            this->host_name = strdup(host_name);
+            this->username = strdup(username);
+            this->parola = strdup(parola);
+        }
+
+        ~NOD_AUTENTIFICARE()
+        {
+            free(host_name);
+            free(username);
+            free(parola);
+        }
+    };
+
+    NOD_AUTENTIFICARE *data = nullptr;
 
 public:
-    AUTENTIFICARE(const char *h, const char *u, const char *p)
+    void introducere_date(char *vHost_name, char *vUsername, char *vParola)
     {
-        host = (char *)malloc(MAXL * sizeof(char) + 1);
-        username = (char *)malloc(MAXL * sizeof(char) + 1);
-        parola = (char *)malloc(MAXL * sizeof(char) + 1);
+        data = new NOD_AUTENTIFICARE(vHost_name, vUsername, vParola);
     }
+
+    NOD_AUTENTIFICARE *get_nod()
+    {
+        return data;
+    }
+
     ~AUTENTIFICARE()
     {
-        free(host);
-        free(username);
-        free(parola);
+        delete data;
     }
 };
 
@@ -256,6 +279,7 @@ public:
 DEPOZIT depozit;
 ORAS oras;
 DETALII_PRODUS produs;
+AUTENTIFICARE autentificare;
 
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
@@ -269,7 +293,9 @@ void sleepcp(const int ms);
 
 void underline(const unsigned int vWidth);
 
-void autentificare();
+bool accesareDate();
+
+bool autentificare_cont();
 
 bool _init_();
 

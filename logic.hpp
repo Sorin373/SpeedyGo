@@ -13,9 +13,32 @@
 using namespace std;
 using namespace nlohmann;
 
-void autentificare()
+bool autentificare_cont()
 {
+    clear_screen();
 
+    char *_HN = (char *)malloc(MAXL * sizeof(char) + 1),
+         *_UN = (char *)malloc(MAXL * sizeof(char) + 1),
+         *_P = (char *)malloc(MAXL * sizeof(char) + 1);
+         
+    cout << "\n\n" << setw(10) << " " << "CONECTARE BAZA DE DATE\n";
+    underline(40);
+
+    cout << setw(4) << " " << "SERVER NAME: ";
+    cin >> _HN;
+    cout << setw(4) << " " << "USERNAME: ";
+    cin >> _UN;
+    cout << setw(4) << " " << "PASSWORD: ";
+    cin >> _P;
+
+    autentificare.introducere_date(_HN, _UN, _P);
+
+    free(_HN);
+    free(_UN);
+    free(_P);;
+
+    clear_screen();
+    return EXIT_SUCCESS;
 }
 
 bool _init_()
@@ -24,7 +47,7 @@ bool _init_()
     if (!file_json.is_open())
     {
         cerr << "Eroare\n";
-        return false;
+        return EXIT_FAILURE;
     }
     else
     {
@@ -36,7 +59,7 @@ bool _init_()
         catch (json::parse_error &e)
         {
             std::cerr << e.what() << '\n';
-            return false;
+            return EXIT_SUCCESS;
         }
         
         for (json::iterator i = data.begin(); i != data.end(); i++)
@@ -46,7 +69,7 @@ bool _init_()
             char *ptr = strtok(pereche_orase, "_");
             char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
             char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
-            int ID_Oras1, ID_Oras2;
+            int ID_Oras1 = 0, ID_Oras2 = 0;
             bool nume_oras = true;
 
             if (ptr != NULL)
@@ -89,7 +112,7 @@ bool _init_()
             free(oras1);
             free(oras2);
         }
-        return true;
+        return EXIT_SUCCESS;
     }
 }
 
@@ -209,12 +232,13 @@ void statisticaStoc()
             while (ptr != nullptr)
             {
                 string c = to_string(i);
+                /*
                 if (strcasecmp(c.c_str(), ptr->ID_Oras) == 0 && ptr->Cantitate_Produs < 50)
                 {
                     cout << ptr->ID_Depozit << " ";
                     cout << ptr->ID_Produs << " ";
                     cout << ptr->Cantitate_Produs << endl;
-                }
+                }*/
                 ptr = ptr->next;
             }
         }
