@@ -7,61 +7,54 @@
 using namespace std;
 
 int main()
-{   
+{
     if (autentificare_cont() == EXIT_FAILURE)
         return EXIT_FAILURE;
-    else if (accesareDate() == EXIT_FAILURE || _init_() == EXIT_FAILURE)
+    else if (_init_() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
-    if (true)
-    {   
-        unsigned int MENIU;
+    unsigned int MENIU;
 
-        do
-        {
-            clear_screen();
-
-            cout << "MENIU | ADMINISTRATOR\n\n"
-                 << "[1]\n" 
-                 << "[2]\n"
-                 << "[3]\n";
-
-            cout << "Introduceti optiunea: ";
-            cin >> MENIU;
-
-            switch (MENIU)
-            {
-                case 1:
-                    afisareDateDepozit();
-                    getch();
-                    break;
-                case 2:
-                    afisareDateOrase();
-                    getch();
-                    break;
-                case 3:
-                    afisareDateProdus();
-                    getch();
-                    break;
-                case 4:
-                    sistem_aprovizionare();
-                    getch();
-                    break;
-                case 5:
-                    getch();
-                    break;
-            }
-
-        } while (MENIU != 0);
-
-        //matrice_drum.clear();
-        //depozite_centralizate.clear();
-
-    }
-    else
+    do
     {
-        cerr << "Nu s-a putut autentifica contul!";
-        return EXIT_FAILURE;
-    }
+        clear_screen();
+
+        cout << "\n\n" << setw(20) << " " << "MENIU\n";
+        underline(45);
+
+        cout << setw(5) << " " << "[1] Refacere stoc la nivel de tara\n";
+        cout << "\n\n";
+        cout << setw(5) << " " << "Introduce numarul pentru";
+        cin >> MENIU;
+
+        switch (MENIU)
+        {
+        case 1:
+            //vizualizare_date();
+            getch();
+            break;
+        case 2:
+            statisticaStoc();
+            getch();
+            break;
+        case 3:
+            afisareDateDepozit();
+            getch();
+            break;
+        case 4:
+            afisareDateOrase();
+            getch();
+            break;
+        case 5:
+            sistem_aprovizionare();
+            getch();
+            break;
+        }
+
+    } while (MENIU != 0);
+
+    matrice_drum.clear();
+    depozite_centralizate.clear();
+
     return EXIT_SUCCESS;
 }

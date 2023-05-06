@@ -313,4 +313,12 @@ void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distan
 
 void sistem_aprovizionare();
 
+void vizualizare_date();
+
+void sortare_date_depozit();
+
+void sortare_date_produs();
+
+void sortare_date_oras();
+
 #endif

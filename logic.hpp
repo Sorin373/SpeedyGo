@@ -10,6 +10,8 @@
 #include "declarations.hpp"
 #include <nlohmann/json.hpp>
 
+#define MAX_SIZE 32
+
 using namespace std;
 using namespace nlohmann;
 
@@ -31,13 +33,23 @@ bool autentificare_cont()
     cout << setw(4) << " " << "PASSWORD: ";
     cin >> _P;
 
+    if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE)
+        return EXIT_FAILURE;
+
     autentificare.introducere_date(_HN, _UN, _P);
 
+    clear_screen();
+
+    if (accesareDate() == EXIT_FAILURE)
+    {
+        getch();
+        autentificare_cont();
+    }
+        
     free(_HN);
     free(_UN);
     free(_P);;
 
-    clear_screen();
     return EXIT_SUCCESS;
 }
 
@@ -118,12 +130,13 @@ bool _init_()
 
 void afisareDateOrase()
 {
+    cout << "ID_Oras" << " " << "Denumire_Oras" << " " << "Tip_Depozit\n";
+    underline(70);
+
     ORAS::NOD_ORAS *ptr = oras.getHead();
     while (ptr != nullptr)
     {
-        cout << "ID_Oras: " << ptr->ID_Oras << " ";
-        cout << "Denumire: " << ptr->denumire_oras << " ";
-        cout << "Tip: " << ptr->tip_depozit << endl;
+        cout << ptr->ID_Oras << " " << ptr->denumire_oras << " " << ptr->tip_depozit << "\n";
         ptr = ptr->next;
     }
 }
@@ -152,7 +165,6 @@ void afisareDateProdus()
     }
 }
 
-
 void cautareDepozit()
 {
     char *ID = (char *)malloc(MAXL * sizeof(char));
@@ -175,73 +187,136 @@ void cautareDepozit()
     free(ID);
 }
 
-
-void bsort()
+void sortare_date_depozit()
 {
-    DEPOZIT::NOD_DEPOZIT *lptr = nullptr;
+    bool vsort = true;
+
+    DEPOZIT::NOD_DEPOZIT *l_date_depozit = nullptr;
     if (depozit.getHead() == nullptr)
         return;
-    bool vsort = true;
     do
     {
         vsort = true;
         DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
         while (ptr->next != nullptr)
         {
-            int ID1 = stoi(ptr->ID_Produs);
-            int ID2 = stoi(ptr->next->ID_Produs);
-            if (ID1 > ID2)
+            int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
+            if (_ID1 > _ID2)
             {
                 swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                swap(ptr->ID_Depozit, ptr->next->ID_Depozit);
+                swap(ptr->ID_Oras, ptr->next->ID_Oras);
+                swap(ptr->Cantitate_Produs, ptr->next->Cantitate_Produs);
                 vsort = false;
             }
             ptr = ptr->next;
         }
-        lptr = ptr;
+        l_date_depozit = ptr;
     } while (!vsort);
-    DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
-    while (ptr != nullptr)
-    {
-        cout << "ID_Produs: " << ptr->ID_Produs << ", ";
-        cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
-        cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-        cout << "ID_oras: " << ptr->ID_Oras << endl;
-        ptr = ptr->next;
-    }
 }
 
+void sortare_date_produs()
+{
+    bool vsort = true;
+
+    DETALII_PRODUS::NOD_DETALII_PRODUS *l_date_produs = nullptr;
+    if (produs.getHead() == nullptr)
+        return;
+    do
+    {
+        vsort = true;
+        DETALII_PRODUS::NOD_DETALII_PRODUS *ptr = produs.getHead();
+        while (ptr->next != nullptr)
+        {
+            int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
+            if (_ID1 > _ID2)
+            {
+                swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                swap(ptr->pret_produs, ptr->next->pret_produs);
+                vsort = false;
+            }
+            ptr = ptr->next;
+        }
+        l_date_produs = ptr;
+    } while (!vsort);
+}
+
+void sortare_date_oras()
+{
+    bool vsort = true;
+
+    ORAS::NOD_ORAS *l_date_oras = nullptr;
+    if (oras.getHead() == nullptr)
+        return;
+    do
+    {
+        vsort = true;
+        ORAS::NOD_ORAS *ptr = oras.getHead();
+        while (ptr->next != nullptr)
+        {
+            int _ID1 = stoi(ptr->ID_Oras), _ID2 = stoi(ptr->next->ID_Oras);
+            if (_ID1 > _ID2)
+            {
+                swap(ptr->ID_Oras, ptr->next->ID_Oras);
+                swap(ptr->denumire_oras, ptr->next->denumire_oras);
+                swap(ptr->latitudine, ptr->next->latitudine);
+                swap(ptr->longitudine, ptr->next->longitudine);
+                vsort = false;
+            }
+            ptr = ptr->next;
+        }
+        l_date_oras = ptr;
+    } while (!vsort);
+}
 
 void statisticaStoc()
 {
-    DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
-    while (ptr != nullptr)
+    clear_screen();
+    DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
+    while (date_depozit != nullptr)
     {
-        if (ptr->Cantitate_Produs < 50)
+        if (date_depozit->Cantitate_Produs < 50)
         {
-            int tempIdOras = stoi(ptr->ID_Oras);
+            int tempIdOras = stoi(date_depozit->ID_Oras);
             if (tempIdOras > 5)
                 matrice_drum[tempIdOras][tempIdOras] = 1;
         }
-        ptr = ptr->next;
+        date_depozit = date_depozit->next;
     }
 
     for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
         if (matrice_drum[i][i] == true)
         {
-            ptr = depozit.getHead();
-            while (ptr != nullptr)
+            date_depozit = depozit.getHead();
+            while (date_depozit != nullptr)
             {
                 string c = to_string(i);
-                /*
-                if (strcasecmp(c.c_str(), ptr->ID_Oras) == 0 && ptr->Cantitate_Produs < 50)
+
+                if (strcasecmp(c.c_str(), date_depozit->ID_Oras) == 0 && date_depozit->Cantitate_Produs < 50)
                 {
-                    cout << ptr->ID_Depozit << " ";
-                    cout << ptr->ID_Produs << " ";
-                    cout << ptr->Cantitate_Produs << endl;
-                }*/
-                ptr = ptr->next;
+                    cout << date_depozit->ID_Depozit << " ";
+
+                    ORAS::NOD_ORAS *date_oras = oras.getHead();
+
+                    while (date_oras != nullptr)
+                    {
+                        if (strcasecmp(date_depozit->ID_Depozit, date_oras->ID_Oras) == 0)
+                        {
+                            cout << date_oras->denumire_oras << " ";
+                            break;
+                        }
+                        date_oras = date_oras->next;
+                    }
+                    
+                    cout << date_depozit->ID_Produs << " ";
+                    cout << date_depozit->Cantitate_Produs << endl;
+                }
+                date_depozit = date_depozit->next;
             }
         }
+    getch();
 }
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
@@ -332,5 +407,72 @@ void sistem_aprovizionare()
         distanta.clear();
     }
 }
+
+/*
+void vizualizare_date()
+{
+    unsigned int MENIU;
+
+    do
+    {
+        clear_screen();
+        afisareDateOrase();
+        underline(70);
+
+        cout << "Selecteaza un oras: ";
+        cin >> MENIU;
+
+        unsigned int sMENIU;
+
+        do 
+        {
+            clear_screen();
+            ORAS::NOD_ORAS *date_oras = oras.getHead();
+            while (date_oras != nullptr)
+            {
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == MENIU)
+                {
+                    cout << date_oras->ID_Oras << " " << date_oras->denumire_oras << " " << date_oras->tip_depozit << "\n";
+                    break;
+                }
+                date_oras = date_oras->next;
+            }
+
+            DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
+            while (date_depozit != nullptr)
+            {
+                int ID = stoi(date_depozit->ID_Oras);
+                if (ID == MENIU)
+                {
+                    cout << date_depozit->ID_Produs << " ";
+                    DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead();
+                    while (date_produs != nullptr)
+                    {
+                        if (strcasecmp(date_depozit->ID_Produs, date_produs->ID_Produs) == 0)
+                        {
+                            cout << date_produs->Denumire_Produs << " " << date_produs->Categorie_Produs << " " 
+                                 << date_produs->pret_produs << " ";
+                            break;
+                        }
+                        date_produs = date_produs->next;
+                    }
+                    cout << date_depozit->Cantitate_Produs << "\n";
+                }
+                date_depozit = date_depozit->next;
+            }
+
+            cin >> sMENIU;
+            switch (sMENIU)
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+            }
+        } while (sMENIU != 0);
+
+    } while (MENIU != 0);
+}*/
 
 #endif
