@@ -287,6 +287,10 @@ std::vector<unsigned int> depozite_vizitate(N, 0);
 
 int contor_depozite_centralizate = 1, nr_componente;
 
+void animatie(bool& incarcare_date);
+
+bool start();
+
 char getch();
 
 void clear_screen();
@@ -311,7 +315,7 @@ void vizualizare_status_stoc();
 
 void afisareSolutieDistanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
-void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
+void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima);
 
 void sistem_aprovizionare();
 
@@ -326,5 +330,9 @@ void sortare_date_oras();
 void BFS(int start);
 
 void verificare_rute();
+
+void cautare_produse_ID(const int ID_Depozit);
+
+void depozite_conectate(const int ID_Depozit);
 
 #endif

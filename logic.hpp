@@ -281,6 +281,87 @@ void sortare_date_oras()
     } while (!vsort);
 }
 
+void cautare_produse_ID(const int ID_Depozit)
+{   
+    clear_screen();
+
+    DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead();
+    int cmax = 0;
+    while (date_produs != nullptr)
+    {
+        if (strlen(date_produs->Denumire_Produs) > cmax)
+            cmax = strlen(date_produs->Denumire_Produs);
+        date_produs = date_produs->next;
+    }
+
+    cout << "\n\n" << setw(5) << " " << "ID_Produs" << setw(5) << " " << "Denumire_Produs" << setw(10) << " " << "Nr.Produse\n";
+    underline(55);
+    
+    DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
+    while (date_depozit != nullptr)
+    {   
+        int tID_Depozit = stoi(date_depozit->ID_Oras);
+        if (tID_Depozit == ID_Depozit)
+            if (date_depozit->Cantitate_Produs < 100)
+            {
+                date_produs = produs.getHead();
+                int tID_Produs = stoi(date_depozit->ID_Produs);
+                while (date_produs != nullptr)
+                {
+                    int tsID_Produs = stoi(date_produs->ID_Produs);
+                    if (tsID_Produs == tID_Produs)
+                        cout << setw(7) << " [" << date_produs->ID_Produs << "]" << setw(8) << " " << date_produs->Denumire_Produs 
+                             << setw(cmax - strlen(date_produs->Denumire_Produs) - 11) << " ";
+                    date_produs = date_produs->next;
+                }
+                cout << date_depozit->Cantitate_Produs << "\n";
+            }
+        date_depozit = date_depozit->next;
+    }
+    underline(55);
+}
+
+void depozite_conectate(int ID_Depozit)
+{   
+    cout << "\n";
+    vector<bool> temp_depozite(N, 100);
+    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    char *t_denumire = (char *)malloc(MAXL * sizeof(char) + 1);
+    int cmax = 0;
+
+    while (date_oras != nullptr)
+    {
+        int _ID = stoi(date_oras->ID_Oras);
+        if (_ID == ID_Depozit)
+            strcpy(t_denumire, date_oras->denumire_oras);
+        if (strlen(date_oras->denumire_oras) > cmax)
+            cmax = strlen(date_oras->denumire_oras);
+        date_oras = date_oras->next;
+    }
+
+    int contor = 0;
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+        if (matrice_drum[ID_Depozit][i] == 1)
+            temp_depozite[i] = true;
+
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+        if (temp_depozite[i] == true)
+        {
+            date_oras = oras.getHead();
+            while (date_oras != nullptr)
+            {
+                int _ID = stoi(date_oras->ID_Oras);
+                if (_ID == i)
+                {
+                    cout << setw(5) << " " << t_denumire <<  " -> " << date_oras->denumire_oras << setw(cmax - strlen(date_oras->denumire_oras) + 5) 
+                         << " " << matrice_drum[ID_Depozit][i] << "km\n";
+                    break;
+                }
+                date_oras = date_oras->next;
+            }
+        }
+}
+
 void vizualizare_status_stoc()
 {
     clear_screen();
@@ -348,28 +429,35 @@ void vizualizare_status_stoc()
             int t_ID = stoi(date_oras->ID_Oras);
             if (t_ID == _ID_Oras)
             {
-                cout << "\n\n" << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << " | Tip depozit: " << date_oras->tip_depozit << "\n";
-                underline(50);
-
                 unsigned int sMENIU;
                 
                 do
                 {
                     clear_screen();
 
-                    cout << "\n\n" << setw(5) << " " << "[1] Vizualizare produse cu stoc limitat\n"
+                    cout << "\n\n" << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras 
+                         << " | Tip depozit: " << date_oras->tip_depozit << "\n";
+
+                    underline(50);
+
+                    cout << setw(5) << " " << "[1] Vizualizare produse cu stoc limitat\n"
                          << setw(5) << " " << "[2] Vizualizare conexiuni cu alte depozite\n"
                          << setw(5) << " " << "[0] Inapoi\n";
 
                     underline(50);
+
                     cout << setw(5) << " " << "Introduceti numarul meniului: ";
                     cin >> sMENIU;
 
                     switch (sMENIU)
                     {
                     case 1:
+                        cautare_produse_ID(_ID_Oras);
+                        getch();
                         break;
                     case 2:
+                        depozite_conectate(_ID_Oras);
+                        getch();
                         break;
         
                     default:
