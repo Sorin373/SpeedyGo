@@ -22,15 +22,20 @@ bool autentificare_cont()
     char *_HN = (char *)malloc(MAXL * sizeof(char) + 1),
          *_UN = (char *)malloc(MAXL * sizeof(char) + 1),
          *_P = (char *)malloc(MAXL * sizeof(char) + 1);
-         
-    cout << "\n\n" << setw(10) << " " << "CONECTARE BAZA DE DATE\n";
+
+    cout << "\n\n"
+         << setw(10) << " "
+         << "CONECTARE BAZA DE DATE\n";
     underline(40);
 
-    cout << setw(4) << " " << "SERVER NAME: ";
+    cout << setw(4) << " "
+         << "SERVER NAME: ";
     cin >> _HN;
-    cout << setw(4) << " " << "USERNAME: ";
+    cout << setw(4) << " "
+         << "USERNAME: ";
     cin >> _UN;
-    cout << setw(4) << " " << "PASSWORD: ";
+    cout << setw(4) << " "
+         << "PASSWORD: ";
     cin >> _P;
 
     if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE)
@@ -45,10 +50,11 @@ bool autentificare_cont()
         getch();
         autentificare_cont();
     }
-        
+
     free(_HN);
     free(_UN);
-    free(_P);;
+    free(_P);
+    ;
 
     return EXIT_SUCCESS;
 }
@@ -73,7 +79,7 @@ bool _init_()
             std::cerr << e.what() << '\n';
             return EXIT_SUCCESS;
         }
-        
+
         for (json::iterator i = data.begin(); i != data.end(); i++)
         {
             char *pereche_orase = (char *)malloc(MAXL * sizeof(char) + 1);
@@ -117,7 +123,7 @@ bool _init_()
                 }
                 p = p->next;
             }
-            
+
             matrice_drum[ID_Oras1][ID_Oras2] = matrice_drum[ID_Oras2][ID_Oras1] = i.value();
 
             free(pereche_orase);
@@ -130,7 +136,11 @@ bool _init_()
 
 void afisareDateOrase()
 {
-    cout << "ID_Oras" << " " << "Denumire_Oras" << " " << "Tip_Depozit\n";
+    cout << "ID_Oras"
+         << " "
+         << "Denumire_Oras"
+         << " "
+         << "Tip_Depozit\n";
     underline(70);
 
     ORAS::NOD_ORAS *ptr = oras.getHead();
@@ -171,7 +181,7 @@ void cautareDepozit()
     DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
 
     cin >> ID;
-    statisticaStoc();
+    vizualizare_status_stoc();
     cout << endl;
     while (ptr != nullptr)
     {
@@ -271,52 +281,109 @@ void sortare_date_oras()
     } while (!vsort);
 }
 
-void statisticaStoc()
+void vizualizare_status_stoc()
 {
     clear_screen();
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "Orase cu stocuri insuficiente:\n";
+    underline(100);
+
     DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
     while (date_depozit != nullptr)
     {
-        if (date_depozit->Cantitate_Produs < 50)
+        if (date_depozit->Cantitate_Produs < 100)
         {
-            int tempIdOras = stoi(date_depozit->ID_Oras);
-            if (tempIdOras > 5)
-                matrice_drum[tempIdOras][tempIdOras] = 1;
+            int _ID = stoi(date_depozit->ID_Oras);
+            if (_ID > 5)
+                matrice_drum[_ID][_ID] = 1;
         }
         date_depozit = date_depozit->next;
     }
 
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    // determinare nr. max de caractere
+
+    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    int cmax = 0, contor_linii = 0;
+
+    while (date_oras != nullptr)
+    {
+        if (strlen(date_oras->denumire_oras) > cmax)
+            cmax = strlen(date_oras->denumire_oras);
+        date_oras = date_oras->next;
+    }
+
+    for (unsigned int i = 6; i <= matrice_drum.size() - 1; i++)
         if (matrice_drum[i][i] == true)
         {
-            date_depozit = depozit.getHead();
-            while (date_depozit != nullptr)
+            date_oras = oras.getHead();
+            while (date_oras != nullptr)
             {
-                string c = to_string(i);
-
-                if (strcasecmp(c.c_str(), date_depozit->ID_Oras) == 0 && date_depozit->Cantitate_Produs < 50)
+                int _ID = stoi(date_oras->ID_Oras);
+                if (_ID == i)
                 {
-                    cout << date_depozit->ID_Depozit << " ";
-
-                    ORAS::NOD_ORAS *date_oras = oras.getHead();
-
-                    while (date_oras != nullptr)
-                    {
-                        if (strcasecmp(date_depozit->ID_Depozit, date_oras->ID_Oras) == 0)
-                        {
-                            cout << date_oras->denumire_oras << " ";
-                            break;
-                        }
-                        date_oras = date_oras->next;
-                    }
-                    
-                    cout << date_depozit->ID_Produs << " ";
-                    cout << date_depozit->Cantitate_Produs << endl;
+                    cout << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras 
+                         << setw(cmax - strlen(date_oras->denumire_oras) + 5) << " ";
+                    contor_linii++;
+                    if (contor_linii % 3 == 0)
+                        cout << "\n";
                 }
-                date_depozit = date_depozit->next;
+                date_oras = date_oras->next;
             }
         }
-    getch();
+    underline(100);
+
+    unsigned int _ID_Oras;
+    cout << setw(5) << " " << "Introduceti ID-ul orasului: ";
+    cin >> _ID_Oras;
+
+    if (_ID_Oras == 0)
+        return;
+    else
+    {
+        date_oras = oras.getHead();
+        while (date_oras != nullptr)
+        {   
+            int t_ID = stoi(date_oras->ID_Oras);
+            if (t_ID == _ID_Oras)
+            {
+                cout << "\n\n" << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << " | Tip depozit: " << date_oras->tip_depozit << "\n";
+                underline(50);
+
+                unsigned int sMENIU;
+                
+                do
+                {
+                    clear_screen();
+
+                    cout << "\n\n" << setw(5) << " " << "[1] Vizualizare produse cu stoc limitat\n"
+                         << setw(5) << " " << "[2] Vizualizare conexiuni cu alte depozite\n"
+                         << setw(5) << " " << "[0] Inapoi\n";
+
+                    underline(50);
+                    cout << setw(5) << " " << "Introduceti numarul meniului: ";
+                    cin >> sMENIU;
+
+                    switch (sMENIU)
+                    {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+        
+                    default:
+                        break;
+                    }
+
+                } while (sMENIU != 0);
+
+                break;
+            }
+            date_oras = date_oras->next;
+        }
+        vizualizare_status_stoc();
+    }
 }
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
@@ -382,29 +449,65 @@ void sistem_aprovizionare()
     while (ptr != nullptr)
     {
         if (strcasecmp(ptr->tip_depozit, "centralizat") == 0)
-        {   
+        {
             int ID = stoi(ptr->ID_Oras);
             depozite_centralizate[ID] = true;
             contor_depozite_centralizate++;
         }
         ptr = ptr->next;
     }
+}
 
-    statisticaStoc();
+void BFS(int start)
+{
+    vector<unsigned int> v(N, 0);
+    v[1] = start;
+    int pi = 1, ps = 1;
+    depozite_vizitate[start] = nr_componente;
 
-    for (unsigned int i = 1; i <= contor_depozite_centralizate; i++)
+    while (ps <= pi)
     {
-        vector<int> distanta_minima(N, -1);
-        vector<double> distanta(N, numeric_limits<double>::infinity());
-        if (depozite_centralizate[i])
+        start = v[ps];
+        for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
         {
-            dijkstra(i, distanta, distanta_minima);
-            afisareSolutieDistanta(i, distanta, distanta_minima);
-            getch();
-            clear_screen();
+            if (matrice_drum[start][i] != 0 && depozite_vizitate[i] == 0)
+            {
+                pi++;
+                v[pi] = i;
+                depozite_vizitate[i] = nr_componente;
+            }
         }
-        distanta_minima.clear();
-        distanta.clear();
+        ps++;
+    }
+}
+
+void verificare_rute()
+{
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    {
+        if (depozite_vizitate[i] == 0)
+        {
+            nr_componente++;
+            BFS(i);
+        }
+    }
+
+    if (nr_componente == 1)
+    {
+        cout << "Graful este complet." << endl;
+        return;
+    }
+
+    cout << "Graful nu este complet. Componentele conexe sunt: " << endl;
+    for (unsigned int i = 1; i <= nr_componente; i++)
+    {
+        cout << "Cmp " << i << ": ";
+        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
+        {
+            if (depozite_vizitate[j] == i)
+                cout << j << " ";
+        }
+        cout << endl;
     }
 }
 
@@ -424,7 +527,7 @@ void vizualizare_date()
 
         unsigned int sMENIU;
 
-        do 
+        do
         {
             clear_screen();
             ORAS::NOD_ORAS *date_oras = oras.getHead();
@@ -451,7 +554,7 @@ void vizualizare_date()
                     {
                         if (strcasecmp(date_depozit->ID_Produs, date_produs->ID_Produs) == 0)
                         {
-                            cout << date_produs->Denumire_Produs << " " << date_produs->Categorie_Produs << " " 
+                            cout << date_produs->Denumire_Produs << " " << date_produs->Categorie_Produs << " "
                                  << date_produs->pret_produs << " ";
                             break;
                         }

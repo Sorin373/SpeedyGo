@@ -283,7 +283,9 @@ AUTENTIFICARE autentificare;
 
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
-int contor_depozite_centralizate = 1;
+std::vector<unsigned int> depozite_vizitate(N, 0);
+
+int contor_depozite_centralizate = 1, nr_componente;
 
 char getch();
 
@@ -305,7 +307,7 @@ void afisareDateProdus();
 
 void afisareDateOrase();
 
-void statisticaStoc();
+void vizualizare_status_stoc();
 
 void afisareSolutieDistanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
@@ -320,5 +322,9 @@ void sortare_date_depozit();
 void sortare_date_produs();
 
 void sortare_date_oras();
+
+void BFS(int start);
+
+void verificare_rute();
 
 #endif

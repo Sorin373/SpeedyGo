@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "database.hpp"
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
@@ -22,20 +23,23 @@ int main()
         cout << "\n\n" << setw(20) << " " << "MENIU\n";
         underline(45);
 
-        cout << setw(5) << " " << "[1] Refacere stoc la nivel de tara\n";
-        cout << "\n\n";
-        cout << setw(5) << " " << "Introduce numarul pentru";
+        cout << setw(5) << " " << "[1] Aprovizioare stoc Romania\n"
+             << setw(5) << " " << "[2] Vizualizare stoc Romania\n"
+             << setw(5) << " " << "[0] EXIT\n";
+
+        underline(45);
+        cout << setw(5) << " " << "Introduceti numarul meniului: ";
+
         cin >> MENIU;
 
         switch (MENIU)
         {
         case 1:
-            //vizualizare_date();
+            verificare_rute();
             getch();
             break;
         case 2:
-            statisticaStoc();
-            getch();
+            vizualizare_status_stoc();
             break;
         case 3:
             afisareDateDepozit();
@@ -49,12 +53,12 @@ int main()
             sistem_aprovizionare();
             getch();
             break;
+
+        default:
+            break;
         }
 
     } while (MENIU != 0);
-
-    matrice_drum.clear();
-    depozite_centralizate.clear();
 
     return EXIT_SUCCESS;
 }

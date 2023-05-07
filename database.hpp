@@ -28,10 +28,15 @@ bool accesareDate()
         ResultSet *res;
 
         driver = get_driver_instance();
+        con = driver->connect("tcp://localhost:3306", "root", "Sorin!2005");
+
+        /*
+         * -------------------------------------------------Scoate comm la sfarsit---------------------------------------------
         con = driver->connect("tcp://" + 
                     string(autentificare.get_nod()->host_name), 
                     string(autentificare.get_nod()->username), 
                     string(autentificare.get_nod()->parola));
+        */
         
         if (con == nullptr)
         {
