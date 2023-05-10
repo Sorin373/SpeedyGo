@@ -13,7 +13,7 @@
 
 #define MAX_SIZE 32
 #define MAX_LENGTH 10000000
-#define VAL_STOC_MINIM 0
+#define VAL_STOC_MINIM 1
 
 using namespace std;
 using namespace nlohmann;
@@ -347,11 +347,11 @@ void depozite_conectate(int ID_Depozit)
     }
 
     int contor = 0;
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
         if (matrice_drum[ID_Depozit][i] == 1)
             temp_depozite[i] = true;
 
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
         if (temp_depozite[i] == true)
         {
             date_oras = oras.getHead();
@@ -402,7 +402,7 @@ void vizualizare_status_stoc()
         date_oras = date_oras->next;
     }
 
-    for (unsigned int i = 6; i <= matrice_drum.size() - 1; i++)
+    for (unsigned int i = 6; i <= dimensiune_matrice; i++)
         if (matrice_drum[i][i] == true)
         {
             date_oras = oras.getHead();
@@ -489,41 +489,65 @@ void vizualizare_status_stoc()
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    for (unsigned int i = 0; i < N; i++)
+    int contor = 0;
+    
+    vector<bool> temp(dimensiune_matrice, false);
+    temp.assign(orase_stoc_limitat.begin(), orase_stoc_limitat.end());
+
+    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
     {
-        if (i != start)
+        contor = 0;
+        if (i != start && temp[i])
         {
+            
             cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
             vector<int> traseu;
             int nod = i;
+
             while (nod != -1)
             {
                 traseu.push_back(nod);
                 nod = distanta_minima[nod];
             }
+
+            int dimensiune_vector_traseu = traseu.size();
+
             reverse(traseu.begin(), traseu.end());
-            for (unsigned int j = 0; j < traseu.size(); j++)
+
+            for (unsigned int j = 0; j < dimensiune_vector_traseu; j++)
             {
-                cout << traseu[j];
-                if (j != traseu.size() - 1)
-                    cout << " -> ";
+                if(orase_stoc_limitat[traseu[j]])
+                {
+                    contor++;
+                    temp[traseu[j]] = false;
+                }
             }
-            cout << endl;
+
+            for (unsigned int j = 0; j < traseu.size(); j++)
+                cout << traseu[j] << " ";
+
+            if (contor > nr_maxim_orase_parcurse)
+            {
+                nr_maxim_orase_parcurse = contor;
+                _verificare_orase_parcurse.assign(traseu.begin(), traseu.end());
+            }
+
+            cout << "\n";
         }
     }
 }
 
 void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    vector<bool> visited(matrice_drum.size() - 1, false);
+    vector<bool> visited(dimensiune_matrice, false);
     distanta[start] = 0.0;
 
-    for (unsigned int i = 1; i <= matrice_drum.size() - 2; i++)
+    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
     {
         int min_index = -1;
         double min_dist = numeric_limits<double>::infinity();
 
-        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
+        for (unsigned int j = 1; j <= dimensiune_matrice; j++)
             if (!visited[j] && distanta[j] < min_dist)
             {
                 min_index = j;
@@ -532,7 +556,7 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
         visited[min_index] = true;
 
-        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
+        for (unsigned int j = 1; j <= dimensiune_matrice; j++)
         {
             double distanta_noua = distanta[min_index] + matrice_drum[min_index][j];
             if (!visited[j] && matrice_drum[min_index][j] > 0 && distanta_noua < distanta[j])
@@ -546,14 +570,6 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
 void sistem_aprovizionare()
 {
-    /*
-    vector<double> distanta(matrice_drum.size() - 1, numeric_limits<double>::infinity());
-    vector<int> distanta_minima(matrice_drum.size() - 1, -1);
-
-    dijkstra(3, distanta, distanta_minima);
-    afisareSolutieDistanta(3, distanta, distanta_minima);
-    */
-
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     while (date_oras != nullptr)
     {
@@ -561,7 +577,6 @@ void sistem_aprovizionare()
         {
             int ID = stoi(date_oras->ID_Oras);
             depozite_centralizate[ID] = true;
-            contor_depozite_centralizate++;
         }
         date_oras = date_oras->next;
     }
@@ -576,9 +591,10 @@ void sistem_aprovizionare()
         {
             int _ID_Depozit = stoi(date_depozit->ID_Depozit);
             if (_ID_Depozit == _ID_Oras && depozite_centralizate[_ID_Depozit] == false)
-                if (date_depozit->Cantitate_Produs == VAL_STOC_MINIM)
+                if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
                 {
                     orase_stoc_limitat[_ID_Depozit] = true;
+                    contor_orase_stoc_limitat++;
                     break;
                 }
             date_depozit = date_depozit->next;
@@ -586,9 +602,27 @@ void sistem_aprovizionare()
         date_oras = date_oras->next;
     }
 
+    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+    {
+        vector<int> distanta_minima(N, -1);
+        vector<double> distanta(N, numeric_limits<double>::infinity());
+
+        if (depozite_centralizate[i])
+        {
+            dijkstra(i, distanta, distanta_minima);
+            afisareSolutieDistanta(i, distanta, distanta_minima);
+        }
+        distanta_minima.clear();
+        distanta.clear();
+    }
+
     for (unsigned int i = 1; i <= orase_stoc_limitat.size() - 1; i++)
         if (orase_stoc_limitat[i])
             cout << i << " ";
+    cout << endl;
+
+    for (unsigned int i = 0; i < _verificare_orase_parcurse.size(); i++)
+        cout << _verificare_orase_parcurse[i] << " ";
 }
 
 void BFS(int start)
@@ -601,7 +635,7 @@ void BFS(int start)
     while (ps <= pi)
     {
         start = v[ps];
-        for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+        for (unsigned int i = 1; i <= dimensiune_matrice; i++)
         {
             if (matrice_drum[start][i] != 0 && depozite_vizitate[i] == 0)
             {

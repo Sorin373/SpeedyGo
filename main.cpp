@@ -1,7 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <thread>
-#include <chrono>
 #include "database.hpp"
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
@@ -23,7 +21,7 @@ int main()
 {
     unsigned int MENIU;
 
-    if (start() != 0)
+    if (start() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
     do

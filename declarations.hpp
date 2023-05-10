@@ -276,6 +276,49 @@ public:
     }
 };
 
+class TRASEU
+{
+public:
+    struct NOD_TRASEU
+    {
+        int start = 0, destinatie = 0;
+        std::vector<int> traseu;
+        NOD_TRASEU *prev = nullptr;
+        NOD_TRASEU *next = nullptr;
+
+        NOD_TRASEU(int vStart, int vDestinatie, std::vector<int> &traseu)
+        {
+            this->start = vStart;
+            this->destinatie = vDestinatie;
+            this->traseu.assign(traseu.begin(), traseu.end());
+        }
+
+        ~NOD_TRASEU()
+        {
+            
+        }
+    };
+
+    NOD_TRASEU *head_traseu = nullptr;
+    NOD_TRASEU *tail_traseu = nullptr;
+
+public:
+    NOD_TRASEU *getHead()
+    {
+        return head_traseu;
+    }
+
+    NOD_TRASEU *getTail()
+    {
+        return tail_traseu;
+    }
+
+    void inserareDateTraseu()
+    {
+
+    }
+};
+
 DEPOZIT depozit;
 ORAS oras;
 DETALII_PRODUS produs;
@@ -286,11 +329,11 @@ std::vector<bool> depozite_centralizate(N, false);
 std::vector<unsigned int> depozite_vizitate(N, 0);
 std::vector<int> traseu(N, 0);
 std::vector<bool> orase_stoc_limitat(matrice_drum.size() - 1, false);
-std::vector<int> final_path(matrice_drum.size(), 0);
-std::vector<bool> visited(N);
+std::vector<int> _verificare_orase_parcurse(matrice_drum.size() - 1, 0);
 
-int contor_depozite_centralizate = 1, nr_componente;int contor = 0;
-int final_res = INT_MAX;
+long long unsigned int dimensiune_matrice = matrice_drum.size() - 1;
+int nr_componente,  contor_depozite_centralizate = 1, nr_maxim_orase_parcurse = -1;
+unsigned int contor_orase_stoc_limitat;
 
 bool start();
 
@@ -333,11 +376,5 @@ void BFS(int start);
 void cautare_produse_ID(const int ID_Depozit);
 
 void depozite_conectate(const int ID_Depozit);
-
-void DFS();
-
-void cost_minim_traseu(int oras);
-
-int _minim(int j);
 
 #endif
