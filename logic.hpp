@@ -5,12 +5,15 @@
 #include <fstream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 #include <limits.h>
 #include <string.h>
 #include "declarations.hpp"
 #include <nlohmann/json.hpp>
 
 #define MAX_SIZE 32
+#define MAX_LENGTH 10000000
+#define VAL_STOC_MINIM 0
 
 using namespace std;
 using namespace nlohmann;
@@ -77,7 +80,7 @@ bool _init_()
         catch (json::parse_error &e)
         {
             std::cerr << e.what() << '\n';
-            return EXIT_SUCCESS;
+            return EXIT_FAILURE;
         }
 
         for (json::iterator i = data.begin(); i != data.end(); i++)
@@ -282,7 +285,7 @@ void sortare_date_oras()
 }
 
 void cautare_produse_ID(const int ID_Depozit)
-{   
+{
     clear_screen();
 
     DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead();
@@ -294,12 +297,16 @@ void cautare_produse_ID(const int ID_Depozit)
         date_produs = date_produs->next;
     }
 
-    cout << "\n\n" << setw(5) << " " << "ID_Produs" << setw(5) << " " << "Denumire_Produs" << setw(10) << " " << "Nr.Produse\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "ID_Produs" << setw(5) << " "
+         << "Denumire_Produs" << setw(10) << " "
+         << "Nr.Produse\n";
     underline(55);
-    
+
     DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
     while (date_depozit != nullptr)
-    {   
+    {
         int tID_Depozit = stoi(date_depozit->ID_Oras);
         if (tID_Depozit == ID_Depozit)
             if (date_depozit->Cantitate_Produs < 100)
@@ -310,7 +317,7 @@ void cautare_produse_ID(const int ID_Depozit)
                 {
                     int tsID_Produs = stoi(date_produs->ID_Produs);
                     if (tsID_Produs == tID_Produs)
-                        cout << setw(7) << " [" << date_produs->ID_Produs << "]" << setw(8) << " " << date_produs->Denumire_Produs 
+                        cout << setw(7) << " [" << date_produs->ID_Produs << "]" << setw(8) << " " << date_produs->Denumire_Produs
                              << setw(cmax - strlen(date_produs->Denumire_Produs) - 11) << " ";
                     date_produs = date_produs->next;
                 }
@@ -322,7 +329,7 @@ void cautare_produse_ID(const int ID_Depozit)
 }
 
 void depozite_conectate(int ID_Depozit)
-{   
+{
     cout << "\n";
     vector<bool> temp_depozite(N, 100);
     ORAS::NOD_ORAS *date_oras = oras.getHead();
@@ -353,7 +360,7 @@ void depozite_conectate(int ID_Depozit)
                 int _ID = stoi(date_oras->ID_Oras);
                 if (_ID == i)
                 {
-                    cout << setw(5) << " " << t_denumire <<  " -> " << date_oras->denumire_oras << setw(cmax - strlen(date_oras->denumire_oras) + 5) 
+                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax - strlen(date_oras->denumire_oras) + 5)
                          << " " << matrice_drum[ID_Depozit][i] << "km\n";
                     break;
                 }
@@ -404,7 +411,7 @@ void vizualizare_status_stoc()
                 int _ID = stoi(date_oras->ID_Oras);
                 if (_ID == i)
                 {
-                    cout << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras 
+                    cout << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
                          << setw(cmax - strlen(date_oras->denumire_oras) + 5) << " ";
                     contor_linii++;
                     if (contor_linii % 3 == 0)
@@ -416,7 +423,8 @@ void vizualizare_status_stoc()
     underline(100);
 
     unsigned int _ID_Oras;
-    cout << setw(5) << " " << "Introduceti ID-ul orasului: ";
+    cout << setw(5) << " "
+         << "Introduceti ID-ul orasului: ";
     cin >> _ID_Oras;
 
     if (_ID_Oras == 0)
@@ -425,28 +433,33 @@ void vizualizare_status_stoc()
     {
         date_oras = oras.getHead();
         while (date_oras != nullptr)
-        {   
+        {
             int t_ID = stoi(date_oras->ID_Oras);
             if (t_ID == _ID_Oras)
             {
                 unsigned int sMENIU;
-                
+
                 do
                 {
                     clear_screen();
 
-                    cout << "\n\n" << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras 
+                    cout << "\n\n"
+                         << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
                          << " | Tip depozit: " << date_oras->tip_depozit << "\n";
 
                     underline(50);
 
-                    cout << setw(5) << " " << "[1] Vizualizare produse cu stoc limitat\n"
-                         << setw(5) << " " << "[2] Vizualizare conexiuni cu alte depozite\n"
-                         << setw(5) << " " << "[0] Inapoi\n";
+                    cout << setw(5) << " "
+                         << "[1] Vizualizare produse cu stoc limitat\n"
+                         << setw(5) << " "
+                         << "[2] Vizualizare conexiuni cu alte depozite\n"
+                         << setw(5) << " "
+                         << "[0] Inapoi\n";
 
                     underline(50);
 
-                    cout << setw(5) << " " << "Introduceti numarul meniului: ";
+                    cout << setw(5) << " "
+                         << "Introduceti numarul meniului: ";
                     cin >> sMENIU;
 
                     switch (sMENIU)
@@ -459,7 +472,7 @@ void vizualizare_status_stoc()
                         depozite_conectate(_ID_Oras);
                         getch();
                         break;
-        
+
                     default:
                         break;
                     }
@@ -476,9 +489,9 @@ void vizualizare_status_stoc()
 
 void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    for (unsigned int i = 1; i <= N - 1; i++)
+    for (unsigned int i = 0; i < N; i++)
     {
-        if (i != start && matrice_drum[i][i] == true)
+        if (i != start)
         {
             cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
             vector<int> traseu;
@@ -505,7 +518,7 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
     vector<bool> visited(matrice_drum.size() - 1, false);
     distanta[start] = 0.0;
 
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    for (unsigned int i = 1; i <= matrice_drum.size() - 2; i++)
     {
         int min_index = -1;
         double min_dist = numeric_limits<double>::infinity();
@@ -531,19 +544,175 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
     }
 }
 
+/*
+void copyToFinal(vector<int> &curr_path)
+{
+    for (int i = 1; i <= N - 1; i++)
+    {
+        final_path[i] = curr_path[i];
+    }
+    final_path[N] = curr_path[0];
+}
+
+int firstMin(int i)
+{
+    int min_val = INT_MAX;
+    for (int k = 1; k <= N - 1; k++)
+    {
+        if (matrice_drum[i][k] < min_val && i != k)
+        {
+            min_val = matrice_drum[i][k];
+        }
+    }
+    return min_val;
+}
+
+int secondMin(int i)
+{
+    int first = INT_MAX, second = INT_MAX;
+    for (int j = 1; j <= N - 1; j++)
+    {
+        if (i == j)
+        {
+            continue;
+        }
+
+        if (matrice_drum[i][j] <= first)
+        {
+            second = first;
+            first = matrice_drum[i][j];
+        }
+        else if (matrice_drum[i][j] <= second && matrice_drum[i][j] != first)
+        {
+            second = matrice_drum[i][j];
+        }
+    }
+    return second;
+}
+
+void TSPRec(int curr_bound, int curr_weight, int level, vector<int> &curr_path)
+{
+    if (level == N)
+    {
+        if (matrice_drum[curr_path[level - 1]][curr_path[0]] != 0)
+        {
+            int curr_res = curr_weight + matrice_drum[curr_path[level - 1]][curr_path[0]];
+            if (curr_res < final_res)
+            {
+                copyToFinal(curr_path);
+                final_res = curr_res;
+            }
+        }
+        return;
+    }
+
+    for (int i = 1; i <= N - 1; i++)
+    {
+        if (matrice_drum[curr_path[level - 1]][i] != 0 && visited[i] == false)
+        {
+            int temp = curr_bound;
+            curr_weight += matrice_drum[curr_path[level - 1]][i];
+
+            if (level == 1)
+            {
+                curr_bound -= ((firstMin(curr_path[level - 1]) + firstMin(i)) / 2);
+            }
+            else
+            {
+                curr_bound -= ((secondMin(curr_path[level - 1]) + firstMin(i)) / 2);
+            }
+
+            if (curr_bound + curr_weight < final_res)
+            {
+                curr_path[level] = i;
+                visited[i] = true;
+                TSPRec(curr_bound, curr_weight, level + 1, curr_path);
+            }
+
+            curr_weight -= matrice_drum[curr_path[level - 1]][i];
+            curr_bound = temp;
+            visited.assign(N + 1, false);
+            for (int j = 0; j <= level - 1; j++)
+            {
+                visited[curr_path[j]] = true;
+            }
+        }
+    }
+}
+
+void TSP()
+{
+    vector<int> curr_path(N + 1);
+    int curr_bound = 0;
+
+    for (int i = 1; i <= N - 1; i++)
+    {
+        curr_bound += (firstMin(i) + secondMin(i));
+    }
+   // Rounding off the lower bound to an integer
+    curr_bound = (curr_bound & 1) ? curr_bound / 2 + 1 : curr_bound / 2;
+
+    // We start at vertex 1 so the first vertex
+    // in curr_path[] is 0
+    visited[0] = true;
+    curr_path[0] = 0;
+
+    // Call to TSPRec for curr_weight
+    // equal to 0 and level 1
+    TSPRec(curr_bound, 0, 1, curr_path);
+}
+*/
 void sistem_aprovizionare()
 {
-    ORAS::NOD_ORAS *ptr = oras.getHead();
-    while (ptr != nullptr)
+    /*
+    vector<double> distanta(matrice_drum.size() - 1, numeric_limits<double>::infinity());
+    vector<int> distanta_minima(matrice_drum.size() - 1, -1);
+
+    dijkstra(3, distanta, distanta_minima);
+    afisareSolutieDistanta(3, distanta, distanta_minima);
+    */
+
+    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    while (date_oras != nullptr)
     {
-        if (strcasecmp(ptr->tip_depozit, "centralizat") == 0)
+        if (strcasecmp(date_oras->tip_depozit, "centralizat") == 0)
         {
-            int ID = stoi(ptr->ID_Oras);
+            int ID = stoi(date_oras->ID_Oras);
             depozite_centralizate[ID] = true;
             contor_depozite_centralizate++;
         }
-        ptr = ptr->next;
+        date_oras = date_oras->next;
     }
+
+    date_oras = oras.getHead();
+    while (date_oras != nullptr)
+    {
+        int _ID_Oras = stoi(date_oras->ID_Oras);
+
+        DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
+        while (date_depozit != nullptr)
+        {
+            int _ID_Depozit = stoi(date_depozit->ID_Depozit);
+            if (_ID_Depozit == _ID_Oras && depozite_centralizate[_ID_Depozit] == false)
+                if (date_depozit->Cantitate_Produs == VAL_STOC_MINIM)
+                {
+                    orase_stoc_limitat[_ID_Depozit] = true;
+                    break;
+                }
+            date_depozit = date_depozit->next;
+        }
+        date_oras = date_oras->next;
+    }
+
+    for (unsigned int i = 1; i <= orase_stoc_limitat.size() - 1; i++)
+        if (orase_stoc_limitat[i])
+            cout << i << " ";
+
+    /*TSP();
+     printf("Minimum cost : %d\n", final_res);
+    printf("Path Taken : ");
+    for (int i = 1; i <= N - 1; i++)
+        printf("%d ", final_path[i]);*/
 }
 
 void BFS(int start)
@@ -568,102 +737,5 @@ void BFS(int start)
         ps++;
     }
 }
-
-void verificare_rute()
-{
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
-    {
-        if (depozite_vizitate[i] == 0)
-        {
-            nr_componente++;
-            BFS(i);
-        }
-    }
-
-    if (nr_componente == 1)
-    {
-        cout << "Graful este complet." << endl;
-        return;
-    }
-
-    cout << "Graful nu este complet. Componentele conexe sunt: " << endl;
-    for (unsigned int i = 1; i <= nr_componente; i++)
-    {
-        cout << "Cmp " << i << ": ";
-        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
-        {
-            if (depozite_vizitate[j] == i)
-                cout << j << " ";
-        }
-        cout << endl;
-    }
-}
-
-/*
-void vizualizare_date()
-{
-    unsigned int MENIU;
-
-    do
-    {
-        clear_screen();
-        afisareDateOrase();
-        underline(70);
-
-        cout << "Selecteaza un oras: ";
-        cin >> MENIU;
-
-        unsigned int sMENIU;
-
-        do
-        {
-            clear_screen();
-            ORAS::NOD_ORAS *date_oras = oras.getHead();
-            while (date_oras != nullptr)
-            {
-                int ID = stoi(date_oras->ID_Oras);
-                if (ID == MENIU)
-                {
-                    cout << date_oras->ID_Oras << " " << date_oras->denumire_oras << " " << date_oras->tip_depozit << "\n";
-                    break;
-                }
-                date_oras = date_oras->next;
-            }
-
-            DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
-            while (date_depozit != nullptr)
-            {
-                int ID = stoi(date_depozit->ID_Oras);
-                if (ID == MENIU)
-                {
-                    cout << date_depozit->ID_Produs << " ";
-                    DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead();
-                    while (date_produs != nullptr)
-                    {
-                        if (strcasecmp(date_depozit->ID_Produs, date_produs->ID_Produs) == 0)
-                        {
-                            cout << date_produs->Denumire_Produs << " " << date_produs->Categorie_Produs << " "
-                                 << date_produs->pret_produs << " ";
-                            break;
-                        }
-                        date_produs = date_produs->next;
-                    }
-                    cout << date_depozit->Cantitate_Produs << "\n";
-                }
-                date_depozit = date_depozit->next;
-            }
-
-            cin >> sMENIU;
-            switch (sMENIU)
-            {
-                case 1:
-                    break;
-                case 2:
-                    break;
-            }
-        } while (sMENIU != 0);
-
-    } while (MENIU != 0);
-}*/
 
 #endif

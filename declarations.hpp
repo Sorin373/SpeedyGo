@@ -284,10 +284,13 @@ AUTENTIFICARE autentificare;
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
 std::vector<unsigned int> depozite_vizitate(N, 0);
+std::vector<int> traseu(N, 0);
+std::vector<bool> orase_stoc_limitat(matrice_drum.size() - 1, false);
+std::vector<int> final_path(matrice_drum.size(), 0);
+std::vector<bool> visited(N);
 
-int contor_depozite_centralizate = 1, nr_componente;
-
-void animatie(bool& incarcare_date);
+int contor_depozite_centralizate = 1, nr_componente;int contor = 0;
+int final_res = INT_MAX;
 
 bool start();
 
@@ -315,11 +318,9 @@ void vizualizare_status_stoc();
 
 void afisareSolutieDistanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
-void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima);
+void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
 void sistem_aprovizionare();
-
-void vizualizare_date();
 
 void sortare_date_depozit();
 
@@ -329,10 +330,14 @@ void sortare_date_oras();
 
 void BFS(int start);
 
-void verificare_rute();
-
 void cautare_produse_ID(const int ID_Depozit);
 
 void depozite_conectate(const int ID_Depozit);
+
+void DFS();
+
+void cost_minim_traseu(int oras);
+
+int _minim(int j);
 
 #endif
