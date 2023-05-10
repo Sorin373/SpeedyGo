@@ -4,7 +4,7 @@ import json
 
 data = pd.read_excel(r'data.xlsx', 'Sheet1')
 
-API_key = 'AIzaSyAw40qQY3qLHrcCo2y3ZhuGgKDx5Vy5Pvw'
+API_key = ''
 gmaps = googlemaps.Client(key=API_key)
 
 towns = list(set(data['Denumire_Oras'].tolist()))
