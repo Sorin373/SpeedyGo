@@ -544,124 +544,6 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
     }
 }
 
-/*
-void copyToFinal(vector<int> &curr_path)
-{
-    for (int i = 1; i <= N - 1; i++)
-    {
-        final_path[i] = curr_path[i];
-    }
-    final_path[N] = curr_path[0];
-}
-
-int firstMin(int i)
-{
-    int min_val = INT_MAX;
-    for (int k = 1; k <= N - 1; k++)
-    {
-        if (matrice_drum[i][k] < min_val && i != k)
-        {
-            min_val = matrice_drum[i][k];
-        }
-    }
-    return min_val;
-}
-
-int secondMin(int i)
-{
-    int first = INT_MAX, second = INT_MAX;
-    for (int j = 1; j <= N - 1; j++)
-    {
-        if (i == j)
-        {
-            continue;
-        }
-
-        if (matrice_drum[i][j] <= first)
-        {
-            second = first;
-            first = matrice_drum[i][j];
-        }
-        else if (matrice_drum[i][j] <= second && matrice_drum[i][j] != first)
-        {
-            second = matrice_drum[i][j];
-        }
-    }
-    return second;
-}
-
-void TSPRec(int curr_bound, int curr_weight, int level, vector<int> &curr_path)
-{
-    if (level == N)
-    {
-        if (matrice_drum[curr_path[level - 1]][curr_path[0]] != 0)
-        {
-            int curr_res = curr_weight + matrice_drum[curr_path[level - 1]][curr_path[0]];
-            if (curr_res < final_res)
-            {
-                copyToFinal(curr_path);
-                final_res = curr_res;
-            }
-        }
-        return;
-    }
-
-    for (int i = 1; i <= N - 1; i++)
-    {
-        if (matrice_drum[curr_path[level - 1]][i] != 0 && visited[i] == false)
-        {
-            int temp = curr_bound;
-            curr_weight += matrice_drum[curr_path[level - 1]][i];
-
-            if (level == 1)
-            {
-                curr_bound -= ((firstMin(curr_path[level - 1]) + firstMin(i)) / 2);
-            }
-            else
-            {
-                curr_bound -= ((secondMin(curr_path[level - 1]) + firstMin(i)) / 2);
-            }
-
-            if (curr_bound + curr_weight < final_res)
-            {
-                curr_path[level] = i;
-                visited[i] = true;
-                TSPRec(curr_bound, curr_weight, level + 1, curr_path);
-            }
-
-            curr_weight -= matrice_drum[curr_path[level - 1]][i];
-            curr_bound = temp;
-            visited.assign(N + 1, false);
-            for (int j = 0; j <= level - 1; j++)
-            {
-                visited[curr_path[j]] = true;
-            }
-        }
-    }
-}
-
-void TSP()
-{
-    vector<int> curr_path(N + 1);
-    int curr_bound = 0;
-
-    for (int i = 1; i <= N - 1; i++)
-    {
-        curr_bound += (firstMin(i) + secondMin(i));
-    }
-   // Rounding off the lower bound to an integer
-    curr_bound = (curr_bound & 1) ? curr_bound / 2 + 1 : curr_bound / 2;
-
-    // We start at vertex 1 so the first vertex
-    // in curr_path[] is 0
-    visited[0] = true;
-    curr_path[0] = 0;
-
-    // Call to TSPRec for curr_weight
-    // equal to 0 and level 1
-    TSPRec(curr_bound, 0, 1, curr_path);
-}
-*/
 void sistem_aprovizionare()
 {
     /*
@@ -707,12 +589,6 @@ void sistem_aprovizionare()
     for (unsigned int i = 1; i <= orase_stoc_limitat.size() - 1; i++)
         if (orase_stoc_limitat[i])
             cout << i << " ";
-
-    /*TSP();
-     printf("Minimum cost : %d\n", final_res);
-    printf("Path Taken : ");
-    for (int i = 1; i <= N - 1; i++)
-        printf("%d ", final_path[i]);*/
 }
 
 void BFS(int start)
