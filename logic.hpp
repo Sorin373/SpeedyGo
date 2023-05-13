@@ -365,6 +365,20 @@ void depozite_conectate(int ID_Depozit)
         }
 }
 
+void determinare_tip_depozit()
+{
+    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    while (date_oras != nullptr)
+    {
+        if (strcasecmp(date_oras->tip_depozit, "centralizat") == 0)
+        {
+            int ID = stoi(date_oras->ID_Oras);
+            depozite_centralizate[ID] = true;
+        }
+        date_oras = date_oras->next;
+    }
+}
+
 void vizualizare_status_stoc()
 {
     clear_screen();
@@ -380,13 +394,11 @@ void vizualizare_status_stoc()
         if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
         {
             int _ID = stoi(date_depozit->ID_Oras);
-            if (_ID > 5)
+            if (depozite_centralizate[_ID] == false)
                 matrice_drum[_ID][_ID] = 1;
         }
         date_depozit = date_depozit->next;
     }
-
-    // determinare nr. max de caractere
 
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     int cmax = 0, contor_linii = 0;
@@ -416,6 +428,8 @@ void vizualizare_status_stoc()
                 date_oras = date_oras->next;
             }
         }
+
+    cout << "\n";
     underline(100);
 
     unsigned int _ID_Oras;
@@ -483,7 +497,7 @@ void vizualizare_status_stoc()
     }
 }
 
-void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare)
+void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare)
 {
     int contor = 0;
     vector<bool> temp(dimensiune_matrice, false);
@@ -568,19 +582,8 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 }
 
 void sistem_aprovizionare()
-{
+{   
     ORAS::NOD_ORAS *date_oras = oras.getHead();
-    while (date_oras != nullptr)
-    {
-        if (strcasecmp(date_oras->tip_depozit, "centralizat") == 0)
-        {
-            int ID = stoi(date_oras->ID_Oras);
-            depozite_centralizate[ID] = true;
-        }
-        date_oras = date_oras->next;
-    }
-
-    date_oras = oras.getHead();
     while (date_oras != nullptr)
     {
         int _ID_Oras = stoi(date_oras->ID_Oras);
@@ -609,7 +612,7 @@ void sistem_aprovizionare()
         if (depozite_centralizate[i])
         {
             dijkstra(i, distanta, distanta_minima);
-            afisareSolutieDistanta(i, distanta, distanta_minima, true);
+            creare_solutie_distanta(i, distanta, distanta_minima, true);
         }
         distanta_minima.clear();
         distanta.clear();
@@ -657,7 +660,7 @@ void afisare_trasee()
         if (depozite_centralizate[i])
         {
             dijkstra(i, distanta, distanta_minima);
-            afisareSolutieDistanta(i, distanta, distanta_minima, false);
+            creare_solutie_distanta(i, distanta, distanta_minima, false);
         }
         distanta_minima.clear();
         distanta.clear();
@@ -696,16 +699,6 @@ void afisare_trasee()
                     cout << date_traseu->traseu[i] << " ";
             date_traseu = date_traseu->next;
         }
-        cout << endl;
-    }
-}
-
-void afisare()
-{
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
-    {
-        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
-            cout << matrice_drum[i][j] << " ";
         cout << endl;
     }
 }

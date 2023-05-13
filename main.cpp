@@ -24,6 +24,11 @@ int main()
     if (start() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
+    determinare_tip_depozit();
+    sortare_date_depozit();
+    sortare_date_oras();
+    sortare_date_produs();
+
     do
     {
         clear_screen();

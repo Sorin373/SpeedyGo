@@ -407,4 +407,6 @@ void cautare_produse_ID(const int ID_Depozit);
 
 void depozite_conectate(const int ID_Depozit);
 
+void determinare_tip_depozit();
+
 #endif
