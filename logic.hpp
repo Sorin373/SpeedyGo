@@ -60,7 +60,7 @@ bool autentificare_cont()
 
 bool _init_()
 {
-    ifstream file_json("distance_matrix.json");
+    ifstream file_json("distante_orase.json");
     if (!file_json.is_open())
     {
         cerr << "Eroare\n";
