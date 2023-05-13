@@ -11,10 +11,6 @@
 #include "declarations.hpp"
 #include <nlohmann/json.hpp>
 
-#define MAX_SIZE 32
-#define MAX_LENGTH 10000000
-#define VAL_STOC_MINIM 1
-
 using namespace std;
 using namespace nlohmann;
 
@@ -159,10 +155,12 @@ void afisareDateDepozit()
     DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
     while (ptr != nullptr)
     {
-        cout << "ID_Produs: " << ptr->ID_Produs << ", ";
-        cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
-        cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-        cout << "ID_oras: " << ptr->ID_Oras << endl;
+        if (ptr->Cantitate_Produs == 0)
+        {
+            cout << "ID_Produs: " << ptr->ID_Produs << ", ";
+            cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
+            cout << "ID_oras: " << ptr->ID_Oras << endl;
+        }
         ptr = ptr->next;
     }
 }
@@ -188,10 +186,9 @@ void cautareDepozit()
     cout << endl;
     while (ptr != nullptr)
     {
-        if (strcasecmp(ID, ptr->ID_Depozit) == 0)
+        if (strcasecmp(ID, ptr->ID_Oras) == 0)
         {
             cout << "ID_Produs: " << ptr->ID_Produs << ", ";
-            cout << "ID_Depozit: " << ptr->ID_Depozit << ", ";
             cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
             cout << "ID_oras: " << ptr->ID_Oras << endl;
         }
@@ -217,7 +214,6 @@ void sortare_date_depozit()
             if (_ID1 > _ID2)
             {
                 swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                swap(ptr->ID_Depozit, ptr->next->ID_Depozit);
                 swap(ptr->ID_Oras, ptr->next->ID_Oras);
                 swap(ptr->Cantitate_Produs, ptr->next->Cantitate_Produs);
                 vsort = false;
@@ -347,11 +343,11 @@ void depozite_conectate(int ID_Depozit)
     }
 
     int contor = 0;
-    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
         if (matrice_drum[ID_Depozit][i] == 1)
             temp_depozite[i] = true;
 
-    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
         if (temp_depozite[i] == true)
         {
             date_oras = oras.getHead();
@@ -381,7 +377,7 @@ void vizualizare_status_stoc()
     DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
     while (date_depozit != nullptr)
     {
-        if (date_depozit->Cantitate_Produs < 100)
+        if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
         {
             int _ID = stoi(date_depozit->ID_Oras);
             if (_ID > 5)
@@ -402,7 +398,7 @@ void vizualizare_status_stoc()
         date_oras = date_oras->next;
     }
 
-    for (unsigned int i = 6; i <= dimensiune_matrice; i++)
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
         if (matrice_drum[i][i] == true)
         {
             date_oras = oras.getHead();
@@ -487,19 +483,18 @@ void vizualizare_status_stoc()
     }
 }
 
-void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima)
+void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare)
 {
     int contor = 0;
-    
     vector<bool> temp(dimensiune_matrice, false);
     temp.assign(orase_stoc_limitat.begin(), orase_stoc_limitat.end());
 
-    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+    for (unsigned int i = 0; i < dimensiune_matrice; i++)
     {
         contor = 0;
-        if (i != start && temp[i])
+        if (i != start)
         {
-            
+
             cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
             vector<int> traseu;
             int nod = i;
@@ -516,15 +511,18 @@ void afisareSolutieDistanta(int start, vector<double> &distanta, vector<int> &di
 
             for (unsigned int j = 0; j < dimensiune_vector_traseu; j++)
             {
-                if(orase_stoc_limitat[traseu[j]])
+                if (orase_stoc_limitat[traseu[j]])
                 {
                     contor++;
                     temp[traseu[j]] = false;
                 }
             }
 
-            for (unsigned int j = 0; j < traseu.size(); j++)
-                cout << traseu[j] << " ";
+            _traseu.inserareDateTraseu(start, i, distanta[i], traseu);
+
+            if (afisare)
+                for (unsigned int j = 0; j < traseu.size(); j++)
+                    cout << traseu[j] << " ";
 
             if (contor > nr_maxim_orase_parcurse)
             {
@@ -542,12 +540,12 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
     vector<bool> visited(dimensiune_matrice, false);
     distanta[start] = 0.0;
 
-    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+    for (unsigned int i = 0; i < dimensiune_matrice; i++)
     {
-        int min_index = -1;
+        int min_index = 0;
         double min_dist = numeric_limits<double>::infinity();
 
-        for (unsigned int j = 1; j <= dimensiune_matrice; j++)
+        for (unsigned int j = 0; j < dimensiune_matrice; j++)
             if (!visited[j] && distanta[j] < min_dist)
             {
                 min_index = j;
@@ -556,9 +554,10 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
         visited[min_index] = true;
 
-        for (unsigned int j = 1; j <= dimensiune_matrice; j++)
+        for (unsigned int j = 0; j < dimensiune_matrice; j++)
         {
             double distanta_noua = distanta[min_index] + matrice_drum[min_index][j];
+
             if (!visited[j] && matrice_drum[min_index][j] > 0 && distanta_noua < distanta[j])
             {
                 distanta[j] = distanta_noua;
@@ -589,7 +588,7 @@ void sistem_aprovizionare()
         DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
         while (date_depozit != nullptr)
         {
-            int _ID_Depozit = stoi(date_depozit->ID_Depozit);
+            int _ID_Depozit = stoi(date_depozit->ID_Oras);
             if (_ID_Depozit == _ID_Oras && depozite_centralizate[_ID_Depozit] == false)
                 if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
                 {
@@ -602,7 +601,7 @@ void sistem_aprovizionare()
         date_oras = date_oras->next;
     }
 
-    for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
         vector<int> distanta_minima(N, -1);
         vector<double> distanta(N, numeric_limits<double>::infinity());
@@ -610,13 +609,13 @@ void sistem_aprovizionare()
         if (depozite_centralizate[i])
         {
             dijkstra(i, distanta, distanta_minima);
-            afisareSolutieDistanta(i, distanta, distanta_minima);
+            afisareSolutieDistanta(i, distanta, distanta_minima, true);
         }
         distanta_minima.clear();
         distanta.clear();
     }
 
-    for (unsigned int i = 1; i <= orase_stoc_limitat.size() - 1; i++)
+    for (unsigned int i = 0; i < orase_stoc_limitat.size(); i++)
         if (orase_stoc_limitat[i])
             cout << i << " ";
     cout << endl;
@@ -628,14 +627,14 @@ void sistem_aprovizionare()
 void BFS(int start)
 {
     vector<unsigned int> v(N, 0);
-    v[1] = start;
+    v[0] = start;
     int pi = 1, ps = 1;
     depozite_vizitate[start] = nr_componente;
 
     while (ps <= pi)
     {
         start = v[ps];
-        for (unsigned int i = 1; i <= dimensiune_matrice; i++)
+        for (unsigned int i = 0; i < matrice_drum.size(); i++)
         {
             if (matrice_drum[start][i] != 0 && depozite_vizitate[i] == 0)
             {
@@ -645,6 +644,69 @@ void BFS(int start)
             }
         }
         ps++;
+    }
+}
+
+void afisare_trasee()
+{
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    {
+        vector<int> distanta_minima(N, -1);
+        vector<double> distanta(N, numeric_limits<double>::infinity());
+
+        if (depozite_centralizate[i])
+        {
+            dijkstra(i, distanta, distanta_minima);
+            afisareSolutieDistanta(i, distanta, distanta_minima, false);
+        }
+        distanta_minima.clear();
+        distanta.clear();
+    }
+
+    TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead();
+    while (date_traseu != nullptr)
+    {
+        cout << date_traseu->start << " " << date_traseu->destinatie << endl;
+        for (unsigned int i = 1; i <= date_traseu->traseu.size() - 1; i++)
+            cout << date_traseu->traseu[i] << " ";
+        cout << endl
+             << endl;
+        date_traseu = date_traseu->next;
+    }
+
+    double distanta_minima = INT_MAX;
+    date_traseu = _traseu.getHead();
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    {
+        while (date_traseu != nullptr)
+        {
+            if (orase_stoc_limitat[i] && date_traseu->destinatie == i)
+            {
+                if (date_traseu->distanta < distanta_minima)
+                    distanta_minima = date_traseu->distanta;
+            }
+            date_traseu = date_traseu->next;
+        }
+
+        date_traseu = _traseu.getHead();
+        while (date_traseu != nullptr)
+        {
+            if (date_traseu->distanta == distanta_minima && date_traseu->destinatie == i)
+                for (unsigned int i = 0; i < date_traseu->traseu.size(); i++)
+                    cout << date_traseu->traseu[i] << " ";
+            date_traseu = date_traseu->next;
+        }
+        cout << endl;
+    }
+}
+
+void afisare()
+{
+    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    {
+        for (unsigned int j = 1; j <= matrice_drum.size() - 1; j++)
+            cout << matrice_drum[i][j] << " ";
+        cout << endl;
     }
 }
 

@@ -49,7 +49,7 @@ bool accesareDate()
         con->setSchema("MyDepoChain");
 
         stmt = con->createStatement();
-        res = stmt->executeQuery("SELECT * FROM date");
+        res = stmt->executeQuery("SELECT * FROM data");
 
         while (res->next())
         {
@@ -61,11 +61,6 @@ bool accesareDate()
             char *tempIdProdus = (char *)malloc(str.length() + 1);
             strcpy(tempIdProdus, str.c_str());
 
-            int idProdusDepozit = res->getInt("ID_Depozit");
-            str = to_string(idProdusDepozit);
-            char *tempIDProdusDepozit = (char *)malloc(str.length() + 1);
-            strcpy(tempIDProdusDepozit, str.c_str());
-
             int idOras = res->getInt("ID_Oras");
             str = to_string(idOras);
             char *tempIdOras = (char *)malloc(str.length() + 1);
@@ -73,10 +68,9 @@ bool accesareDate()
 
             double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
 
-            depozit.inserareDateDepozit(tempIdProdus, tempIDProdusDepozit, tempIdOras, tempCantitate_Produs);
+            depozit.inserareDateDepozit(tempIdProdus, tempIdOras, tempCantitate_Produs);
 
             free(tempIdProdus);
-            free(tempIDProdusDepozit);
             free(tempIdOras);
         }
 

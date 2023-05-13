@@ -20,7 +20,7 @@ bool start()
 int main()
 {
     unsigned int MENIU;
-
+    
     if (start() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
@@ -50,6 +50,7 @@ int main()
             vizualizare_status_stoc();
             break;
         case 3:
+            afisare_trasee();
             getch();
             break;
         case 4:

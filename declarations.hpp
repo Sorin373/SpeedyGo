@@ -6,7 +6,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-constexpr int MAXL = 256, N = 45;
+#define MAX_SIZE 32
+#define MAX_LENGTH 1000000
+#define VAL_STOC_MINIM 1
+#define VAL_STOC_MAXIM 1000
+
+constexpr int MAXL = 256, N = 11;
 constexpr unsigned int MAXN = 1000;
 
 class AUTENTIFICARE
@@ -58,16 +63,14 @@ public:
     struct NOD_DEPOZIT
     {
         char *ID_Produs = nullptr;
-        char *ID_Depozit = nullptr;
         char *ID_Oras = nullptr;
         double Cantitate_Produs = 0.0;
         NOD_DEPOZIT *prev = nullptr;
         NOD_DEPOZIT *next = nullptr;
 
-        NOD_DEPOZIT(char *vID_Produs, char *vID_Depozit, char *vID_Oras, double vCantitate_Produs)
+        NOD_DEPOZIT(char *vID_Produs, char *vID_Oras, double vCantitate_Produs)
         {
             ID_Produs = strdup(vID_Produs);
-            ID_Depozit = strdup(vID_Depozit);
             ID_Oras = strdup(vID_Oras);
             Cantitate_Produs = vCantitate_Produs;
             prev = nullptr;
@@ -77,7 +80,6 @@ public:
         ~NOD_DEPOZIT()
         {
             free(ID_Produs);
-            free(ID_Depozit);
             free(ID_Oras);
         }
     };
@@ -96,9 +98,9 @@ public:
         return tail_depozit;
     }
 
-    void inserareDateDepozit(char *vID_Produs, char *vID_Depozit, char *vID_Oras, double vCantitate_Produs)
+    void inserareDateDepozit(char *vID_Produs, char *vID_Oras, double vCantitate_Produs)
     {
-        NOD_DEPOZIT *newnod = new NOD_DEPOZIT(vID_Produs, vID_Depozit, vID_Oras, vCantitate_Produs);
+        NOD_DEPOZIT *newnod = new NOD_DEPOZIT(vID_Produs, vID_Oras, vCantitate_Produs);
 
         if (head_depozit == nullptr)
         {
@@ -276,20 +278,23 @@ public:
     }
 };
 
+
 class TRASEU
 {
 public:
     struct NOD_TRASEU
     {
         int start = 0, destinatie = 0;
+        double distanta = 0.0;
         std::vector<int> traseu;
         NOD_TRASEU *prev = nullptr;
         NOD_TRASEU *next = nullptr;
 
-        NOD_TRASEU(int vStart, int vDestinatie, std::vector<int> &traseu)
+        NOD_TRASEU(int vStart, int vDestinatie, double vDistanta, std::vector<int> &traseu)
         {
             this->start = vStart;
             this->destinatie = vDestinatie;
+            this->distanta = vDistanta;
             this->traseu.assign(traseu.begin(), traseu.end());
         }
 
@@ -313,9 +318,33 @@ public:
         return tail_traseu;
     }
 
-    void inserareDateTraseu()
+    void inserareDateTraseu(int vStart, int vDestinatie, double vDistanta, std::vector<int> &traseu)
     {
+        NOD_TRASEU *newnod = new NOD_TRASEU(vStart, vDestinatie, vDistanta, traseu);
 
+        if (head_traseu == nullptr)
+        {
+            head_traseu = newnod;
+            tail_traseu = newnod;
+        }
+        else
+        {
+            tail_traseu->next = newnod;
+            newnod->prev = tail_traseu;
+            tail_traseu = newnod;
+        }
+    }
+
+    ~TRASEU()
+    {
+        NOD_TRASEU *ptr = head_traseu;
+        
+        while (ptr != nullptr)
+        {
+            NOD_TRASEU *temp = ptr;
+            ptr = ptr->next;
+            delete temp;
+        }
     }
 };
 
@@ -323,6 +352,7 @@ DEPOZIT depozit;
 ORAS oras;
 DETALII_PRODUS produs;
 AUTENTIFICARE autentificare;
+TRASEU _traseu;
 
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
@@ -331,8 +361,8 @@ std::vector<int> traseu(N, 0);
 std::vector<bool> orase_stoc_limitat(matrice_drum.size() - 1, false);
 std::vector<int> _verificare_orase_parcurse(matrice_drum.size() - 1, 0);
 
-long long unsigned int dimensiune_matrice = matrice_drum.size() - 1;
-int nr_componente,  contor_depozite_centralizate = 1, nr_maxim_orase_parcurse = -1;
+long long unsigned int dimensiune_matrice = matrice_drum.size();
+int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1;
 unsigned int contor_orase_stoc_limitat;
 
 bool start();
@@ -359,7 +389,7 @@ void afisareDateOrase();
 
 void vizualizare_status_stoc();
 
-void afisareSolutieDistanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
+void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
 void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
