@@ -357,13 +357,14 @@ TRASEU _traseu;
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
 std::vector<unsigned int> depozite_vizitate(N, 0);
-std::vector<int> traseu(N, 0);
-std::vector<bool> orase_stoc_limitat(matrice_drum.size() - 1, false);
-std::vector<int> _verificare_orase_parcurse(matrice_drum.size() - 1, 0);
+std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);
+std::vector<int> _verificare_orase_parcurse(matrice_drum.size(), 0);
+std::vector<bool> orase_izolate(matrice_drum.size(), false);
 
 long long unsigned int dimensiune_matrice = matrice_drum.size();
 int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1;
 unsigned int contor_orase_stoc_limitat;
+bool trasee = false;
 
 bool start();
 
@@ -389,7 +390,7 @@ void afisareDateOrase();
 
 void vizualizare_status_stoc();
 
-void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
+void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee);
 
 void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
@@ -408,5 +409,13 @@ void cautare_produse_ID(const int ID_Depozit);
 void depozite_conectate(const int ID_Depozit);
 
 void determinare_tip_depozit();
+
+void cautare_orase_stoc_limitat();
+
+void cautare_orase_izolate();
+
+void afisare_trasee_minime();
+
+void afisare_depozite_centralizare();
 
 #endif

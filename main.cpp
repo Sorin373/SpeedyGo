@@ -25,6 +25,8 @@ int main()
         return EXIT_FAILURE;
 
     determinare_tip_depozit();
+    cautare_orase_stoc_limitat();
+    cautare_orase_izolate();
     sortare_date_depozit();
     sortare_date_oras();
     sortare_date_produs();
@@ -49,13 +51,12 @@ int main()
         {
         case 1:
             sistem_aprovizionare();
-            getch();
             break;
         case 2:
             vizualizare_status_stoc();
             break;
         case 3:
-            afisare_trasee();
+            afisare_trasee_minime();
             getch();
             break;
         case 4:

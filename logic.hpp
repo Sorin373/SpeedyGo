@@ -379,6 +379,43 @@ void determinare_tip_depozit()
     }
 }
 
+void cautare_orase_stoc_limitat()
+{
+    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    while (date_oras != nullptr)
+    {
+        int _ID_Oras = stoi(date_oras->ID_Oras);
+
+        DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
+        while (date_depozit != nullptr)
+        {
+            int _ID_Depozit = stoi(date_depozit->ID_Oras);
+            if (_ID_Depozit == _ID_Oras && depozite_centralizate[_ID_Depozit] == false)
+                if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
+                {
+                    orase_stoc_limitat[_ID_Depozit] = true;
+                    contor_orase_stoc_limitat++;
+                    break;
+                }
+            date_depozit = date_depozit->next;
+        }
+        date_oras = date_oras->next;
+    }
+}
+
+void cautare_orase_izolate()
+{
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    {
+        bool izolat = true;
+        for (unsigned int j = 0; j < matrice_drum.size() && izolat; j++)
+            if (matrice_drum[i][j] > 0)
+                izolat = false;
+        if (izolat)
+            orase_izolate[i] = true;
+    }
+}
+
 void vizualizare_status_stoc()
 {
     clear_screen();
@@ -497,7 +534,7 @@ void vizualizare_status_stoc()
     }
 }
 
-void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare)
+void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
     int contor = 0;
     vector<bool> temp(dimensiune_matrice, false);
@@ -508,8 +545,8 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
         contor = 0;
         if (i != start)
         {
-
-            cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
+            if (afisare)
+                cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
             vector<int> traseu;
             int nod = i;
 
@@ -532,7 +569,8 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
                 }
             }
 
-            _traseu.inserareDateTraseu(start, i, distanta[i], traseu);
+            if (creare_trasee)
+                _traseu.inserareDateTraseu(start, i, distanta[i], traseu);
 
             if (afisare)
                 for (unsigned int j = 0; j < traseu.size(); j++)
@@ -544,7 +582,8 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
                 _verificare_orase_parcurse.assign(traseu.begin(), traseu.end());
             }
 
-            cout << "\n";
+            if (afisare)
+                cout << "\n";
         }
     }
 }
@@ -581,50 +620,144 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
     }
 }
 
-void sistem_aprovizionare()
-{   
-    ORAS::NOD_ORAS *date_oras = oras.getHead();
-    while (date_oras != nullptr)
-    {
-        int _ID_Oras = stoi(date_oras->ID_Oras);
-
-        DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
-        while (date_depozit != nullptr)
-        {
-            int _ID_Depozit = stoi(date_depozit->ID_Oras);
-            if (_ID_Depozit == _ID_Oras && depozite_centralizate[_ID_Depozit] == false)
-                if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
-                {
-                    orase_stoc_limitat[_ID_Depozit] = true;
-                    contor_orase_stoc_limitat++;
-                    break;
-                }
-            date_depozit = date_depozit->next;
-        }
-        date_oras = date_oras->next;
-    }
+void afisare_depozite_centralizare()
+{
+    cout << "\n"
+         << setw(5) << " "
+         << "Depozite centralizate\n";
+    underline(40);
 
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
-        vector<int> distanta_minima(N, -1);
-        vector<double> distanta(N, numeric_limits<double>::infinity());
-
         if (depozite_centralizate[i])
-        {
-            dijkstra(i, distanta, distanta_minima);
-            creare_solutie_distanta(i, distanta, distanta_minima, true);
-        }
-        distanta_minima.clear();
-        distanta.clear();
+            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            {
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == i)
+                {
+                    cout << setw(5 + 1) << " [" << ID << "] " << date_oras->denumire_oras << endl;
+                    break;
+                }
+            }
     }
 
-    for (unsigned int i = 0; i < orase_stoc_limitat.size(); i++)
-        if (orase_stoc_limitat[i])
-            cout << i << " ";
-    cout << endl;
+    underline(40);
+}
 
-    for (unsigned int i = 0; i < _verificare_orase_parcurse.size(); i++)
-        cout << _verificare_orase_parcurse[i] << " ";
+void afisare_trasee_optime(const int vStart)
+{
+    cout << "\n";
+
+    int contor = 1;
+    char *oras_start = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
+        int ID = stoi(date_oras->ID_Oras);
+        if (ID == vStart)
+        {
+            strcpy(oras_start, date_oras->denumire_oras);
+            break;
+        }
+    }
+
+    for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
+    {
+        if (date_traseu->start == vStart)
+        {
+            cout << setw(5 + 1) << " [" << contor << "] ";
+            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            {
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == date_traseu->destinatie)
+                {
+                    cout << oras_start << " -> " << date_oras->denumire_oras << endl;
+                    break;
+                }
+            }
+            contor++;
+        }
+    }
+}
+
+void sistem_aprovizionare()
+{
+    if (!trasee)
+    {
+        for (unsigned int i = 0; i < matrice_drum.size(); i++)
+        {
+            vector<int> distanta_minima(N, -1);
+            vector<double> distanta(N, numeric_limits<double>::infinity());
+
+            if (depozite_centralizate[i])
+            {
+                dijkstra(i, distanta, distanta_minima);
+                if (!trasee)
+                    creare_solutie_distanta(i, distanta, distanta_minima, true, true);
+                else
+                {
+                    trasee = true;
+                    creare_solutie_distanta(i, distanta, distanta_minima, true, false);
+                }
+            }
+            distanta_minima.clear();
+            distanta.clear();
+        }
+        trasee = true;
+    }
+
+    clear_screen();
+    
+    cout << "\n\n" << setw(5) << " "
+         << "SCRIE 'exit' PENTRU A TE INTOARCE...\n";
+    afisare_depozite_centralizare();
+
+    char *_ID = (char *)malloc(MAXL * sizeof(char) + 1);
+    cout << setw(5) << " "
+         << "Introduceti ID-ul corespunzator: ";
+    cin >> _ID;
+    if (strcasecmp(_ID, "exit") == 0)
+        return;
+    else
+    {
+        int _ID_temp = stoi(_ID);
+        afisare_trasee_optime(_ID_temp);
+        getch();
+        sistem_aprovizionare();
+    }
+
+    /*
+    for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
+    {
+        char *denumire_oras_start = (char*)malloc(MAXL * sizeof(char));
+        char *denumire_oras_destinatie = (char*)malloc(MAXL * sizeof(char));
+
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        {
+            int ID = stoi(date_oras->ID_Oras);
+            if (ID == date_traseu->start)
+            {
+                strcpy(denumire_oras_start, date_oras->denumire_oras);
+                break;
+            }
+        }
+
+        cout << denumire_oras_start << ": ";
+
+        for (unsigned int i = 0; i < date_traseu->traseu.size(); i++)
+        {
+            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            {
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == date_traseu->traseu[i])
+                {
+                    cout << date_oras->denumire_oras << " -> ";
+                    break;
+                }
+            }
+        }
+        cout << endl;
+    }*/
 }
 
 void BFS(int start)
@@ -650,56 +783,51 @@ void BFS(int start)
     }
 }
 
-void afisare_trasee()
+void afisare_trasee_minime()
 {
+    if (!trasee)
+    {
+        trasee = true;
+        for (unsigned int i = 0; i < matrice_drum.size(); i++)
+        {
+            vector<int> distanta_minima(N, -1);
+            vector<double> distanta(N, numeric_limits<double>::infinity());
+
+            if (depozite_centralizate[i])
+            {
+                dijkstra(i, distanta, distanta_minima);
+                creare_solutie_distanta(i, distanta, distanta_minima, false, true);
+            }
+            distanta_minima.clear();
+            distanta.clear();
+        }
+    }
+
+    for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
+    {
+        if (date_traseu->distanta == numeric_limits<double>::infinity())
+            date_traseu->distanta = 0;
+    }
+
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
-        vector<int> distanta_minima(N, -1);
-        vector<double> distanta(N, numeric_limits<double>::infinity());
-
-        if (depozite_centralizate[i])
+        double distanta_minima = INT_MAX;
+        for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
         {
-            dijkstra(i, distanta, distanta_minima);
-            creare_solutie_distanta(i, distanta, distanta_minima, false);
-        }
-        distanta_minima.clear();
-        distanta.clear();
-    }
-
-    TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead();
-    while (date_traseu != nullptr)
-    {
-        cout << date_traseu->start << " " << date_traseu->destinatie << endl;
-        for (unsigned int i = 1; i <= date_traseu->traseu.size() - 1; i++)
-            cout << date_traseu->traseu[i] << " ";
-        cout << endl
-             << endl;
-        date_traseu = date_traseu->next;
-    }
-
-    double distanta_minima = INT_MAX;
-    date_traseu = _traseu.getHead();
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
-    {
-        while (date_traseu != nullptr)
-        {
-            if (orase_stoc_limitat[i] && date_traseu->destinatie == i)
-            {
+            if (orase_stoc_limitat[date_traseu->destinatie] && date_traseu->destinatie == i && !orase_izolate[i])
                 if (date_traseu->distanta < distanta_minima)
                     distanta_minima = date_traseu->distanta;
-            }
-            date_traseu = date_traseu->next;
         }
 
-        date_traseu = _traseu.getHead();
-        while (date_traseu != nullptr)
+        for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
         {
-            if (date_traseu->distanta == distanta_minima && date_traseu->destinatie == i)
+            if (date_traseu->distanta == distanta_minima && date_traseu->destinatie == i && orase_stoc_limitat[date_traseu->destinatie] && !orase_izolate[date_traseu->start])
                 for (unsigned int i = 0; i < date_traseu->traseu.size(); i++)
                     cout << date_traseu->traseu[i] << " ";
-            date_traseu = date_traseu->next;
         }
-        cout << endl;
+
+        if (orase_stoc_limitat[i] && !orase_izolate[i])
+            cout << "\n";
     }
 }
 
