@@ -360,9 +360,10 @@ std::vector<unsigned int> depozite_vizitate(N, 0);
 std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);
 std::vector<int> _verificare_orase_parcurse(matrice_drum.size(), 0);
 std::vector<bool> orase_izolate(matrice_drum.size(), false);
+std::vector<int> stiva(matrice_drum.size(), 0);
 
 long long unsigned int dimensiune_matrice = matrice_drum.size();
-int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1;
+int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_stiva;
 unsigned int contor_orase_stoc_limitat;
 bool trasee = false;
 
@@ -394,7 +395,7 @@ void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vect
 
 void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
-void sistem_aprovizionare();
+void sistem_aprovizionare_independent();
 
 void sortare_date_depozit();
 
@@ -414,8 +415,22 @@ void cautare_orase_stoc_limitat();
 
 void cautare_orase_izolate();
 
-void afisare_trasee_minime();
-
 void afisare_depozite_centralizare();
+
+void afisare_optiuni_trasee_optime(const int vStart);
+
+void afisare_depozite_izolate();
+
+void init_stiva();
+
+bool succesor();
+
+bool solutie();
+
+bool valid();
+
+void tipar();
+
+void back();
 
 #endif

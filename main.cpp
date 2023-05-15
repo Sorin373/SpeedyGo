@@ -35,14 +35,20 @@ int main()
     {
         clear_screen();
 
-        cout << "\n\n" << setw(20) << " " << "MENIU\n";
-        underline(45);
+        cout << "\n\n";
+        cout << setw(30) << " "
+             << "┌───────┐\n";
+        cout << setw(32) << " "
+             << "MENIU\n";
+        cout << setw(30) << " "
+             << "└───────┘\n";
+        underline(60);
 
-        cout << setw(5) << " " << "[1] Aprovizioare stoc Romania\n"
+        cout << setw(5) << " " << "[1] Aprovizionarea stocurilor in depozitele din Romania\n"
              << setw(5) << " " << "[2] Vizualizare stoc Romania\n"
              << setw(5) << " " << "[0] EXIT\n";
 
-        underline(45);
+        underline(60);
         cout << setw(5) << " " << "Introduceti numarul meniului: ";
 
         cin >> MENIU;
@@ -50,13 +56,53 @@ int main()
         switch (MENIU)
         {
         case 1:
-            sistem_aprovizionare();
+            unsigned int MENIU_1;
+            
+            do
+            {
+                clear_screen();
+
+                cout << "\n\n" << setw(20) << " " << "Meniu Aprovizionare\n";
+                underline(50);
+
+                cout << setw(5) << " " << "[1] Trasee independente de aprovizionare\n"
+                     << setw(5) << " " << "[2] Traseu optim de aprovizionare\n"
+                     << setw(5) << " " << "[3] Depozite izolate\n"
+                     << setw(5) << " " << "[4] Depozite cu un singur drum conector\n"
+                     << setw(5) << " " << "[0] EXIT\n";
+                underline(50);
+
+                cout  << setw(5) << " " << "Introduceti numarul meniului: ";
+                cin >> MENIU_1;
+
+                switch (MENIU_1)
+                {
+                case 1:
+                    sistem_aprovizionare_independent();
+                    break;
+                case 2:
+                    back();
+                    cout << "Da";
+
+                    getch();
+                    break;
+                case 3:
+                    afisare_depozite_izolate();
+                    getch();
+                    break;
+                case 4:
+                    break;
+                
+                default:
+                    break;
+                }
+            } while (MENIU_1 != 0);
+
             break;
         case 2:
             vizualizare_status_stoc();
             break;
         case 3:
-            afisare_trasee_minime();
             getch();
             break;
         case 4:
