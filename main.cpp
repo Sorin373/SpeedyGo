@@ -7,21 +7,11 @@
 
 using namespace std;
 
-bool start()
+bool start(void)
 {
     if (autentificare_cont() == EXIT_FAILURE)
         return EXIT_FAILURE;
     else if (_init_() == EXIT_FAILURE)
-        return EXIT_FAILURE;
-
-    return EXIT_SUCCESS;
-}
-
-int main()
-{
-    unsigned int MENIU;
-    
-    if (start() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
     determinare_tip_depozit();
@@ -30,6 +20,16 @@ int main()
     sortare_date_depozit();
     sortare_date_oras();
     sortare_date_produs();
+
+    return EXIT_SUCCESS;
+}
+
+int main(void)
+{
+    unsigned int MENIU;
+
+    if (start() == EXIT_FAILURE)
+        return EXIT_FAILURE;
 
     do
     {
@@ -44,12 +44,18 @@ int main()
              << "└───────┘\n";
         underline(60);
 
-        cout << setw(5) << " " << "[1] Aprovizionarea stocurilor in depozitele din Romania\n"
-             << setw(5) << " " << "[2] Vizualizare stoc Romania\n"
-             << setw(5) << " " << "[0] EXIT\n";
+        cout << setw(5) << " "
+             << "[1] Aprovizionarea stocurilor in depozitele din Romania\n"
+             << setw(5) << " "
+             << "[2] Analiza stoc Romania\n"
+             << setw(5) << " "
+             << "[3] Vizualizare baza de date\n"
+             << setw(5) << " "
+             << "[0] EXIT\n";
 
         underline(60);
-        cout << setw(5) << " " << "Introduceti numarul meniului: ";
+        cout << setw(5) << " "
+             << "Introduceti numarul meniului: ";
 
         cin >> MENIU;
 
@@ -57,22 +63,34 @@ int main()
         {
         case 1:
             unsigned int MENIU_1;
-            
+
             do
             {
                 clear_screen();
 
-                cout << "\n\n" << setw(20) << " " << "Meniu Aprovizionare\n";
+                cout << "\n\n";
+                cout << setw(19) << " "
+                     << "┌───────────────────┐\n";
+                cout << setw(20) << " "
+                     << "MENIU APROVIZIONARE\n";
+                cout << setw(19) << " "
+                     << "└───────────────────┘\n";
                 underline(50);
 
-                cout << setw(5) << " " << "[1] Trasee independente de aprovizionare\n"
-                     << setw(5) << " " << "[2] Traseu optim de aprovizionare\n"
-                     << setw(5) << " " << "[3] Depozite izolate\n"
-                     << setw(5) << " " << "[4] Depozite cu un singur drum conector\n"
-                     << setw(5) << " " << "[0] EXIT\n";
+                cout << setw(5) << " "
+                     << "[1] Trasee independente de aprovizionare\n"
+                     << setw(5) << " "
+                     << "[2] Traseu optim de aprovizionare\n"
+                     << setw(5) << " "
+                     << "[3] Depozite izolate\n"
+                     << setw(5) << " "
+                     << "[4] Depozite cu un singur drum conector\n"
+                     << setw(5) << " "
+                     << "[0] EXIT\n";
                 underline(50);
 
-                cout  << setw(5) << " " << "Introduceti numarul meniului: ";
+                cout << setw(5) << " "
+                     << "Introduceti numarul meniului: ";
                 cin >> MENIU_1;
 
                 switch (MENIU_1)
@@ -81,9 +99,6 @@ int main()
                     sistem_aprovizionare_independent();
                     break;
                 case 2:
-                    back();
-                    cout << "Da";
-
                     getch();
                     break;
                 case 3:
@@ -91,8 +106,10 @@ int main()
                     getch();
                     break;
                 case 4:
+                    afisare_depozite_unic_drum();
+                    getch();
                     break;
-                
+
                 default:
                     break;
                 }
@@ -103,7 +120,65 @@ int main()
             vizualizare_status_stoc();
             break;
         case 3:
-            getch();
+            unsigned int MENIU_3;
+
+            do
+            {
+                clear_screen();
+
+                cout << "\n\n";
+                cout << setw(15) << " "
+                     << "┌────────────┐\n";
+                cout << setw(16) << " "
+                     << "BAZA DE DATE\n";
+                cout << setw(15) << " "
+                     << "└────────────┘\n";
+
+                underline(40);
+
+                cout << setw(5) << " "
+                     << "[1] Tabel depozite Ro\n"
+                     << setw(5) << " "
+                     << "[2] Tabel produse\n"
+                     << setw(5) << " "
+                     << "[0] EXIT\n";
+
+                underline(40);
+
+                cout << setw(5) << " "
+                     << "Introduceti numarul meniului: ";
+                cin >> MENIU_3;
+
+                switch (MENIU_3)
+                {
+                case 1:
+                {
+                    unsigned int MENIU_3_1;
+
+                    do
+                    {
+                        afisare_date_tabel_oras();
+                        cin >> MENIU_3_1;
+                    } while (MENIU_3_1 != 0);
+                }
+                    break;
+                case 2:
+                {
+                    unsigned int MENIU_3_2;
+
+                    do
+                    {
+                        afisare_date_tabel_produs();
+                        cin >> MENIU_3_2;
+                    } while (MENIU_3_2 != 0);
+                }
+                    break;
+
+                default:
+                    break;
+                }
+            } while (MENIU_3 != 0);
+
             break;
         case 4:
             getch();

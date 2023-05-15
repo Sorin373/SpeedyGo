@@ -360,48 +360,48 @@ std::vector<unsigned int> depozite_vizitate(N, 0);
 std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);
 std::vector<int> _verificare_orase_parcurse(matrice_drum.size(), 0);
 std::vector<bool> orase_izolate(matrice_drum.size(), false);
-std::vector<int> stiva(matrice_drum.size(), 0);
+std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);
 
 long long unsigned int dimensiune_matrice = matrice_drum.size();
-int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_stiva;
+int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1;
 unsigned int contor_orase_stoc_limitat;
 bool trasee = false;
 
-bool start();
+bool start(void);
 
-char getch();
+char getch(void);
 
-void clear_screen();
+void clear_screen(void);
 
 void sleepcp(const int ms);
 
 void underline(const unsigned int vWidth);
 
-bool accesareDate();
+bool accesareDate(void);
 
-bool autentificare_cont();
+bool autentificare_cont(void);
 
-bool _init_();
+bool _init_(void);
 
-void afisareDateDepozit();
+void afisare_date_tabel_depozit(void);
 
-void afisareDateProdus();
+void afisare_date_tabel_produs(void);
 
-void afisareDateOrase();
+void afisare_date_tabel_oras(void);
 
-void vizualizare_status_stoc();
+void vizualizare_status_stoc(void);
 
 void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee);
 
 void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
-void sistem_aprovizionare_independent();
+void sistem_aprovizionare_independent(void);
 
-void sortare_date_depozit();
+void sortare_date_depozit(void);
 
-void sortare_date_produs();
+void sortare_date_produs(void);
 
-void sortare_date_oras();
+void sortare_date_oras(void);
 
 void BFS(int start);
 
@@ -409,28 +409,18 @@ void cautare_produse_ID(const int ID_Depozit);
 
 void depozite_conectate(const int ID_Depozit);
 
-void determinare_tip_depozit();
+void determinare_tip_depozit(void);
 
-void cautare_orase_stoc_limitat();
+void cautare_orase_stoc_limitat(void);
 
-void cautare_orase_izolate();
+void cautare_orase_izolate(void);
 
-void afisare_depozite_centralizare();
+void afisare_depozite_centralizare(void);
 
 void afisare_optiuni_trasee_optime(const int vStart);
 
-void afisare_depozite_izolate();
+void afisare_depozite_izolate(void);
 
-void init_stiva();
-
-bool succesor();
-
-bool solutie();
-
-bool valid();
-
-void tipar();
-
-void back();
+void afisare_depozite_unic_drum(void);
 
 #endif

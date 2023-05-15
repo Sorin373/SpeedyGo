@@ -18,7 +18,7 @@
 using namespace sql;
 using namespace std;
 
-bool accesareDate()
+bool accesareDate(void)
 {
     try
     {

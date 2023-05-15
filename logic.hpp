@@ -133,24 +133,49 @@ bool _init_()
     }
 }
 
-void afisareDateOrase()
+void afisare_date_tabel_oras()
 {
-    cout << "ID_Oras"
-         << " "
-         << "Denumire_Oras"
-         << " "
-         << "Tip_Depozit\n";
-    underline(70);
+    clear_screen();
 
-    ORAS::NOD_ORAS *ptr = oras.getHead();
-    while (ptr != nullptr)
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(6) << " "
+         << "TABEL-DEPOZIT\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Oras"
+         << setw(5) << " "
+         << "Denumire_Oras"
+         << setw(5) << " "
+         << "Tip_Depozit"
+         << setw(5) << " "
+         << "Latitudine"
+         << setw(5) << " "
+         << "Longitudine\n";
+    underline(80);
+
+    int cmax = -1;
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        cout << ptr->ID_Oras << " " << ptr->denumire_oras << " " << ptr->tip_depozit << "\n";
-        ptr = ptr->next;
+        if (strlen(date_oras->denumire_oras) > cmax)
+            cmax = strlen(date_oras->denumire_oras);
     }
+
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
+        cout << setw(7) << " " << date_oras->ID_Oras << setw(10) << " " << date_oras->denumire_oras
+             << setw(cmax - strlen(date_oras->denumire_oras) + 20) << " " << date_oras->tip_depozit
+             << setw(11 - strlen(date_oras->tip_depozit) + 4) << " " << date_oras->latitudine << "\u00B0" << setw(8)
+             << " " << date_oras->longitudine << "\u00B0\n";
+    }
+
+    underline(80);
 }
 
-void afisareDateDepozit()
+void afisare_date_tabel_depozit()
 {
     DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
     while (ptr != nullptr)
@@ -165,15 +190,47 @@ void afisareDateDepozit()
     }
 }
 
-void afisareDateProdus()
+void afisare_date_tabel_produs()
 {
-    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr = produs.getHead();
-    while (ptr != nullptr)
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(6) << " "
+         << "TABEL-PRODUS\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Produs"
+         << setw(10) << " "
+         << "Denumire_Produs"
+         << setw(35) << " "
+         << "Categorie_Produs"
+         << setw(13) << " "
+         << "Pret_Produs\n";
+
+    underline(115);
+
+    int cmax_dp = 0, cmax_cp = 0;
+
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        cout << "ID_Produs: " << ptr->ID_Produs << " ";
-        cout << "Nume_Produs: " << ptr->Denumire_Produs << endl;
-        ptr = ptr->next;
+        if (strlen(date_produs->Denumire_Produs) > cmax_dp)
+            cmax_dp = strlen(date_produs->Denumire_Produs);
+        if (strlen(date_produs->Categorie_Produs) > cmax_cp)
+            cmax_cp = strlen(date_produs->Categorie_Produs);
     }
+
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    {
+        cout << setw(7) << " " << date_produs->ID_Produs << setw(15) << " " << date_produs->Denumire_Produs
+             << setw(cmax_dp - strlen(date_produs->Denumire_Produs) + 10) << " " << date_produs->Categorie_Produs
+             << setw(cmax_cp - strlen(date_produs->Categorie_Produs) + 5) << " " << date_produs->pret_produs << "\n";
+    }
+
+    underline(115);
 }
 
 void cautareDepozit()
@@ -343,18 +400,18 @@ void depozite_conectate(int ID_Depozit)
     }
 
     int contor = 0;
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
         if (matrice_drum[ID_Depozit][i] == 1)
             temp_depozite[i] = true;
 
-    for (unsigned int i = 1; i <= matrice_drum.size() - 1; i++)
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
         if (temp_depozite[i] == true)
         {
             date_oras = oras.getHead();
             while (date_oras != nullptr)
             {
                 int _ID = stoi(date_oras->ID_Oras);
-                if (_ID == i)
+                if (_ID == i && strcasecmp(t_denumire, date_oras->denumire_oras) != 0)
                 {
                     cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax - strlen(date_oras->denumire_oras) + 5)
                          << " " << matrice_drum[ID_Depozit][i] << "km\n";
@@ -469,20 +526,21 @@ void vizualizare_status_stoc()
     cout << "\n";
     underline(100);
 
-    unsigned int _ID_Oras;
+    char *t_ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
     cout << setw(5) << " "
          << "Introduceti ID-ul orasului: ";
-    cin >> _ID_Oras;
+    cin >> t_ID_Oras;
 
-    if (_ID_Oras == 0)
+    if (strcasecmp(t_ID_Oras, "exit") == 0)
         return;
     else
     {
+        int _ID_Oras = stoi(t_ID_Oras);
         date_oras = oras.getHead();
         while (date_oras != nullptr)
         {
             int t_ID = stoi(date_oras->ID_Oras);
-            if (t_ID == _ID_Oras)
+            if (t_ID == _ID_Oras && orase_stoc_limitat[t_ID] == true)
             {
                 unsigned int sMENIU;
 
@@ -658,7 +716,7 @@ void afisare_trasee_optime(const int _ID)
 
     for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
     {
-        if (date_traseu->destinatie == _ID)
+        if (date_traseu->destinatie == _ID && orase_izolate[_ID] == false)
         {
             gasit = true;
             cout << "\n"
@@ -671,6 +729,7 @@ void afisare_trasee_optime(const int _ID)
                 for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
                     int ID = stoi(date_oras->ID_Oras);
+                        
                     if (ID == date_traseu->traseu[i])
                     {
                         cout << date_oras->denumire_oras;
@@ -681,6 +740,11 @@ void afisare_trasee_optime(const int _ID)
                     }
                 }
             break;
+        }
+        else
+        {
+            cout << "\n" << setw(5) << " " << "Depozit izolat!";
+            return;
         }
     }
 
@@ -878,82 +942,85 @@ void afisare_depozite_izolate()
              << "Nu exista depozite izolate!";
         return;
     }
+}
 
-    cout << "\n"
+void afisare_depozite_unic_drum()
+{
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌─────────────────────────────┐\n";
+    cout << setw(6) << " "
+         << "DEPOZITE CU O UNICA CONEXIUNE\n";
+    cout << setw(5) << " "
+         << "└─────────────────────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Oras"
          << setw(5) << " "
-         << "Apasati 'ENTER' pentru a va intoarce...";
-}
+         << "Denumire_Oras"
+         << setw(5) << " "
+         << "Tip_Depozit"
+         << setw(5) << " "
+         << "Latitudine"
+         << setw(5) << " "
+         << "Longitudine\n";
 
-void init_stiva()
-{
-    stiva[contor_stiva] = -1;
-}
+    underline(75);
 
-bool succesor()
-{
-    if (stiva[contor_stiva] < matrice_drum.size() - 1)
+    bool gasit = false;
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
-        stiva[contor_stiva]++;
-        return true;
-    }
-    return false;
-}
-
-bool solutie()
-{
-    if (contor_stiva == matrice_drum.size())
-        return true;
-    return false;
-}
-
-bool valid()
-{
-    for (unsigned int i = 1; i < contor_stiva; i++)
-    {
-        if (stiva[contor_stiva] == stiva[i])
-            return false;
-    }
-
-    if (contor_stiva > 1 && matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]] == 0)
-        return false;
-
-    if (contor_stiva == matrice_drum.size() && matrice_drum[0][stiva[contor_stiva]] == 0)
-        return false;
-
-    return true;
-}
-
-
-void tipar()
-{
-    for (unsigned int i = 1; i <= contor_stiva; i++)
-        cout << stiva[i] << " ";
-    cout << endl;
-}
-
-void back()
-{
-    int vSuccesor, vValid;
-    contor_stiva = 1;
-    init_stiva();
-    while (contor_stiva > 0)
-    {
-        do
-        {
-            vSuccesor = succesor();
-            if (vSuccesor == 1)
-                vValid = valid();
-        } while (vSuccesor == 1 && vValid == 0);
-        if (vSuccesor == 1)
-            if (solutie() == 1)
-                tipar();
-            else
+        int contor = 0;
+        for (unsigned int j = 0; j < matrice_drum.size(); j++)
+            if (matrice_drum[i][j] != 0)
             {
-                contor_stiva++;
-                init_stiva();
+                contor++;
+                if (contor >= 2)
+                    break;
             }
-        else
-            contor_stiva--;
+        if (contor == 1)
+        {
+            gasit = true;
+            orase_conexiune_unica[i] = true;
+        }
+    }
+
+    if (gasit)
+    {
+        int cmax = -1;
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        {
+            if (strlen(date_oras->denumire_oras) > cmax)
+                cmax = strlen(date_oras->denumire_oras);
+        }
+
+        for (unsigned int i = 0; i < orase_conexiune_unica.size(); i++)
+        {
+            if (orase_conexiune_unica[i])
+            {
+                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                {
+                    int ID = stoi(date_oras->ID_Oras);
+                    if (ID == i)
+                    {
+                        cout << setw(7) << " " << date_oras->ID_Oras << setw(10) << " " << date_oras->denumire_oras
+                             << setw(cmax - strlen(date_oras->denumire_oras) + 20) << " " << date_oras->tip_depozit
+                             << setw(11 - strlen(date_oras->tip_depozit) + 4) << " " << date_oras->latitudine << "\u00B0" << setw(8)
+                             << " " << date_oras->longitudine << "\u00B0\n";
+                        break;
+                    }
+                }
+            }
+        }
+        underline(75);
+    }
+    else
+    {
+        cout << setw(5) << " "
+             << "Nu exista depozite cu o unica conexiune!";
+        return;
     }
 }
 
