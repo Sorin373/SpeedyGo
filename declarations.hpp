@@ -300,7 +300,7 @@ public:
 
         ~NOD_TRASEU()
         {
-            
+            traseu.clear();
         }
     };
 
@@ -361,11 +361,13 @@ std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);
 std::vector<int> _verificare_orase_parcurse(matrice_drum.size(), 0);
 std::vector<bool> orase_izolate(matrice_drum.size(), false);
 std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);
+std::vector<int> stiva(matrice_drum.size());
+std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);
 
 long long unsigned int dimensiune_matrice = matrice_drum.size();
-int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1;
-unsigned int contor_orase_stoc_limitat;
+int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP;
 bool trasee = false;
+double cost_minim_TSP = INT_MAX;
 
 bool start(void);
 
@@ -422,5 +424,31 @@ void afisare_optiuni_trasee_optime(const int vStart);
 void afisare_depozite_izolate(void);
 
 void afisare_depozite_unic_drum(void);
+
+void init_stiva_hc(void);
+
+bool succesor_hc(void);
+
+bool solutie_hc(void);
+
+bool valid_hc(void);
+
+void determinare_ciclu_hc_minim(void);
+
+void back_hc(void);
+
+void init_stiva_ac(void);
+
+bool succesor_ac(void);
+
+bool solutie_ac(void);
+
+bool valid_ac(void);
+
+void determinare_traseu_minim(void);
+
+void back_ac(void);
+
+void TSP(void);
 
 #endif

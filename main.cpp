@@ -4,6 +4,7 @@
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
 #include "logic.hpp"
+#include "TSP.hpp"
 
 using namespace std;
 
@@ -99,6 +100,7 @@ int main(void)
                     sistem_aprovizionare_independent();
                     break;
                 case 2:
+                    parcurgere_traseu_TSP();
                     getch();
                     break;
                 case 3:
