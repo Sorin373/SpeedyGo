@@ -7,12 +7,10 @@
 #include <stdlib.h>
 
 #define MAX_SIZE 32
-#define MAX_LENGTH 1000000
-#define VAL_STOC_MINIM 1
-#define VAL_STOC_MAXIM 1000
+#define VAL_STOC_MINIM 5
+#define VAL_STOC_MAXIM 50
 
 constexpr int MAXL = 256, N = 11;
-constexpr unsigned int MAXN = 1000;
 
 class AUTENTIFICARE
 {
@@ -278,7 +276,6 @@ public:
     }
 };
 
-
 class TRASEU
 {
 public:
@@ -348,11 +345,80 @@ public:
     }
 };
 
+class APROVIZIONARE
+{
+public:
+    struct NOD_APROVIZIONARE
+    {
+        char *ID_Produs;
+        int cantitate_totala_necesara = 0;
+        NOD_APROVIZIONARE *next = nullptr;
+        NOD_APROVIZIONARE *prev = nullptr;
+
+        NOD_APROVIZIONARE(char *vID_Produs, int vCantitate_totala_necesara)
+        {
+            this->ID_Produs = strdup(vID_Produs);
+            this->cantitate_totala_necesara = vCantitate_totala_necesara;
+            this->next = nullptr;
+            this->prev = nullptr;
+        }
+
+        ~NOD_APROVIZIONARE()
+        {
+            free(ID_Produs);
+        }
+    };
+
+    NOD_APROVIZIONARE *head_aprovizionare = nullptr;
+    NOD_APROVIZIONARE *tail_aprovizionare = nullptr;
+
+public:
+    NOD_APROVIZIONARE *getHead()
+    {
+        return head_aprovizionare;
+    }
+
+    NOD_APROVIZIONARE *getTail()
+    {
+        return tail_aprovizionare;
+    }
+
+    void inserareDateAprovizionare(char *vID_Produs, int vCantitate_totala_necesara)
+    {
+        NOD_APROVIZIONARE *newnod = new NOD_APROVIZIONARE(vID_Produs, vCantitate_totala_necesara);
+
+        if (head_aprovizionare == nullptr)
+        {
+            head_aprovizionare = newnod;
+            tail_aprovizionare = newnod;
+        }
+        else
+        {
+            tail_aprovizionare->next = newnod;
+            newnod->prev = tail_aprovizionare;
+            tail_aprovizionare = newnod;
+        }
+    }
+
+    ~APROVIZIONARE()
+    {
+        NOD_APROVIZIONARE *ptr = head_aprovizionare;
+
+        while (ptr != nullptr)
+        {
+            NOD_APROVIZIONARE *temp = ptr;
+            ptr = ptr->next;
+            delete temp;
+        }
+    }
+};
+
 DEPOZIT depozit;
 ORAS oras;
 DETALII_PRODUS produs;
 AUTENTIFICARE autentificare;
 TRASEU _traseu;
+APROVIZIONARE aprovizionare;
 
 std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
 std::vector<bool> depozite_centralizate(N, false);
@@ -363,9 +429,10 @@ std::vector<bool> orase_izolate(matrice_drum.size(), false);
 std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);
 std::vector<int> stiva(matrice_drum.size());
 std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);
+std::vector<bool> depozit_aprovizionat(matrice_drum.size(), false);
 
 long long unsigned int dimensiune_matrice = matrice_drum.size();
-int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP;
+int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
 bool trasee = false;
 double cost_minim_TSP = INT_MAX;
 
@@ -377,7 +444,7 @@ void clear_screen(void);
 
 void sleepcp(const int ms);
 
-void underline(const unsigned int vWidth);
+void underline(const unsigned int vWidth, bool bsetw);
 
 bool accesareDate(void);
 
@@ -450,5 +517,15 @@ void determinare_traseu_minim(void);
 void back_ac(void);
 
 void TSP(void);
+
+void produse_transport_TSP(void);
+
+void pagina_principala_TSP(void);
+
+void pagina_stanga_TSP(void);
+
+void pagina_dreapta_TSP(void);
+
+void parcurgere_traseu_TSP(void);
 
 #endif

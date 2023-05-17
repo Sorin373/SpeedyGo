@@ -89,7 +89,7 @@ bool accesareDate(void)
             char *tempIdProdus = (char *)malloc(str.length() + 1);
             strcpy(tempIdProdus, str.c_str());
 
-            sqlstr = res->getString("Nume_Produs");
+            sqlstr = res->getString("Denumire_Produs");
             str = sqlstr.asStdString();
             char *tempNumeProdus = (char *)malloc(str.length() + 1);
             strcpy(tempNumeProdus, str.c_str());

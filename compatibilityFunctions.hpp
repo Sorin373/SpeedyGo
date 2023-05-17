@@ -56,9 +56,10 @@ void sleepcp(const int ms)
 #endif // _WIN32
 }
 
-void underline(const unsigned int vWidth)
+void underline(const unsigned int vWidth, bool bsetw)
 {
-    cout << setw(5 - 2) << " ";
+    if (bsetw)
+        cout << setw(5 - 2) << " ";
     char fillLine;
     fillLine = cout.fill('_');
     cout.width(vWidth);

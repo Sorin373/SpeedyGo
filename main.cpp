@@ -4,6 +4,7 @@
 #include "declarations.hpp"
 #include "compatibilityFunctions.hpp"
 #include "logic.hpp"
+
 #include "TSP.hpp"
 
 using namespace std;
@@ -21,6 +22,7 @@ bool start(void)
     sortare_date_depozit();
     sortare_date_oras();
     sortare_date_produs();
+    produse_transport_TSP();
 
     return EXIT_SUCCESS;
 }
@@ -43,7 +45,7 @@ int main(void)
              << "MENIU\n";
         cout << setw(30) << " "
              << "└───────┘\n";
-        underline(60);
+        underline(60, true);
 
         cout << setw(5) << " "
              << "[1] Aprovizionarea stocurilor in depozitele din Romania\n"
@@ -54,7 +56,7 @@ int main(void)
              << setw(5) << " "
              << "[0] EXIT\n";
 
-        underline(60);
+        underline(60, true);
         cout << setw(5) << " "
              << "Introduceti numarul meniului: ";
 
@@ -76,7 +78,7 @@ int main(void)
                      << "MENIU APROVIZIONARE\n";
                 cout << setw(19) << " "
                      << "└───────────────────┘\n";
-                underline(50);
+                underline(50, true);
 
                 cout << setw(5) << " "
                      << "[1] Trasee independente de aprovizionare\n"
@@ -88,7 +90,7 @@ int main(void)
                      << "[4] Depozite cu un singur drum conector\n"
                      << setw(5) << " "
                      << "[0] EXIT\n";
-                underline(50);
+                underline(50, true);
 
                 cout << setw(5) << " "
                      << "Introduceti numarul meniului: ";
@@ -136,7 +138,7 @@ int main(void)
                 cout << setw(15) << " "
                      << "└────────────┘\n";
 
-                underline(40);
+                underline(40, true);
 
                 cout << setw(5) << " "
                      << "[1] Tabel depozite Ro\n"
@@ -145,7 +147,7 @@ int main(void)
                      << setw(5) << " "
                      << "[0] EXIT\n";
 
-                underline(40);
+                underline(40, true);
 
                 cout << setw(5) << " "
                      << "Introduceti numarul meniului: ";

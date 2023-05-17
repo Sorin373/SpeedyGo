@@ -1,14 +1,21 @@
-1 10
-10 7 
-10 9
-7 0
-7 5
-7 6
-7 9
-0 4
-0 5
-5 9
-5 6
-6 9
-6 8
-8 2
+ID_Produs,Denumire_Produs,Categorie_Produs,Pret_Produs
+0,Apa plata,Bauturi nealcoolice,2.5
+1,Suc de portocale,Bauturi nealcoolice,3
+2,Cola,Bauturi nealcoolice,2
+3,Cafea,Bauturi nealcoolice,4.5
+4,Ceai verde,Bauturi nealcoolice,3.5
+5,Bere blonda,Bauturi alcoolice,5
+6,Vin rosu,Bauturi alcoolice,12
+7,Vodca,Bauturi alcoolice,20
+8,Whisky,Bauturi alcoolice,35
+9,Lichior de ciocolata,Bauturi alcoolice,18
+10,Suc de mere,Bauturi nealcoolice,2.8
+11,Limonada,Bauturi nealcoolice,2.5
+12,Ceai de fructe,Bauturi nealcoolice,3.2
+13,Vin alb,Bauturi alcoolice,10.5
+14,Bere neagra,Bauturi alcoolice,6.5
+15,Gin,Bauturi alcoolice,25
+16,Rom,Bauturi alcoolice,22
+17,Vodca aromata,Bauturi alcoolice,21
+18,Apa minerala,Bauturi nealcoolice,2.3
+19,Suc de ananas,Bauturi nealcoolice,3.2

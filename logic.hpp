@@ -25,7 +25,7 @@ bool autentificare_cont(void)
     cout << "\n\n"
          << setw(10) << " "
          << "CONECTARE BAZA DE DATE\n";
-    underline(40);
+    underline(40, true);
 
     cout << setw(4) << " "
          << "SERVER NAME: ";
@@ -155,7 +155,7 @@ void afisare_date_tabel_oras(void)
          << "Latitudine"
          << setw(5) << " "
          << "Longitudine\n";
-    underline(80);
+    underline(80, true);
 
     int cmax = -1;
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -172,7 +172,7 @@ void afisare_date_tabel_oras(void)
              << " " << date_oras->longitudine << "\u00B0\n";
     }
 
-    underline(80);
+    underline(80, true);
 }
 
 void afisare_date_tabel_depozit(void)
@@ -211,7 +211,7 @@ void afisare_date_tabel_produs(void)
          << setw(13) << " "
          << "Pret_Produs\n";
 
-    underline(115);
+    underline(115, true);
 
     int cmax_dp = 0, cmax_cp = 0;
 
@@ -230,7 +230,7 @@ void afisare_date_tabel_produs(void)
              << setw(cmax_cp - strlen(date_produs->Categorie_Produs) + 5) << " " << date_produs->pret_produs << "\n";
     }
 
-    underline(115);
+    underline(115, true);
 }
 
 void cautareDepozit(void)
@@ -355,14 +355,14 @@ void cautare_produse_ID(const int ID_Depozit)
          << "ID_Produs" << setw(5) << " "
          << "Denumire_Produs" << setw(10) << " "
          << "Nr.Produse\n";
-    underline(55);
+    underline(55, true);
 
     DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
     while (date_depozit != nullptr)
     {
         int tID_Depozit = stoi(date_depozit->ID_Oras);
         if (tID_Depozit == ID_Depozit)
-            if (date_depozit->Cantitate_Produs < 100)
+            if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
             {
                 date_produs = produs.getHead();
                 int tID_Produs = stoi(date_depozit->ID_Produs);
@@ -378,7 +378,7 @@ void cautare_produse_ID(const int ID_Depozit)
             }
         date_depozit = date_depozit->next;
     }
-    underline(55);
+    underline(55, true);
 }
 
 void depozite_conectate(int ID_Depozit)
@@ -480,7 +480,7 @@ void vizualizare_status_stoc(void)
     cout << "\n\n"
          << setw(5) << " "
          << "Orase cu stocuri insuficiente:\n";
-    underline(100);
+    underline(100, true);
 
     DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
     while (date_depozit != nullptr)
@@ -524,7 +524,7 @@ void vizualizare_status_stoc(void)
         }
 
     cout << "\n";
-    underline(100);
+    underline(100, true);
 
     char *t_ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
     cout << setw(5) << " "
@@ -552,7 +552,7 @@ void vizualizare_status_stoc(void)
                          << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
                          << " | Tip depozit: " << date_oras->tip_depozit << "\n";
 
-                    underline(50);
+                    underline(50, true);
 
                     cout << setw(5) << " "
                          << "[1] Vizualizare produse cu stoc limitat\n"
@@ -561,7 +561,7 @@ void vizualizare_status_stoc(void)
                          << setw(5) << " "
                          << "[0] Inapoi\n";
 
-                    underline(50);
+                    underline(50, true);
 
                     cout << setw(5) << " "
                          << "Introduceti numarul meniului: ";
@@ -683,7 +683,7 @@ void afisare_depozite_centralizare(void)
     cout << "\n"
          << setw(5) << " "
          << "Depozite centralizate\n";
-    underline(40);
+    underline(40, true);
 
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
@@ -699,7 +699,7 @@ void afisare_depozite_centralizare(void)
             }
     }
 
-    underline(40);
+    underline(40, true);
 }
 
 void afisare_trasee_optime(const int _ID)
@@ -760,7 +760,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
          << setw(5) << " "
          << "SCRIE 'exit' PENTRU A TE INTOARCE...\n";
 
-    underline(45);
+    underline(45, true);
 
     char *oras_start = (char *)malloc(MAXL * sizeof(char) + 1);
 
@@ -791,7 +791,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
         }
     }
 
-    underline(45);
+    underline(45, true);
 
     char *_ID = (char *)malloc(MAXL * sizeof(char) + 1);
     cout << setw(5) << " "
@@ -901,7 +901,7 @@ void afisare_depozite_izolate(void)
          << setw(5) << " "
          << "Longitudine\n";
 
-    underline(75);
+    underline(75, true);
 
     int cmax = -1;
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -929,7 +929,7 @@ void afisare_depozite_izolate(void)
             }
         }
 
-    underline(75);
+    underline(75, true);
 
     if (!gasit)
     {
@@ -962,7 +962,7 @@ void afisare_depozite_unic_drum(void)
          << setw(5) << " "
          << "Longitudine\n";
 
-    underline(75);
+    underline(75, true);
 
     bool gasit = false;
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
@@ -1009,7 +1009,7 @@ void afisare_depozite_unic_drum(void)
                 }
             }
         }
-        underline(75);
+        underline(75, true);
     }
     else
     {
@@ -1116,13 +1116,35 @@ bool succesor_ac(void)
 
 bool solutie_ac(void)
 {
-    if (contor_stiva == N)
+    if (contor_stiva == N + 1)
         return true;
     return false;
 }
 
 bool valid_ac(void)
 {
+    if (contor_stiva == N + 1)
+    {
+        for (unsigned int i = 0; i < matrice_drum.size(); i++)
+        {
+            bool gasit = false;
+            if (orase_stoc_limitat[i] == true && !orase_izolate[i])
+            {
+                for (unsigned int j = 1; j <= contor_stiva; j++)
+                {
+                    if (stiva[j] == i)
+                    {
+                        gasit = true;
+                        break;
+                    }
+                }
+
+                if (!gasit)
+                    return false;
+            }
+        }
+    }
+
     if (contor_stiva > 1)
         if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]] == 0)
             return false;
@@ -1136,45 +1158,16 @@ bool valid_ac(void)
 
 void determinare_traseu_minim(void)
 {
-
-    bool afisare = true;
-
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    double suma_dist = 0;
+    for (int i = 1; i < contor_stiva; i++)
+        suma_dist += matrice_drum[stiva[i]][stiva[i + 1]];
+    if (suma_dist < cost_minim_TSP)
     {
-        bool gasit = false;
-        if (orase_stoc_limitat[i] == true && !orase_izolate[i])
+        cost_minim_TSP = suma_dist;
+        for (int i = 1; i <= contor_stiva; i++)
         {
-
-            for (unsigned int j = 1; j <= contor_stiva; j++)
-            {
-                if (stiva[j] == i)
-                {
-                    gasit = true;
-                    break;
-                }
-            }
-
-            if (!gasit)
-            {
-                afisare = false;
-                break;
-            }
-        }
-    }
-
-    if (afisare)
-    {
-        double suma_dist = 0;
-        for (int i = 1; i < contor_stiva; i++)
-            suma_dist += matrice_drum[stiva[i]][stiva[i + 1]];
-        if (suma_dist < cost_minim_TSP)
-        {
-            cost_minim_TSP = suma_dist;
-            for (int i = 1; i <= contor_stiva; i++)
-            {
-                traseu_minim_TSP[i] = stiva[i];
-                contor_traseu_TSP = contor_stiva;
-            }
+            traseu_minim_TSP[i] = stiva[i];
+            contor_traseu_TSP = contor_stiva;
         }
     }
 }
@@ -1267,7 +1260,161 @@ void TSP(void)
     }
 }
 
-void parcurgere_traseu_TSP()
+void produse_transport_TSP(void)
+{
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    {
+        int cantitate = 0;
+        int ID_PRODUS = stoi(date_produs->ID_Produs);
+        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        {
+            int ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+            if (orase_stoc_limitat[ID_DEPOZIT] == true)
+            {
+                int ID_PRODUS_DEPOZIT = stoi(date_depozit->ID_Produs);
+                if (ID_PRODUS == ID_PRODUS_DEPOZIT)
+                    cantitate += VAL_STOC_MAXIM - date_depozit->Cantitate_Produs;
+            }
+        }
+        aprovizionare.inserareDateAprovizionare(date_produs->ID_Produs, cantitate);
+    }
+}
+
+void pagina_principala_TSP(void)
+{
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
+        int ID = stoi(date_oras->ID_Oras);
+        if (ID == traseu_minim_TSP[1])
+        {
+            cout << setw(5) << " " << date_oras->denumire_oras;
+            break;
+        }
+    }
+
+    cout << "\n\n";
+    for (APROVIZIONARE::NOD_APROVIZIONARE *date_aprovizionare = aprovizionare.getHead(); date_aprovizionare != nullptr; date_aprovizionare = date_aprovizionare->next)
+    {
+        int ID_AP = stoi(date_aprovizionare->ID_Produs);
+        for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+        {
+            int ID_P = stoi(date_produs->ID_Produs);
+            if (ID_P == ID_AP)
+            {
+                cout << setw(5) << " " << date_produs->Denumire_Produs << " ";
+                break;
+            }
+        }
+        cout << date_aprovizionare->cantitate_totala_necesara << "\n";
+    }
+
+    underline(190, false);
+
+    cout << setw(5) << " "
+             << "[1] PREV" << setw(80) << " -" << pagina << "- " << setw(80) << " " << "[2] NEXT\n";
+
+    underline(190, false);
+}
+
+void pagina_stanga_TSP(void)
+{
+    clear_screen();
+    cout << "\n";
+    underline(190, false);
+    if (!traseu_minim_TSP.empty())
+    {
+        cout << setw(5) << " "
+             << "Lungime traseu: " << cost_minim_TSP << "km\n"
+             << setw(5) << " ";
+        for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+        {
+            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            {
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == traseu_minim_TSP[i])
+                {
+                    cout << date_oras->denumire_oras;
+                    if (i < contor_traseu_TSP)
+                        cout << " --> ";
+                    break;
+                }
+            }
+        }
+    }
+    cout << "\n";
+    underline(190, false);
+
+    if (pagina > 1)
+    {
+        pagina--;
+        cout << "Daaa";
+
+        cout << "\n";
+        underline(190, false);
+
+        cout << setw(5) << " "
+             << "[1] PREV" << setw(165) << " "
+             << "[2] NEXT\n";
+
+        underline(190, false);
+    }
+    else
+    {
+        pagina = 1;
+        pagina_principala_TSP();
+    }
+        
+}
+
+void pagina_dreapta_TSP()
+{
+    clear_screen();
+    cout << "\n";
+    underline(190, false);
+    if (!traseu_minim_TSP.empty())
+    {
+        cout << setw(5) << " "
+             << "Lungime traseu: " << cost_minim_TSP << "km\n"
+             << setw(5) << " ";
+        for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+        {
+            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            {
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == traseu_minim_TSP[i])
+                {
+                    cout << date_oras->denumire_oras;
+                    if (i < contor_traseu_TSP)
+                        cout << " --> ";
+                    break;
+                }
+            }
+        }
+    }
+    cout << "\n";
+    underline(190, false);
+
+    if (pagina < contor_traseu_TSP - 1)
+    {
+        pagina++;
+
+        cout << "\n";
+        underline(190, false);
+
+        cout << setw(5) << " "
+             << "[1] PREV" << setw(80) << " -" << pagina << "- " << setw(80) << " " << "[2] NEXT\n";
+
+        underline(190, false);
+    }
+    else
+    {   
+        pagina = 1;
+        pagina_principala_TSP();
+    }
+        
+}
+
+void parcurgere_traseu_TSP(void)
 {
     cout << "\n";
     TSP();
@@ -1276,18 +1423,16 @@ void parcurgere_traseu_TSP()
          << setw(5) << " "
          << "[S] Start: ";
     cin >> input;
-    if (strcasecmp(input, "0") == 0)
-        return;
-    else if (strcasecmp(input, "s") == 0)
+
+    clear_screen();
+
+    cout << "\n";
+    underline(190, false);
+    if (!traseu_minim_TSP.empty())
     {
-        clear_screen();
-
-        cout << "\n";
-        underline(170);
-        TSP();
-        cout << "\n";
-        underline(170);
-
+        cout << setw(5) << " "
+             << "Lungime traseu: " << cost_minim_TSP << "km\n"
+             << setw(5) << " ";
         for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
         {
             for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -1295,16 +1440,45 @@ void parcurgere_traseu_TSP()
                 int ID = stoi(date_oras->ID_Oras);
                 if (ID == traseu_minim_TSP[i])
                 {
-                    cout << setw(5) << " "
-                         << "┌───────────────────┐\n";
-                    cout << setw(6) << " "
-                         << date_oras->denumire_oras << "\n";
-                    cout << setw(5) << " "
-                         << "└───────────────────┘\n";
+                    cout << date_oras->denumire_oras;
+                    if (i < contor_traseu_TSP)
+                        cout << " --> ";
                     break;
                 }
             }
         }
+    }
+    cout << "\n";
+    underline(190, false);
+
+    pagina_principala_TSP();
+
+    if (strcasecmp(input, "0") == 0)
+        return;
+    else if (strcasecmp(input, "s") == 0)
+    {
+        unsigned int MENIU;
+
+        do
+        {
+            cout << "\n"
+                 << setw(5) << " "
+                 << "Introduceti numarul meniului: ";
+            cin >> MENIU;
+
+            switch (MENIU)
+            {
+            case 1:
+                pagina_stanga_TSP();
+                break;
+            case 2:
+                pagina_dreapta_TSP();
+                break;
+
+            default:
+                break;
+            }
+        } while (MENIU != 0);
     }
 }
 
