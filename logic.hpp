@@ -482,18 +482,6 @@ void vizualizare_status_stoc(void)
          << "Orase cu stocuri insuficiente:\n";
     underline(100, true);
 
-    DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
-    while (date_depozit != nullptr)
-    {
-        if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
-        {
-            int _ID = stoi(date_depozit->ID_Oras);
-            if (depozite_centralizate[_ID] == false)
-                matrice_drum[_ID][_ID] = 1;
-        }
-        date_depozit = date_depozit->next;
-    }
-
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     int cmax = 0, contor_linii = 0;
 
@@ -505,7 +493,7 @@ void vizualizare_status_stoc(void)
     }
 
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
-        if (matrice_drum[i][i] == true)
+        if (orase_stoc_limitat[i])
         {
             date_oras = oras.getHead();
             while (date_oras != nullptr)
@@ -1282,32 +1270,40 @@ void produse_transport_TSP(void)
 
 void pagina_principala_TSP(void)
 {
+    cout << "\n";
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
         int ID = stoi(date_oras->ID_Oras);
         if (ID == traseu_minim_TSP[1])
         {
-            cout << setw(5) << " " << date_oras->denumire_oras;
+            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras;
             break;
         }
     }
+
+    int cmax = 0;
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+        if (strlen(date_produs->Denumire_Produs) > cmax)
+            cmax = strlen(date_produs->Denumire_Produs);
 
     cout << "\n\n";
     for (APROVIZIONARE::NOD_APROVIZIONARE *date_aprovizionare = aprovizionare.getHead(); date_aprovizionare != nullptr; date_aprovizionare = date_aprovizionare->next)
     {
         int ID_AP = stoi(date_aprovizionare->ID_Produs);
+        cout << setw(5 + 1) << " [" << date_aprovizionare->ID_Produs << "] ";
         for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
         {
             int ID_P = stoi(date_produs->ID_Produs);
             if (ID_P == ID_AP)
             {
-                cout << setw(5) << " " << date_produs->Denumire_Produs << " ";
+                cout << date_produs->Denumire_Produs << setw(cmax - strlen(date_produs->Denumire_Produs) + 5) << " ";
                 break;
             }
         }
-        cout << date_aprovizionare->cantitate_totala_necesara << "\n";
+        cout << date_aprovizionare->cantitate_totala_necesara << " buc.\n";
     }
 
+    cout << "\n\n";
     underline(190, false);
 
     cout << setw(5) << " "
@@ -1344,17 +1340,21 @@ void pagina_stanga_TSP(void)
     cout << "\n";
     underline(190, false);
 
-    if (pagina > 1)
+    if (pagina - 1 > 1)
     {
         pagina--;
-        cout << "Daaa";
+        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        {
+            int ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+            if (ID_DEPOZIT == traseu_minim_TSP[pagina])
+                cout << date_depozit->ID_Produs << " " << date_depozit->Cantitate_Produs << endl;
+        }
 
         cout << "\n";
         underline(190, false);
 
         cout << setw(5) << " "
-             << "[1] PREV" << setw(165) << " "
-             << "[2] NEXT\n";
+             << "[1] PREV" << setw(80) << " -" << pagina << "- " << setw(80) << " " << "[2] NEXT\n";
 
         underline(190, false);
     }
@@ -1394,9 +1394,16 @@ void pagina_dreapta_TSP()
     cout << "\n";
     underline(190, false);
 
-    if (pagina < contor_traseu_TSP - 1)
+    if (pagina + 1 < contor_traseu_TSP)
     {
         pagina++;
+
+        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        {
+            int ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+            if (ID_DEPOZIT == traseu_minim_TSP[pagina])
+                cout << date_depozit->ID_Produs << " " << date_depozit->Cantitate_Produs << endl;
+        }
 
         cout << "\n";
         underline(190, false);
@@ -1476,6 +1483,7 @@ void parcurgere_traseu_TSP(void)
                 break;
 
             default:
+                return;
                 break;
             }
         } while (MENIU != 0);

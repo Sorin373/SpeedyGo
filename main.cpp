@@ -103,7 +103,6 @@ int main(void)
                     break;
                 case 2:
                     parcurgere_traseu_TSP();
-                    getch();
                     break;
                 case 3:
                     afisare_depozite_izolate();
