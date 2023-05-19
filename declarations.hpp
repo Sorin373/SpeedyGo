@@ -427,14 +427,15 @@ std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);
 std::vector<int> _verificare_orase_parcurse(matrice_drum.size(), 0);
 std::vector<bool> orase_izolate(matrice_drum.size(), false);
 std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);
-std::vector<int> stiva(matrice_drum.size());
+std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());
 std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);
-std::vector<bool> depozit_aprovizionat(matrice_drum.size(), false);
 
-long long unsigned int dimensiune_matrice = matrice_drum.size();
+long long unsigned int dimensiune_matrice = matrice_drum.size(), contor_log;
 int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
-bool trasee = false;
-double cost_minim_TSP = INT_MAX;
+bool trasee = false, traseu_completat = false;
+double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
+
+int cmax_denumire_produse;
 
 bool start(void);
 
@@ -471,6 +472,10 @@ void sortare_date_depozit(void);
 void sortare_date_produs(void);
 
 void sortare_date_oras(void);
+
+void nr_max_caractere_den_produse(void);
+
+bool verificare_orase_stoc_limitat(void);
 
 void BFS(int start);
 
@@ -525,6 +530,8 @@ void pagina_principala_TSP(void);
 void pagina_stanga_TSP(void);
 
 void pagina_dreapta_TSP(void);
+
+void pagina_finala_TSP(void);
 
 void parcurgere_traseu_TSP(void);
 

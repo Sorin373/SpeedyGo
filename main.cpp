@@ -5,8 +5,6 @@
 #include "compatibilityFunctions.hpp"
 #include "logic.hpp"
 
-#include "TSP.hpp"
-
 using namespace std;
 
 bool start(void)
@@ -23,6 +21,9 @@ bool start(void)
     sortare_date_oras();
     sortare_date_produs();
     produse_transport_TSP();
+    nr_max_caractere_den_produse();
+    
+    traseu_minim_TSP[1] = -1;
 
     return EXIT_SUCCESS;
 }
