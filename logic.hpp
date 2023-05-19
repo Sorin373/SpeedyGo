@@ -1239,6 +1239,7 @@ void TSP(void)
     else
     {
         back_ac();
+        cout << "\n\n";
         if (!traseu_minim_TSP.empty())
         {
             cout << setw(5) << " "
@@ -1734,7 +1735,13 @@ void parcurgere_traseu_TSP(void)
     if (verificare_orase_stoc_limitat())
     {
         if (traseu_minim_TSP[1] == -1)
+        {
+            clear_screen();
+            cout << "\n\n" << setw(5) << " " << "Se calculeaza traseul cel mai optim traseu...\n";
+            sleepcp(1500);
+            clear_screen();
             TSP();
+        }   
         else
         {
             cout << setw(5) << " "

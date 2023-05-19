@@ -28,7 +28,7 @@ bool accesareDate(void)
         ResultSet *res;
 
         driver = get_driver_instance();
-        con = driver->connect("tcp://localhost:3306", "root", "Sorin!2005");
+        con = driver->connect();
 
         /*
          * -------------------------------------------------Scoate comm la sfarsit---------------------------------------------
