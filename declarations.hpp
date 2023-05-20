@@ -8,6 +8,9 @@
 #include <vector>
 #include <limits.h>
 #include <string.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 #include <nlohmann/json.hpp>
 #include <mysql_connection.h>
 #include <mysql_driver.h>
@@ -455,7 +458,7 @@ int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, c
 bool trasee = false, traseu_completat = false, buffer = true;
 double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
 
-int cmax_denumire_produse;
+int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
 
 bool start(void);
 
@@ -493,7 +496,7 @@ void sortare_date_produs(void);
 
 void sortare_date_oras(void);
 
-void nr_max_caractere_den_produse(void);
+void nr_max_caractere_den(void);
 
 bool verificare_orase_stoc_limitat(void);
 

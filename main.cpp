@@ -18,7 +18,7 @@ bool start(void)
     sortare_date_oras();
     sortare_date_produs();
     produse_transport_TSP();
-    nr_max_caractere_den_produse();
+    nr_max_caractere_den();
     
     traseu_minim_TSP[1] = -1;
 

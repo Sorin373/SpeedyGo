@@ -131,17 +131,42 @@ bool _init_(void)
     }
 }
 
+void nr_max_caractere_den(void)
+{
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+        if (strlen(date_produs->Denumire_Produs) > cmax_denumire_produse)
+            cmax_denumire_produse = strlen(date_produs->Denumire_Produs);
+
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        if (strlen(date_oras->denumire_oras) > cmax_denumire_orase)
+            cmax_denumire_orase = strlen(date_oras->denumire_oras);
+
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    {
+        if (strlen(date_produs->Categorie_Produs) > cmax_categorie_produse)
+            cmax_categorie_produse = strlen(date_produs->Categorie_Produs);
+
+        char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+        snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+
+        if (strlen(pret) > cmax_pret_produse)
+            cmax_pret_produse = strlen(pret);
+
+        free(pret);
+    }
+}
+
 void afisare_date_tabel_oras(void)
 {
     clear_screen();
 
     cout << "\n\n";
     cout << setw(5) << " "
-         << "┌──────────────┐\n";
+         << "┌───────────────┐\n";
     cout << setw(6) << " "
-         << "TABEL-DEPOZIT\n";
+         << " TABEL-DEPOZIT\n";
     cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+         << "└───────────────┘\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -155,18 +180,11 @@ void afisare_date_tabel_oras(void)
          << "Longitudine\n";
     underline(80, true);
 
-    int cmax = -1;
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (strlen(date_oras->denumire_oras) > cmax)
-            cmax = strlen(date_oras->denumire_oras);
-    }
-
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-    {
-        cout << setw(7) << " " << date_oras->ID_Oras << setw(10) << " " << date_oras->denumire_oras
-             << setw(cmax - strlen(date_oras->denumire_oras) + 20) << " " << date_oras->tip_depozit
-             << setw(11 - strlen(date_oras->tip_depozit) + 4) << " " << date_oras->latitudine << "\u00B0" << setw(8)
+        cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
+             << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
+             << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
              << " " << date_oras->longitudine << "\u00B0\n";
     }
 
@@ -195,40 +213,37 @@ void afisare_date_tabel_produs(void)
     cout << "\n\n";
     cout << setw(5) << " "
          << "┌──────────────┐\n";
-    cout << setw(6) << " "
+    cout << setw(7) << " "
          << "TABEL-PRODUS\n";
     cout << setw(5) << " "
          << "└──────────────┘\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"
-         << setw(10) << " "
+         << setw(4) << " "
          << "Denumire_Produs"
-         << setw(35) << " "
+         << setw(cmax_denumire_produse - 8) << " "
          << "Categorie_Produs"
-         << setw(13) << " "
+         << setw(10) << " "
          << "Pret_Produs\n";
 
-    underline(115, true);
-
-    int cmax_dp = 0, cmax_cp = 0;
+    underline(85, true);
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (strlen(date_produs->Denumire_Produs) > cmax_dp)
-            cmax_dp = strlen(date_produs->Denumire_Produs);
-        if (strlen(date_produs->Categorie_Produs) > cmax_cp)
-            cmax_cp = strlen(date_produs->Categorie_Produs);
+        cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
+             << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
+             << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 7) << " ";
+
+        char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+        snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+
+        cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+
+        free(pret);
     }
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-    {
-        cout << setw(7) << " " << date_produs->ID_Produs << setw(15) << " " << date_produs->Denumire_Produs
-             << setw(cmax_dp - strlen(date_produs->Denumire_Produs) + 10) << " " << date_produs->Categorie_Produs
-             << setw(cmax_cp - strlen(date_produs->Categorie_Produs) + 5) << " " << date_produs->pret_produs << "\n";
-    }
-
-    underline(115, true);
+    underline(85, true);
 }
 
 void sortare_date_depozit(void)
@@ -314,13 +329,6 @@ void sortare_date_oras(void)
     } while (!vsort);
 }
 
-void nr_max_caractere_den_produse(void)
-{
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-        if (strlen(date_produs->Denumire_Produs) > cmax_denumire_produse)
-            cmax_denumire_produse = strlen(date_produs->Denumire_Produs);
-}
-
 bool verificare_orase_stoc_limitat(void)
 {
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
@@ -333,67 +341,49 @@ void cautare_produse_ID(const int ID_Depozit)
 {
     clear_screen();
 
-    DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead();
-    int cmax = 0;
-    while (date_produs != nullptr)
-    {
-        if (strlen(date_produs->Denumire_Produs) > cmax)
-            cmax = strlen(date_produs->Denumire_Produs);
-        date_produs = date_produs->next;
-    }
-
     cout << "\n\n"
          << setw(5) << " "
          << "ID_Produs" << setw(5) << " "
-         << "Denumire_Produs" << setw(10) << " "
+         << "Denumire_Produs" << setw(8) << " "
          << "Nr.Produse\n";
     underline(55, true);
 
-    DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
-    while (date_depozit != nullptr)
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        int tID_Depozit = stoi(date_depozit->ID_Oras);
-        if (tID_Depozit == ID_Depozit)
-            if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
+        int ID_PRODUS = stoi(date_produs->ID_Produs);
+        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        {
+            int ID_PRODUS_DEPOZIT = stoi(date_depozit->ID_Produs), ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+            if (ID_PRODUS_DEPOZIT == ID_PRODUS && ID_DEPOZIT == ID_Depozit)
             {
-                date_produs = produs.getHead();
-                int tID_Produs = stoi(date_depozit->ID_Produs);
-                while (date_produs != nullptr)
-                {
-                    int tsID_Produs = stoi(date_produs->ID_Produs);
-                    if (tsID_Produs == tID_Produs)
-                        cout << setw(7) << " [" << date_produs->ID_Produs << "]" << setw(8) << " " << date_produs->Denumire_Produs
-                             << setw(cmax - strlen(date_produs->Denumire_Produs) - 11) << " ";
-                    date_produs = date_produs->next;
-                }
-                cout << date_depozit->Cantitate_Produs << "\n";
+                if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
+                    cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(11) << " " << date_produs->Denumire_Produs
+                         << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 3) << " " << date_depozit->Cantitate_Produs << " buc.\n";
             }
-        date_depozit = date_depozit->next;
+        }
     }
+
     underline(55, true);
 }
 
 void depozite_conectate(int ID_Depozit)
 {
     cout << "\n";
-    vector<bool> temp_depozite(N, 100);
+    vector<bool> temp_depozite(N, false);
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     char *t_denumire = (char *)malloc(MAXL * sizeof(char) + 1);
-    int cmax = 0;
 
     while (date_oras != nullptr)
     {
         int _ID = stoi(date_oras->ID_Oras);
         if (_ID == ID_Depozit)
             strcpy(t_denumire, date_oras->denumire_oras);
-        if (strlen(date_oras->denumire_oras) > cmax)
-            cmax = strlen(date_oras->denumire_oras);
         date_oras = date_oras->next;
     }
 
     int contor = 0;
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
-        if (matrice_drum[ID_Depozit][i] == 1)
+        if (matrice_drum[ID_Depozit][i] != 0)
             temp_depozite[i] = true;
 
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
@@ -405,13 +395,14 @@ void depozite_conectate(int ID_Depozit)
                 int _ID = stoi(date_oras->ID_Oras);
                 if (_ID == i && strcasecmp(t_denumire, date_oras->denumire_oras) != 0)
                 {
-                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax - strlen(date_oras->denumire_oras) + 5)
+                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5)
                          << " " << matrice_drum[ID_Depozit][i] << "km\n";
                     break;
                 }
                 date_oras = date_oras->next;
             }
         }
+    free(t_denumire);
 }
 
 void determinare_tip_depozit(void)
@@ -477,13 +468,6 @@ void vizualizare_status_stoc(void)
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     int cmax = 0, contor_linii = 0;
 
-    while (date_oras != nullptr)
-    {
-        if (strlen(date_oras->denumire_oras) > cmax)
-            cmax = strlen(date_oras->denumire_oras);
-        date_oras = date_oras->next;
-    }
-
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
         if (orase_stoc_limitat[i])
         {
@@ -494,7 +478,7 @@ void vizualizare_status_stoc(void)
                 if (_ID == i)
                 {
                     cout << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
-                         << setw(cmax - strlen(date_oras->denumire_oras) + 5) << " ";
+                         << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5) << " ";
                     contor_linii++;
                     if (contor_linii % 3 == 0)
                         cout << "\n";
@@ -512,10 +496,14 @@ void vizualizare_status_stoc(void)
     cin >> t_ID_Oras;
 
     if (strcasecmp(t_ID_Oras, "exit") == 0)
+    {
+        free(t_ID_Oras);
         return;
+    }
     else
     {
         int _ID_Oras = stoi(t_ID_Oras);
+        free(t_ID_Oras);
         date_oras = oras.getHead();
         while (date_oras != nullptr)
         {
@@ -778,10 +766,19 @@ void afisare_optiuni_trasee_optime(const int vStart)
          << "Introduceti ID-ul corespunzator: ";
     cin >> _ID;
     if (strcasecmp(_ID, "exit") == 0)
+    {
+        free(_ID);
+        free(oras_start);
         return;
+    }
     else
     {
+        free(oras_start);
+
         int _ID_temp = stoi(_ID);
+
+        free(_ID);
+
         afisare_trasee_optime(_ID_temp, vStart);
         getch();
         afisare_optiuni_trasee_optime(vStart);
@@ -827,13 +824,17 @@ void sistem_aprovizionare_independent(void)
          << "Introduceti ID-ul corespunzator: ";
     cin >> _ID;
     if (strcasecmp(_ID, "exit") == 0)
+    {
+        free(_ID);
         return;
+    }
     else
     {
         int _ID_temp = stoi(_ID);
 
         if (depozite_centralizate[_ID_temp])
         {
+            free(_ID);
             afisare_optiuni_trasee_optime(_ID_temp);
             sistem_aprovizionare_independent();
         }
@@ -842,6 +843,7 @@ void sistem_aprovizionare_independent(void)
             cout << "\n"
                  << setw(5) << " "
                  << "Nu exista depozitul central cu acest ID...";
+            free(_ID);
             getch();
             sistem_aprovizionare_independent();
         }
@@ -1171,6 +1173,9 @@ void back_ac(void)
 
 void TSP(void)
 {
+    cout << setw(5) << " "
+         << "Se calculeaza traseul cel mai optim...\n";
+
     bool izolat = false;
     for (unsigned int i = 0; i < matrice_drum.size(); i++)
         if (orase_izolate[i] == true)
@@ -1182,6 +1187,7 @@ void TSP(void)
     if (!izolat)
     {
         back_hc();
+        clear_screen();
         if (!traseu_minim_TSP.empty())
         {
             cout << cost_minim_TSP << "\n";
@@ -1193,6 +1199,7 @@ void TSP(void)
             traseu_minim_TSP.clear();
             stiva.clear();
             back_ac();
+            clear_screen();
             if (!traseu_minim_TSP.empty())
             {
                 cout << cost_minim_TSP << "\n";
@@ -1206,6 +1213,7 @@ void TSP(void)
     else
     {
         back_ac();
+        clear_screen();
         cout << "\n\n";
         if (!traseu_minim_TSP.empty())
         {
@@ -1403,6 +1411,8 @@ void pagina_finala_TSP(void)
                  << "Aprovizionare completa.\n"
                  << setw(5) << " "
                  << "Mai multe detalii in fisierul log.txt...";
+
+            free(input);
             getch();
             return;
         }
@@ -1410,6 +1420,7 @@ void pagina_finala_TSP(void)
     else if (!traseu_completat)
     {
         pagina = 1;
+        free(input);
         pagina_principala_TSP();
     }
 
@@ -1707,15 +1718,7 @@ void parcurgere_traseu_TSP(void)
     if (!traseu_completat)
     {
         if (traseu_minim_TSP[1] == -1)
-        {
-            clear_screen();
-            cout << "\n\n"
-                 << setw(5) << " "
-                 << "Se calculeaza traseul cel mai optim...\n";
-            sleepcp(1500);
-            clear_screen();
             TSP();
-        }
         else
         {
             cout << setw(5) << " "
@@ -1751,18 +1754,22 @@ void parcurgere_traseu_TSP(void)
     }
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
+
     cout << "\n\n\n"
          << setw(5) << " "
          << "[S] Start: ";
     cin >> input;
 
-    pagina_principala_TSP();
-
     if (strcasecmp(input, "0") == 0)
+    {
+        free(input);
         return;
+    }
     else if (strcasecmp(input, "s") == 0)
     {
         unsigned int MENIU;
+
+        pagina_principala_TSP();
 
         do
         {
