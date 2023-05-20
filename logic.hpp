@@ -233,27 +233,6 @@ void afisare_date_tabel_produs(void)
     underline(115, true);
 }
 
-void cautareDepozit(void)
-{
-    char *ID = (char *)malloc(MAXL * sizeof(char));
-    DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
-
-    cin >> ID;
-    vizualizare_status_stoc();
-    cout << endl;
-    while (ptr != nullptr)
-    {
-        if (strcasecmp(ID, ptr->ID_Oras) == 0)
-        {
-            cout << "ID_Produs: " << ptr->ID_Produs << ", ";
-            cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-            cout << "ID_oras: " << ptr->ID_Oras << endl;
-        }
-        ptr = ptr->next;
-    }
-    free(ID);
-}
-
 void sortare_date_depozit(void)
 {
     bool vsort = true;
@@ -705,21 +684,21 @@ void afisare_depozite_centralizare(void)
     underline(40, true);
 }
 
-void afisare_trasee_optime(const int _ID)
+void afisare_trasee_optime(const int _ID, const int vStart)
 {
     bool gasit = false;
 
-    if (orase_stoc_limitat[_ID] == false || orase_izolate[_ID] == true)
+    if (orase_izolate[_ID] == true)
     {
         cout << "\n"
              << setw(5) << " "
-             << "Nu exista traseul cu acest ID!";
+             << "Nu exista traseul cu acest ID. Depozit izolat...";
         return;
     }
 
     for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
     {
-        if (date_traseu->destinatie == _ID)
+        if (date_traseu->destinatie == _ID && date_traseu->start == vStart)
         {
             gasit = true;
             cout << "\n"
@@ -738,7 +717,7 @@ void afisare_trasee_optime(const int _ID)
                         cout << date_oras->denumire_oras;
                         // corectare afisare '->'
                         if (i != date_traseu->traseu.size() - 1)
-                            cout << " -> ";
+                            cout << " --> ";
                         break;
                     }
                 }
@@ -784,7 +763,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
             for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
                 int ID = stoi(date_oras->ID_Oras);
-                if (ID == date_traseu->destinatie && orase_stoc_limitat[date_traseu->destinatie])
+                if (ID == date_traseu->destinatie)
                 {
                     cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "] ";
                     cout << oras_start << " -> " << date_oras->denumire_oras << endl;
@@ -805,7 +784,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
     else
     {
         int _ID_temp = stoi(_ID);
-        afisare_trasee_optime(_ID_temp);
+        afisare_trasee_optime(_ID_temp, vStart);
         getch();
         afisare_optiuni_trasee_optime(vStart);
     }
@@ -842,6 +821,7 @@ void sistem_aprovizionare_independent(void)
     cout << "\n\n"
          << setw(5) << " "
          << "SCRIE 'exit' PENTRU A TE INTOARCE...\n";
+
     afisare_depozite_centralizare();
 
     char *_ID = (char *)malloc(MAXL * sizeof(char) + 1);
@@ -853,31 +833,20 @@ void sistem_aprovizionare_independent(void)
     else
     {
         int _ID_temp = stoi(_ID);
-        afisare_optiuni_trasee_optime(_ID_temp);
-        sistem_aprovizionare_independent();
-    }
-}
 
-void BFS(int start)
-{
-    vector<unsigned int> v(N, 0);
-    v[0] = start;
-    int pi = 1, ps = 1;
-    depozite_vizitate[start] = nr_componente;
-
-    while (ps <= pi)
-    {
-        start = v[ps];
-        for (unsigned int i = 0; i < matrice_drum.size(); i++)
+        if (depozite_centralizate[_ID_temp])
         {
-            if (matrice_drum[start][i] != 0 && depozite_vizitate[i] == 0)
-            {
-                pi++;
-                v[pi] = i;
-                depozite_vizitate[i] = nr_componente;
-            }
+            afisare_optiuni_trasee_optime(_ID_temp);
+            sistem_aprovizionare_independent();
         }
-        ps++;
+        else
+        {
+            cout << "\n"
+                 << setw(5) << " "
+                 << "Nu exista depozitul central cu acest ID...";
+            getch();
+            sistem_aprovizionare_independent();
+        }
     }
 }
 
@@ -1423,19 +1392,24 @@ void pagina_finala_TSP(void)
                     }
                 }
             }
-            log_out << "\n" << s << "\n";
+            log_out << "\n"
+                    << s << "\n";
             log_out << "Distanta parcursa: " << cost_minim_TSP << "km\n";
             log_out << "Cantitate totala transportata: " << cantitate_totala_aprovizionata << "BUC.\n";
             log_out << "Cost total: " << cost_aprovizionare_total << "RON\nEND-LOG\n";
             log_out << s << "\n\n\n";
 
             clear_screen();
-            cout << "\n\n" << setw(5) << " " << "Aprovizionare completa.\n" << setw(5) << " " << "Mai multe detalii in fisierul log.txt...";
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "Aprovizionare completa.\n"
+                 << setw(5) << " "
+                 << "Mai multe detalii in fisierul log.txt...";
             getch();
             return;
         }
     }
-    else
+    else if (!traseu_completat)
     {
         pagina = 1;
         pagina_principala_TSP();
@@ -1732,16 +1706,18 @@ void parcurgere_traseu_TSP(void)
     pagina = 1;
     cout << "\n";
 
-    if (verificare_orase_stoc_limitat())
+    if (!traseu_completat)
     {
         if (traseu_minim_TSP[1] == -1)
         {
             clear_screen();
-            cout << "\n\n" << setw(5) << " " << "Se calculeaza traseul cel mai optim traseu...\n";
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "Se calculeaza traseul cel mai optim...\n";
             sleepcp(1500);
             clear_screen();
             TSP();
-        }   
+        }
         else
         {
             cout << setw(5) << " "
@@ -1789,7 +1765,7 @@ void parcurgere_traseu_TSP(void)
     else if (strcasecmp(input, "s") == 0)
     {
         unsigned int MENIU;
-        
+
         do
         {
             cout << "\n"
@@ -1807,7 +1783,7 @@ void parcurgere_traseu_TSP(void)
                 break;
 
             default:
-                return;
+                pagina_finala_TSP();
                 break;
             }
         } while (MENIU != 0 && traseu_completat == false);

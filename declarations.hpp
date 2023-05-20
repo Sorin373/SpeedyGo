@@ -7,10 +7,11 @@
 #include <stdlib.h>
 
 #define MAX_SIZE 32
+#define MAXL 256
 #define VAL_STOC_MINIM 5
 #define VAL_STOC_MAXIM 50
 
-constexpr int MAXL = 256, N = 11;
+constexpr int N = 11;
 
 class AUTENTIFICARE
 {
@@ -477,8 +478,6 @@ void nr_max_caractere_den_produse(void);
 
 bool verificare_orase_stoc_limitat(void);
 
-void BFS(int start);
-
 void cautare_produse_ID(const int ID_Depozit);
 
 void depozite_conectate(const int ID_Depozit);
@@ -490,6 +489,8 @@ void cautare_orase_stoc_limitat(void);
 void cautare_orase_izolate(void);
 
 void afisare_depozite_centralizare(void);
+
+void afisare_trasee_optime(const int _ID, const int vStart);
 
 void afisare_optiuni_trasee_optime(const int vStart);
 
