@@ -1,19 +1,12 @@
 #ifndef CMP
 #define CMP
 
-#include <iostream>
-#include <iomanip>
-//#include "declarations.hpp"
+#include "declarations.hpp"
 
 using namespace std;
 
-#ifdef _WIN32
-#include <windows.h>
-#include <conio.h>
-#else
-#include <unistd.h>
-#include <termios.h>
-char getch()
+#ifdef __linux__
+char getch(void)
 {
     char buf = 0;
     struct termios old = {0};
@@ -35,13 +28,13 @@ char getch()
     printf("%c\n", buf);
     return buf;
 }
-#endif // _WIN32
+#endif
 
-void clear_screen()
+void clear_screen(void)
 {
 #ifdef WINDOWS
     system("CLS");
-#else
+#elif __linux__
     // Assume POSIX
     system("clear");
 #endif
@@ -56,16 +49,16 @@ void sleepcp(const int ms)
 #endif // _WIN32
 }
 
-void underline(const unsigned int vWidth, bool bsetw)
+void underline(const unsigned int vWidth, const bool bSetw)
 {
-    if (bsetw)
+    if (bSetw)
         cout << setw(5 - 2) << " ";
     char fillLine;
     fillLine = cout.fill('_');
     cout.width(vWidth);
-    cout << '_' << endl;
+    cout << '_' << "\n";
     cout.fill(fillLine);
-    cout << endl;
+    cout << "\n";
 }
 
 #endif

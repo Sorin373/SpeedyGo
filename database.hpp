@@ -1,19 +1,8 @@
-/*
-                                TO DO
-    ****************FIX mem leak from res ptr*************
-*/
-
 #ifndef DATABASE
 #define DATABASE
 
-#include "string.h"
 #include "declarations.hpp"
 #include "logic.hpp"
-#include <mysql_connection.h>
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
 
 using namespace sql;
 using namespace std;
@@ -28,7 +17,7 @@ bool accesareDate(void)
         ResultSet *res;
 
         driver = get_driver_instance();
-        con = driver->connect();
+        con = driver->connect("tcp://localhost:3306", "root", "Sorin!2005");
 
         /*
          * -------------------------------------------------Scoate comm la sfarsit---------------------------------------------
@@ -46,10 +35,10 @@ bool accesareDate(void)
             return EXIT_FAILURE;
         }
             
-        con->setSchema("MyDepoChain");
+        con->setSchema("SpeedyGo");
 
         stmt = con->createStatement();
-        res = stmt->executeQuery("SELECT * FROM data");
+        res = stmt->executeQuery("SELECT * FROM depozit");
 
         while (res->next())
         {
@@ -76,8 +65,11 @@ bool accesareDate(void)
 
         res->close();
         stmt->close();
+        delete res;
+        delete stmt;
+
         stmt = con->createStatement();
-        res = stmt->executeQuery("SELECT * FROM date_produse");
+        res = stmt->executeQuery("SELECT * FROM produs");
 
         while (res->next())
         {
@@ -110,8 +102,11 @@ bool accesareDate(void)
 
         res->close();
         stmt->close();
+        delete res;
+        delete stmt;
+
         stmt = con->createStatement();
-        res = stmt->executeQuery("SELECT * FROM orase");
+        res = stmt->executeQuery("SELECT * FROM oras");
 
         while (res->next())
         {

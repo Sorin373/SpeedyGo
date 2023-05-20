@@ -1,18 +1,11 @@
 #ifndef LOGIC
 #define LOGIC
 
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <vector>
-#include <algorithm>
-#include <limits.h>
-#include <string.h>
 #include "declarations.hpp"
-#include <nlohmann/json.hpp>
 
 using namespace std;
 using namespace nlohmann;
+using namespace sql;
 
 bool autentificare_cont(void)
 {
@@ -47,13 +40,15 @@ bool autentificare_cont(void)
     if (accesareDate() == EXIT_FAILURE)
     {
         getch();
-        autentificare_cont();
+        free(_HN);
+        free(_UN);
+        free(_P);
+        return autentificare_cont();
     }
 
     free(_HN);
     free(_UN);
     free(_P);
-    ;
 
     return EXIT_SUCCESS;
 }
@@ -82,10 +77,13 @@ bool _init_(void)
         for (json::iterator i = data.begin(); i != data.end(); i++)
         {
             char *pereche_orase = (char *)malloc(MAXL * sizeof(char) + 1);
-            strcpy(pereche_orase, i.key().c_str());
-            char *ptr = strtok(pereche_orase, "_");
             char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
             char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
+
+            strcpy(pereche_orase, i.key().c_str());
+
+            char *ptr = strtok(pereche_orase, "_");
+
             int ID_Oras1 = 0, ID_Oras2 = 0;
             bool nume_oras = true;
 
@@ -577,10 +575,10 @@ void vizualizare_status_stoc(void)
 void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
     int contor = 0;
-    vector<bool> temp(dimensiune_matrice, false);
+    vector<bool> temp(matrice_drum.size(), false);
     temp.assign(orase_stoc_limitat.begin(), orase_stoc_limitat.end());
 
-    for (unsigned int i = 0; i < dimensiune_matrice; i++)
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
         contor = 0;
         if (i != start)
@@ -630,15 +628,15 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
 
 void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    vector<bool> visited(dimensiune_matrice, false);
+    vector<bool> visited(matrice_drum.size(), false);
     distanta[start] = 0.0;
 
-    for (unsigned int i = 0; i < dimensiune_matrice; i++)
+    for (unsigned int i = 0; i < matrice_drum.size(); i++)
     {
         int min_index = 0;
         double min_dist = numeric_limits<double>::infinity();
 
-        for (unsigned int j = 0; j < dimensiune_matrice; j++)
+        for (unsigned int j = 0; j < matrice_drum.size(); j++)
             if (!visited[j] && distanta[j] < min_dist)
             {
                 min_index = j;
@@ -647,7 +645,7 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
         visited[min_index] = true;
 
-        for (unsigned int j = 0; j < dimensiune_matrice; j++)
+        for (unsigned int j = 0; j < matrice_drum.size(); j++)
         {
             double distanta_noua = distanta[min_index] + matrice_drum[min_index][j];
 
@@ -1789,6 +1787,143 @@ void parcurgere_traseu_TSP(void)
         } while (MENIU != 0 && traseu_completat == false);
     }
     free(input);
+}
+
+void afisare_detalii_SpeedyGo(Connection *con)
+{
+    cout << "\n";
+    underline(90, true);
+
+    cout << "\033[3m"
+         << setw(5) << " "
+         << "Bun venit în Consola MySQL. Introduceti o interogare SQL (sau 'exit' pentru a incheia)\n"
+         << "\033[0m";
+
+    underline(90, true);
+
+    Statement *stmt = con->createStatement();
+    ResultSet *res = stmt->executeQuery("SHOW TABLES");
+
+    cout << setw(5) << " "
+         << "+" << string(22, '-') << "+" << endl;
+    cout << setw(5) << " "
+         << "| " << left << setw(20) << "SpeedyGo - Tabele"
+         << " |" << endl;
+    cout << setw(5) << " "
+         << "|" << string(22, '-') << "|" << endl;
+
+    while (res->next())
+    {
+        cout << setw(5) << " "
+             << "| " << setw(20) << left << res->getString(1) << " |" << endl;
+    }
+
+    cout << right;
+
+    cout << setw(5) << " "
+         << "+" << string(22, '-') << "+" << endl;
+
+    underline(90, true);
+
+    delete stmt;
+    delete res;
+}
+
+void consola_mysql(void)
+{
+    clear_screen();
+
+    if (buffer)
+    {
+        buffer = false;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    Driver *driver;
+    Connection *con;
+
+    driver = mysql::get_mysql_driver_instance();
+    con = driver->connect();
+    con->setSchema("SpeedyGo");
+
+    afisare_detalii_SpeedyGo(con);
+
+    string interogare;
+
+    while (true)
+    {
+        cout << "\n"
+             << setw(5) << " "
+             << "mysql> ";
+
+        getline(cin, interogare);
+
+        if (interogare == "exit")
+        {
+            buffer = true;
+            break;
+        }
+        else if (interogare == "clear")
+        {
+            clear_screen();
+            afisare_detalii_SpeedyGo(con);
+        }
+        else
+        {
+            try
+            {
+                Statement *stmt = con->createStatement();
+                ResultSet *res = stmt->executeQuery(interogare);
+
+                int cnt_coloane = res->getMetaData()->getColumnCount();
+                vector<int> coloane(cnt_coloane, 0);
+
+                while (res->next())
+                {
+                    for (unsigned int i = 1; i <= cnt_coloane; i++)
+                    {
+                        int crt_width = res->getString(i).length();
+                        if (crt_width > coloane[i - 1])
+                        {
+                            coloane[i - 1] = crt_width;
+                        }
+                    }
+                }
+
+                cout << "\n";
+                for (int i = 1; i <= cnt_coloane; i++)
+                {
+                    cout << setw(5) << " " << setw(coloane[i - 1] + 5) << res->getMetaData()->getColumnName(i) << " ";
+                }
+                cout << "\n";
+
+                underline(90, true);
+
+                res->beforeFirst();
+
+                while (res->next())
+                {
+                    for (int i = 1; i <= cnt_coloane; i++)
+                        cout << setw(5) << " " << setw(coloane[i - 1] + 5) << res->getString(i) << " ";
+                    cout << endl;
+                }
+
+                underline(90, true);
+
+                delete stmt;
+                delete res;
+            }
+            catch (SQLException &e)
+            {
+                cout << "Error code: " << e.getErrorCode() << "\n";
+                cout << "Error message: " << e.what() << "\n";
+                cout << "SQLState: " << e.getSQLState() << "\n";
+            }
+        }
+    }
+
+    interogare.clear();
+    delete con;
 }
 
 #endif

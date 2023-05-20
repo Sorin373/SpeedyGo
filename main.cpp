@@ -1,9 +1,6 @@
-#include <iostream>
-#include <fstream>
-#include "database.hpp"
 #include "declarations.hpp"
-#include "compatibilityFunctions.hpp"
 #include "logic.hpp"
+#include "database.hpp"
 
 using namespace std;
 
@@ -54,6 +51,8 @@ int main(void)
              << "[2] Analiza stoc Romania\n"
              << setw(5) << " "
              << "[3] Vizualizare baza de date\n"
+             << setw(5) << " "
+             << "[4] SQL Query Tool\n"
              << setw(5) << " "
              << "[0] EXIT\n";
 
@@ -185,7 +184,7 @@ int main(void)
 
             break;
         case 4:
-            getch();
+            consola_mysql();
             break;
         case 5:
             getch();
@@ -196,6 +195,5 @@ int main(void)
         }
 
     } while (MENIU != 0);
-
     return EXIT_SUCCESS;
 }

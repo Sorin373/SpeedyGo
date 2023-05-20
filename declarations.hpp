@@ -1,10 +1,29 @@
 #ifndef DECLARATIONS
 #define DECLARATIONS
 
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <cmath>
 #include <vector>
 #include <limits.h>
 #include <string.h>
-#include <stdlib.h>
+#include <nlohmann/json.hpp>
+#include <mysql_connection.h>
+#include <mysql_driver.h>
+#include <mysql_error.h>
+#include <cppconn/statement.h>
+#include <cppconn/resultset.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <conio.h>
+#else
+#include <unistd.h>
+#include <termios.h>
+#endif
+
+#include "compatibilityFunctions.hpp"
 
 #define MAX_SIZE 32
 #define MAXL 256
@@ -336,7 +355,7 @@ public:
     ~TRASEU()
     {
         NOD_TRASEU *ptr = head_traseu;
-        
+
         while (ptr != nullptr)
         {
             NOD_TRASEU *temp = ptr;
@@ -431,9 +450,9 @@ std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);
 std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());
 std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);
 
-long long unsigned int dimensiune_matrice = matrice_drum.size(), contor_log;
-int nr_componente,  contor_depozite_centralizate , nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
-bool trasee = false, traseu_completat = false;
+long long unsigned int contor_log;
+int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
+bool trasee = false, traseu_completat = false, buffer = true;
 double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
 
 int cmax_denumire_produse;
@@ -446,7 +465,7 @@ void clear_screen(void);
 
 void sleepcp(const int ms);
 
-void underline(const unsigned int vWidth, bool bsetw);
+void underline(const unsigned int vWidth, const bool bSetw);
 
 bool accesareDate(void);
 
@@ -535,5 +554,9 @@ void pagina_dreapta_TSP(void);
 void pagina_finala_TSP(void);
 
 void parcurgere_traseu_TSP(void);
+
+void afisare_detalii_SpeedyGo(sql::Connection *con);
+
+void consola_mysql(void);
 
 #endif
