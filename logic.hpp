@@ -602,12 +602,6 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
                 for (unsigned int j = 0; j < traseu.size(); j++)
                     cout << traseu[j] << " ";
 
-            if (contor > nr_maxim_orase_parcurse)
-            {
-                nr_maxim_orase_parcurse = contor;
-                _verificare_orase_parcurse.assign(traseu.begin(), traseu.end());
-            }
-
             if (afisare)
                 cout << "\n";
         }
@@ -1931,6 +1925,63 @@ void consola_mysql(void)
 
     interogare.clear();
     delete con;
+}
+
+void sortare_tip_depozit(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_oras();
+
+    char *input = (char *)malloc((MAXL + 1) * sizeof(char));
+
+    cout << setw(5) << " " << "Introceti tipul: ";
+    cin >> input;
+
+    if (strcasecmp(input, "0") == 0)
+    {
+        free(input);
+        return;
+    }
+    else
+    {
+        clear_screen();
+
+        cout << "\n\n";
+        cout << setw(5) << " "
+             << "┌───────────────┐\n";
+        cout << setw(6) << " "
+             << " TABEL-DEPOZIT\n";
+        cout << setw(5) << " "
+             << "└───────────────┘\n\n";
+
+        cout << setw(5) << " "
+             << "ID_Oras"
+             << setw(5) << " "
+             << "Denumire_Oras"
+             << setw(5) << " "
+             << "Tip_Depozit"
+             << setw(5) << " "
+             << "Latitudine"
+             << setw(5) << " "
+             << "Longitudine\n";
+        underline(80, true);
+
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            if (strcasecmp(date_oras->tip_depozit, input) == 0)
+                cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
+                     << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
+                     << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+                     << " " << date_oras->longitudine << "\u00B0\n";
+
+        underline(80, true);
+
+        cout << "\n\n" << setw(5) << " " << "Apasa 'ENTER' pentru a te intoarce...";
+
+        free(input);
+        getch();
+        sortare_tip_depozit();
+    }
 }
 
 #endif

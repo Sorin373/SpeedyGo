@@ -8,9 +8,6 @@
 #include <vector>
 #include <limits.h>
 #include <string.h>
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
 #include <nlohmann/json.hpp>
 #include <mysql_connection.h>
 #include <mysql_driver.h>
@@ -33,7 +30,8 @@
 #define VAL_STOC_MINIM 5
 #define VAL_STOC_MAXIM 50
 
-constexpr int N = 11;
+constexpr int N = 11;       // se schimba in functie de numarul depozitelor (trebuie sa coincida cu numarul celor din baza de date sau se strica programul)
+                            // daca contorul este de la 0 numarul depozitelor ramane la fel
 
 class AUTENTIFICARE
 {
@@ -443,17 +441,15 @@ AUTENTIFICARE autentificare;
 TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
-std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));
-std::vector<bool> depozite_centralizate(N, false);
-std::vector<unsigned int> depozite_vizitate(N, 0);
-std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);
-std::vector<int> _verificare_orase_parcurse(matrice_drum.size(), 0);
-std::vector<bool> orase_izolate(matrice_drum.size(), false);
-std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);
-std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());
-std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);
+std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));              // matricea de adiacenta ce contine distantele dintre noduri
+std::vector<bool> depozite_centralizate(N, false);                                          // stocare ID depozite centralizate                                          
+std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                           // stocare ID depozite cu stoc limitat
+std::vector<bool> orase_izolate(matrice_drum.size(), false);                                // stocare ID depozite izolate
+std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                        // stocare ID depozite o conexiune unica cu graful
+std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                          // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
+std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);     // stocarea traseului optim TSP (travel salesman problem)
 
-long long unsigned int contor_log;
+long long unsigned int contor_log;                                                          // contorizeaza log-urile dintr-o singura rulare a programului
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
 bool trasee = false, traseu_completat = false, buffer = true;
 double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
@@ -561,5 +557,7 @@ void parcurgere_traseu_TSP(void);
 void afisare_detalii_SpeedyGo(sql::Connection *con);
 
 void consola_mysql(void);
+
+void sortare_tip_depozit(void);
 
 #endif

@@ -19,7 +19,7 @@ bool start(void)
     sortare_date_produs();
     produse_transport_TSP();
     nr_max_caractere_den();
-    
+
     traseu_minim_TSP[1] = -1;
 
     return EXIT_SUCCESS;
@@ -160,22 +160,109 @@ int main(void)
 
                     do
                     {
+                        clear_screen();
+
                         afisare_date_tabel_oras();
+
+                        cout << setw(5) << " "
+                             << "[1] Sortare dupa tipul depozitului\n"
+                             << setw(5) << " "
+                             << "[2] Sortare alfabetic A-Z\n"
+                             << setw(5) << " "
+                             << "[3] Sortare alfabetic Z-A\n"
+                             << setw(5) << " "
+                             << "[4] Cautare oras dupa denumire\n"
+                             << setw(5) << " "
+                             << "[5] Cautare oras dupa ID\n"
+                             << setw(5) << " "
+                             << "[0] EXIT\n";
+
+                        underline(80, true);
+
+                        cout << setw(5) << " "
+                             << "Introduceti numarul meniului: ";
+
                         cin >> MENIU_3_1;
+
+                        switch (MENIU_3_1)
+                        {
+                        case 1:
+                            sortare_tip_depozit();
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+
+                        default:
+                            break;
+                        }
+
                     } while (MENIU_3_1 != 0);
                 }
-                    break;
+                break;
                 case 2:
                 {
                     unsigned int MENIU_3_2;
 
                     do
                     {
+                        clear_screen();
+
                         afisare_date_tabel_produs();
+
+                        cout << setw(5) << " "
+                             << "[1] Sortare dupa categoria produselor\n"
+                             << setw(5) << " "
+                             << "[2] Sortare alfabetic A-Z\n"
+                             << setw(5) << " "
+                             << "[3] Sortare alfabetic Z-A\n"
+                             << setw(5) << " "
+                             << "[4] Sortare in ordine crescatoare dupa pret\n"
+                             << setw(5) << " "
+                             << "[5] Sortare in ordine descrescatoare dupa pret\n"
+                             << setw(5) << " "
+                             << "[6] Cautare produse dupa denumire\n"
+                             << setw(5) << " "
+                             << "[7] Cautare oras dupa ID\n"
+                             << setw(5) << " "
+                             << "[0] EXIT\n";
+
+                        underline(80, true);
+
+                        cout << setw(5) << " "
+                             << "Introduceti numarul meniului: ";
+
                         cin >> MENIU_3_2;
+
+                        switch (MENIU_3_2)
+                        {
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                        case 7:
+                            break;
+
+                        default:
+                            break;
+                        }
+
                     } while (MENIU_3_2 != 0);
                 }
-                    break;
+                break;
 
                 default:
                     break;
@@ -195,5 +282,6 @@ int main(void)
         }
 
     } while (MENIU != 0);
+
     return EXIT_SUCCESS;
 }
