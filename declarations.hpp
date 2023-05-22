@@ -41,9 +41,83 @@ struct HTTP_RESPONSE
     long status_cod;
 };
 
+typedef struct
+{
+    double distanta;
+    int durata;
+} GRAF_NEORIENTAT;
+
 class TRASEE_GPS
 {
+public: 
+    struct NOD_TRASEE_GPS
+    {
+        double distanta = 0.0;
+        int durata = 0;
+        char *start = nullptr;
+        char *destinatie = nullptr;
+        NOD_TRASEE_GPS *prev = nullptr;
+        NOD_TRASEE_GPS *next = nullptr;
 
+        NOD_TRASEE_GPS(double vDistanta, int vDurata, char *vStart, char *vDestinatie)
+        {
+            this->distanta = vDistanta;
+            this->durata = vDurata;
+            this->start = strdup(vStart);
+            this->destinatie = strdup(vDestinatie);
+            prev = nullptr;
+            next = nullptr;
+        }
+
+        ~NOD_TRASEE_GPS()
+        {
+            free(start);
+            free(destinatie);
+        }
+    };
+
+    NOD_TRASEE_GPS *head_gps = nullptr;
+    NOD_TRASEE_GPS *tail_gps = nullptr;
+
+public:
+    NOD_TRASEE_GPS *getHead()
+    {
+        return head_gps;
+    }
+
+    NOD_TRASEE_GPS *getTail()
+    {
+        return tail_gps;
+    }
+
+    void introducere_date_trasee_gps(double vDistanta, int vDurata, char *vStart, char *vDestinatie)
+    {
+        NOD_TRASEE_GPS *newnod = new NOD_TRASEE_GPS(vDistanta, vDurata, vStart, vDestinatie);
+
+        if (head_gps == nullptr)
+        {
+            head_gps = newnod;
+            tail_gps = newnod;
+        }
+        else
+        {
+            tail_gps->next = newnod;
+            newnod->prev = tail_gps;
+            tail_gps = newnod;
+        }
+    }
+
+    ~TRASEE_GPS()
+    {
+        NOD_TRASEE_GPS *ptr = head_gps;
+
+        while (ptr != nullptr)
+        {
+            NOD_TRASEE_GPS *temp = ptr;
+            ptr = ptr->next;
+            delete temp;
+        }
+    }
 };
 
 class AUTENTIFICARE
@@ -447,6 +521,7 @@ public:
     }
 };
 
+TRASEE_GPS trasee_gps;
 DEPOZIT depozit;
 ORAS oras;
 DETALII_PRODUS produs;
@@ -454,22 +529,24 @@ AUTENTIFICARE autentificare;
 TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
-std::vector<std::vector<double>> matrice_drum(N, std::vector<double>(N, 0.0));              // matricea de adiacenta ce contine distantele dintre noduri
-std::vector<bool> depozite_centralizate(N, false);                                          // stocare ID depozite centralizate                                          
-std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                           // stocare ID depozite cu stoc limitat
-std::vector<bool> orase_izolate(matrice_drum.size(), false);                                // stocare ID depozite izolate
-std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                        // stocare ID depozite o conexiune unica cu graful
-std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                          // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
-std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);     // stocarea traseului optim TSP (travel salesman problem)
+std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0}));       // matricea de adiacenta ce contine distantele dintre noduri
+std::vector<bool> depozite_centralizate(N, false);                                                          // stocare ID depozite centralizate                                          
+std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                                           // stocare ID depozite cu stoc limitat
+std::vector<bool> orase_izolate(matrice_drum.size(), false);                                                // stocare ID depozite izolate
+std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                                        // stocare ID depozite o conexiune unica cu graful
+std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                                          // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
+std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);                     // stocarea traseului optim TSP (travel salesman problem)
 
-long long unsigned int contor_log;                                                          // contorizeaza log-urile dintr-o singura rulare a programului
-int contor_noduri_graf;                                                                     // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
+long long unsigned int contor_log;                                                                          // contorizeaza log-urile dintr-o singura rulare a programului
+int contor_noduri_graf;                                                                                     // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
 
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
 bool trasee = false, traseu_completat = false, buffer = true;
-double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
+double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
+
+string _GET_API_KEY_(const string& config_file_path);
 
 size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);
 

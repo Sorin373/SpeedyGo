@@ -1,7 +1,7 @@
 #include "declarations.hpp"
 #include "logic.hpp"
 #include "database.hpp"
-#include "gps.hpp"
+#include "Maps_Client.hpp"
 
 using namespace std;
 
@@ -32,15 +32,6 @@ int main(void)
 
     if (start() == EXIT_FAILURE)
         return EXIT_FAILURE;
-
-    for (unsigned int i = 0; i < contor_noduri_graf; i++)
-    {
-        for (unsigned int j = 0; j < contor_noduri_graf; j++)
-            cout << matrice_drum[i][j] << " ";
-        cout << endl;
-    }
-
-    getch();
 
     do
     {
@@ -325,6 +316,8 @@ int main(void)
         case 5:
             _GPS_UPDATE_DATA_();
             _init_();
+            afisare_gps();
+            getch();
             break;
 
         default:

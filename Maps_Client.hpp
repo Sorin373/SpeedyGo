@@ -61,10 +61,6 @@ void _GPS_UPDATE_DATA_(void)
 {
     clear_screen();
 
-    ofstream ofs;
-    ofs.open("INFO_TRASEE.txt", ofstream::out | ofstream::trunc);
-    ofs.close();
-
     cout << "\n\n";
  
     string confi_file_path = "config.json";                                                 // schimba adresa in functie de unde se afla local API-ul gMaps
@@ -144,23 +140,52 @@ void _GPS_UPDATE_DATA_(void)
 
             json json_data = json::parse(response.body);
             double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
-            double duration = json_data["rows"][0]["elements"][0]["duration"]["value"];
+            string durata = json_data["rows"][0]["elements"][0]["duration"]["text"];
+
+            char *c_duration = (char *)malloc(MAXL * sizeof(char) + 1);
+            strcpy(c_duration, durata.c_str());
+
+            int ore = 0, minute = 0;
+            bool ora_f = false;
+
+            char *ptr = strtok(c_duration, " ");
+            while (ptr != nullptr)
+            {
+                char *endPtr;
+                int val = strtol(ptr, &endPtr, 10);
+
+                if (endPtr != ptr)
+                {
+                    if (!ora_f)
+                    {
+                        ore = val;
+                        ora_f = true;
+                    }
+                    else
+                        minute = val;
+                }
+
+                ptr = strtok(nullptr, " ");
+            }
 
             string s_oras1(oras1);
             string s_oras2(oras2);
 
             result /= 1000;
-            duration /= 60;
+            int durata_finala = ore * 60 + minute;
 
             distante_orase[s_oras1 + "_" + s_oras2] = result;
             distante_orase[s_oras2 + "_" + s_oras1] = result;
 
-            ofstream gout;
-            gout.open("INFO_TRASEE.txt", ios::app);
+            if (result == 1)
+                result = 0;
 
-            gout << result << " " << duration << " " << oras1 << "_" << oras2 << "\n";
+            if (result == 0)
+                durata_finala = 0;   
 
-            gout.close();
+            trasee_gps.introducere_date_trasee_gps(result, durata_finala, oras1, oras2);
+
+            free(c_duration);
         }
         else
             success_flag = false;

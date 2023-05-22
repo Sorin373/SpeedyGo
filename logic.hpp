@@ -4,7 +4,6 @@
 #include "declarations.hpp"
 
 using namespace std;
-using namespace nlohmann;
 using namespace sql;
 
 bool autentificare_cont(void)
@@ -50,85 +49,60 @@ bool autentificare_cont(void)
     free(_UN);
     free(_P);
 
+    _GPS_UPDATE_DATA_();
+
     return EXIT_SUCCESS;
+}
+
+void afisare_gps(void)
+{
+    for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
+    {
+        cout << date_gps->start << " " << date_gps->destinatie << " " << date_gps->distanta << " " << date_gps->durata << endl;
+    }
 }
 
 bool _init_(void)
 {
-    ifstream file_json("distante_orase.json");
-    if (!file_json.is_open())
+    for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
     {
-        cerr << "Eroare\n";
-        return EXIT_FAILURE;
+        char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
+        char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
+
+        int ID_Oras1 = 0, ID_Oras2 = 0;
+
+        double distanta = date_gps->distanta;
+        int durata = date_gps->durata;
+
+        strcpy(oras1, date_gps->start);
+        strcpy(oras2, date_gps->destinatie);
+
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        {
+            if (strcasecmp(date_oras->denumire_oras, oras1) == 0)
+            {
+                ID_Oras1 = stoi(date_oras->ID_Oras);
+                break;
+            }
+        }
+
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        {
+            if (strcasecmp(date_oras->denumire_oras, oras2) == 0)
+            {
+                ID_Oras2 = stoi(date_oras->ID_Oras);
+                break;
+            }
+        }
+
+        matrice_drum[ID_Oras1][ID_Oras2].distanta = matrice_drum[ID_Oras2][ID_Oras1].distanta = distanta;
+        matrice_drum[ID_Oras1][ID_Oras2].durata = matrice_drum[ID_Oras2][ID_Oras1].durata = durata;
+
+        free(oras1);
+        free(oras2);
     }
-    else
-    {
-        json data;
-        try
-        {
-            file_json >> data;
-        }
-        catch (json::parse_error &e)
-        {
-            std::cerr << e.what() << '\n';
-            return EXIT_FAILURE;
-        }
 
-        for (json::iterator i = data.begin(); i != data.end(); i++)
-        {
-            char *pereche_orase = (char *)malloc(MAXL * sizeof(char) + 1);
-            char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
-            char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
-
-            strcpy(pereche_orase, i.key().c_str());
-
-            char *ptr = strtok(pereche_orase, "_");
-
-            int ID_Oras1 = 0, ID_Oras2 = 0;
-            bool nume_oras = true;
-
-            if (ptr != NULL)
-            {
-                strcpy(oras1, ptr);
-                ptr = strtok(NULL, "_");
-            }
-
-            if (ptr != NULL)
-                strcpy(oras2, ptr);
-
-            ORAS::NOD_ORAS *p = oras.getHead();
-            bool exit = false;
-            while (p != nullptr && !exit)
-            {
-                if (strcasecmp(p->denumire_oras, oras1) == 0)
-                {
-                    exit = true;
-                    ID_Oras1 = stoi(p->ID_Oras);
-                }
-                p = p->next;
-            }
-
-            exit = false;
-            p = oras.getHead();
-
-            while (p != nullptr && !exit)
-            {
-                if (strcasecmp(p->denumire_oras, oras2) == 0)
-                {
-                    exit = true;
-                    ID_Oras2 = stoi(p->ID_Oras);
-                }
-                p = p->next;
-            }
-
-            matrice_drum[ID_Oras1][ID_Oras2] = matrice_drum[ID_Oras2][ID_Oras1] = i.value();
-
-            free(pereche_orase);
-            free(oras1);
-            free(oras2);
-        }
-        return EXIT_SUCCESS;
-    }
+    return EXIT_SUCCESS;
 }
 
 void nr_max_caractere_den(void)
@@ -408,7 +382,7 @@ void depozite_conectate(int ID_Depozit)
 
     int contor = 0;
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
-        if (matrice_drum[ID_Depozit][i] != 0)
+        if (matrice_drum[ID_Depozit][i].distanta != 0)
             temp_depozite[i] = true;
 
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
@@ -421,7 +395,7 @@ void depozite_conectate(int ID_Depozit)
                 if (_ID == i && strcasecmp(t_denumire, date_oras->denumire_oras) != 0)
                 {
                     cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5)
-                         << " " << matrice_drum[ID_Depozit][i] << "km\n";
+                         << " " << matrice_drum[ID_Depozit][i].distanta << "km\n";
                     break;
                 }
                 date_oras = date_oras->next;
@@ -474,7 +448,7 @@ void cautare_orase_izolate(void)
     {
         bool izolat = true;
         for (unsigned int j = 0; j < contor_noduri_graf && izolat; j++)
-            if (matrice_drum[i][j] > 0)
+            if (matrice_drum[i][j].distanta > 0)
                 izolat = false;
         if (izolat)
             orase_izolate[i] = true;
@@ -654,9 +628,9 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
         for (unsigned int j = 0; j < contor_noduri_graf; j++)
         {
-            double distanta_noua = distanta[min_index] + matrice_drum[min_index][j];
+            double distanta_noua = distanta[min_index] + matrice_drum[min_index][j].distanta;
 
-            if (!visited[j] && matrice_drum[min_index][j] > 0 && distanta_noua < distanta[j])
+            if (!visited[j] && matrice_drum[min_index][j].distanta > 0 && distanta_noua < distanta[j])
             {
                 distanta[j] = distanta_noua;
                 distanta_minima[j] = min_index;
@@ -960,7 +934,7 @@ void afisare_depozite_unic_drum(void)
     {
         int contor = 0;
         for (unsigned int j = 0; j < contor_noduri_graf; j++)
-            if (matrice_drum[i][j] != 0)
+            if (matrice_drum[i][j].distanta != 0)
             {
                 contor++;
                 if (contor >= 2)
@@ -1039,7 +1013,7 @@ bool valid_hc(void)
             return false;
 
     if (contor_stiva > 1)
-        if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]] == 0)
+        if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]].distanta == 0)
             return false;
 
     if (contor_stiva > 1)
@@ -1051,14 +1025,25 @@ bool valid_hc(void)
 
 void determinare_ciclu_hc_minim(void)
 {
-    double cost_curent = 0.0;
-    for (unsigned int i = 1; i <= contor_stiva; i++)
-        cost_curent += stiva[i];
-    if (cost_curent < cost_minim_TSP)
+    double suma_dist = 0.0;
+    int suma_durata = 0;
+
+    for (int i = 1; i <= contor_stiva; i++)
     {
-        cost_minim_TSP = cost_curent;
-        traseu_minim_TSP.assign(stiva.begin(), stiva.end());
-        contor_traseu_TSP = contor_stiva;
+        suma_dist += matrice_drum[stiva[i]][stiva[i + 1]].distanta;
+        suma_durata += matrice_drum[stiva[i]][stiva[i + 1]].durata;
+    }
+
+    if (suma_dist < cost_minim_TSP || (suma_dist == cost_minim_TSP && suma_durata < durata_minima_TSP))
+    {
+        cost_minim_TSP = suma_dist;
+        durata_minima_TSP = suma_durata;
+
+        for (int i = 1; i <= contor_stiva; i++)
+        {
+            traseu_minim_TSP[i] = stiva[i];
+            contor_traseu_TSP = contor_stiva;
+        }
     }
 }
 
@@ -1137,7 +1122,7 @@ bool valid_ac(void)
     }
 
     if (contor_stiva > 1)
-        if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]] == 0)
+        if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]].distanta == 0)
             return false;
 
     if (contor_stiva > 1)
@@ -1149,13 +1134,20 @@ bool valid_ac(void)
 
 void determinare_traseu_minim(void)
 {
-    double suma_dist = 0;
-    for (int i = 1; i < contor_stiva; i++)
-        suma_dist += matrice_drum[stiva[i]][stiva[i + 1]];
+    double suma_dist = 0.0;
+    int suma_durata = 0;
 
-    if (suma_dist < cost_minim_TSP)
+    for (int i = 1; i < contor_stiva; i++)
+    {
+        suma_dist += matrice_drum[stiva[i]][stiva[i + 1]].distanta;
+        suma_durata += matrice_drum[stiva[i]][stiva[i + 1]].durata;
+    }
+
+    if (suma_dist < cost_minim_TSP || (suma_dist == cost_minim_TSP && suma_durata < durata_minima_TSP))
     {
         cost_minim_TSP = suma_dist;
+        durata_minima_TSP = suma_durata;
+
         for (int i = 1; i <= contor_stiva; i++)
         {
             traseu_minim_TSP[i] = stiva[i];
@@ -1193,7 +1185,10 @@ void back_ac(void)
 void TSP(void)
 {
     cout << setw(5) << " "
-         << "Se calculeaza traseul cel mai optim...\n";
+         << "\033[3m"
+         << "Se calculeaza traseul cel mai optim..."
+         << "\033[0m"
+         << "\n";
 
     bool izolat = false;
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
@@ -1207,38 +1202,17 @@ void TSP(void)
     {
         back_hc();
         clear_screen();
-        if (!traseu_minim_TSP.empty())
-        {
-            cout << cost_minim_TSP << "\n";
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
-                cout << traseu_minim_TSP[i] << " ";
-        }
-        else
-        {
-            traseu_minim_TSP.clear();
-            stiva.clear();
-            back_ac();
-            clear_screen();
-            if (!traseu_minim_TSP.empty())
-            {
-                cout << cost_minim_TSP << "\n";
-                for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
-                    cout << traseu_minim_TSP[i] << " ";
-            }
-            else
-                cout << "Toate depozitele sunt izolate!";
-        }
-    }
-    else
-    {
-        back_ac();
-        clear_screen();
-        cout << "\n\n";
+        cout << "\n";
+
         if (!traseu_minim_TSP.empty())
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km\n"
-                 << setw(5) << " ";
+                 << "\033[1m"
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << setw(5) << " "
+                 << "\033[0m";
+
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
                 for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -1253,6 +1227,80 @@ void TSP(void)
                     }
                 }
             }
+
+            cout << "\n";
+            underline(190, false);
+        }
+        else
+        {
+            traseu_minim_TSP.clear();
+            stiva.clear();
+
+            back_ac();
+            clear_screen();
+            cout << "\n";
+
+            if (!traseu_minim_TSP.empty())
+            {
+                cout << setw(5) << " "
+                     << "\033[1m"
+                     << "Lungime traseu: " << cost_minim_TSP << "km"
+                     << "Durata traseu: " << durata_minima_TSP << "\n"
+                     << setw(5) << " "
+                     << "\033[0m";
+
+                for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+                {
+                    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                    {
+                        int ID = stoi(date_oras->ID_Oras);
+                        if (ID == traseu_minim_TSP[i])
+                        {
+                            cout << date_oras->denumire_oras;
+                            if (i < contor_traseu_TSP)
+                                cout << " --> ";
+                            break;
+                        }
+                    }
+                }
+                cout << "\n";
+                underline(190, false);
+            }
+            else
+                cout << "Toate depozitele sunt izolate!";
+        }
+    }
+    else
+    {
+        back_ac();
+        clear_screen();
+
+        cout << "\n";
+        if (!traseu_minim_TSP.empty())
+        {
+            cout << setw(5) << " "
+                 << "\033[1m"
+                 << "Lungime traseu: " << cost_minim_TSP << "km" << setw(2) << " | "
+                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << setw(5) << " "
+                 << "\033[0m";
+
+            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+            {
+                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                {
+                    int ID = stoi(date_oras->ID_Oras);
+                    if (ID == traseu_minim_TSP[i])
+                    {
+                        cout << date_oras->denumire_oras;
+                        if (i < contor_traseu_TSP)
+                            cout << " --> ";
+                        break;
+                    }
+                }
+            }
+            cout << "\n";
+            underline(190, false);
         }
         else
             cout << "Toate depozitele sunt izolate!";
@@ -1369,7 +1417,7 @@ void pagina_principala_TSP(void)
 
     underline(190, false);
 
-    distanta_parcursa += matrice_drum[traseu_minim_TSP[1]][traseu_minim_TSP[2]];
+    distanta_parcursa += matrice_drum[traseu_minim_TSP[1]][traseu_minim_TSP[2]].distanta;
 }
 
 void pagina_finala_TSP(void)
@@ -1442,8 +1490,6 @@ void pagina_finala_TSP(void)
         free(input);
         pagina_principala_TSP();
     }
-
-    free(input);
 }
 
 void pagina_stanga_TSP(void)
@@ -1454,8 +1500,7 @@ void pagina_stanga_TSP(void)
     {
         pagina--;
 
-        orase_stoc_limitat[traseu_minim_TSP[pagina]] = true;
-        distanta_parcursa -= matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina - 1]];
+        distanta_parcursa -= matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
 
         cout << "\n";
         if (!traseu_minim_TSP.empty())
@@ -1520,45 +1565,7 @@ void pagina_stanga_TSP(void)
 
         if (depozite_centralizate[traseu_minim_TSP[pagina]] == false)
         {
-            if (orase_stoc_limitat[traseu_minim_TSP[pagina]])
-            {
-                for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-                {
-                    int ID_PRODUS = stoi(date_produs->ID_Produs);
-                    double cantitate_necesara = 0.0;
-
-                    for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
-                    {
-                        int ID_PRODUS_DEPOZIT = stoi(date_depozit->ID_Produs), ID_DEPOZIT = stoi(date_depozit->ID_Oras);
-                        if (ID_DEPOZIT == traseu_minim_TSP[pagina] && !orase_izolate[ID_DEPOZIT])
-                        {
-                            if (ID_PRODUS_DEPOZIT == ID_PRODUS)
-                            {
-                                cantitate_necesara += date_depozit->Cantitate_Produs;
-                                cantitate_necesara = VAL_STOC_MAXIM - cantitate_necesara;
-                                cost_aprovizionare_total -= cantitate_necesara * date_produs->pret_produs;
-                                cantitate_totala_aprovizionata -= cantitate_necesara;
-
-                                cout << setw(5 + 1) << " [" << date_depozit->ID_Produs << "] " << setw(8) << " " << date_produs->Denumire_Produs
-                                     << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5) << " " << cantitate_necesara << " buc. /";
-
-                                for (APROVIZIONARE::NOD_APROVIZIONARE *date_aprovizionare = aprovizionare.getHead(); date_aprovizionare != nullptr; date_aprovizionare = date_aprovizionare->next)
-                                {
-                                    int ID_PRODUS_APROVIZIONARE = stoi(date_aprovizionare->ID_Produs);
-                                    if (ID_PRODUS_APROVIZIONARE == ID_PRODUS)
-                                    {
-                                        cout << date_aprovizionare->cantitate_totala_necesara << " buc.";
-                                        date_aprovizionare->cantitate_totala_necesara += cantitate_necesara;
-                                        break;
-                                    }
-                                }
-                                cout << "\n";
-                            }
-                        }
-                    }
-                }
-            }
-            else
+            if (orase_stoc_limitat[traseu_minim_TSP[pagina]] == false)
                 cout << setw(5) << " "
                      << "\033[1m"
                      << "Depozitul a fost aprovizionat!\n"
@@ -1596,6 +1603,9 @@ void pagina_dreapta_TSP(void)
 
     if (pagina < contor_traseu_TSP)
     {
+        if (pagina > 2)
+            distanta_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
+
         pagina++;
 
         cout << "\n";
@@ -1723,7 +1733,8 @@ void pagina_dreapta_TSP(void)
         underline(190, false);
 
         orase_stoc_limitat[traseu_minim_TSP[pagina]] = false;
-        distanta_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]];
+        if (pagina - 1 == 1)
+            distanta_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
     }
     else
         pagina_finala_TSP();
@@ -1741,7 +1752,9 @@ void parcurgere_traseu_TSP(void)
         else
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km\n"
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << setw(5) << " "
+                 << "Durata traseu: " << durata_minima_TSP << "\n"
                  << setw(5) << " ";
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
@@ -1774,8 +1787,7 @@ void parcurgere_traseu_TSP(void)
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    cout << "\n\n\n"
-         << setw(5) << " "
+    cout << setw(5) << " "
          << "[S] Start: ";
     cin >> input;
 
@@ -2183,7 +2195,7 @@ void cautare_depozit_denumire(void)
          << "Scrieti 'exit' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
          << "Introduceti numele depozitului: ";
-    
+
     cin.get();
     cin.get(I_Denumire, MAXL);
 
