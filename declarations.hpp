@@ -586,7 +586,7 @@ void sistem_aprovizionare_independent(void);
 
 void sortare_date_depozit(void);
 
-void sortare_date_produs(void);
+void sortare_date_produs(const int tip_sortare);
 
 void sortare_date_oras(const int tip_sortare);
 
@@ -594,7 +594,7 @@ void nr_max_caractere_den(void);
 
 bool verificare_orase_stoc_limitat(void);
 
-void cautare_produse_ID(const int ID_Depozit);
+void cautare_produse_ID_stoc_limitat(const int ID_Depozit);
 
 void depozite_conectate(const int ID_Depozit);
 
@@ -661,5 +661,15 @@ void sortare_tip_depozit(void);
 void sortare_depozit_alfabetic(const int tip_sortare);
 
 void cautare_oras_ID(void);
+
+void sortare_categorie_produs(void);
+
+void sortare_produs_alfabetic(const int tip_sortare);
+
+void cautare_produs_ID(void);
+
+void cautare_produs_denumire(void);
+
+void free_memory(void);
 
 #endif

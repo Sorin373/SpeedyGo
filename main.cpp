@@ -17,13 +17,24 @@ bool start(void)
     cautare_orase_izolate();
     sortare_date_depozit();
     sortare_date_oras(1);
-    sortare_date_produs();
+    sortare_date_produs(1);
     produse_transport_TSP();
     nr_max_caractere_den();
 
     traseu_minim_TSP[1] = -1;
 
     return EXIT_SUCCESS;
+}
+
+void free_memory(void)
+{
+    matrice_drum.clear();
+    depozite_centralizate.clear();
+    orase_stoc_limitat.clear();
+    orase_izolate.clear();
+    orase_conexiune_unica.clear();
+    stiva.clear();
+    traseu_minim_TSP.clear();
 }
 
 int main(void)
@@ -213,9 +224,12 @@ int main(void)
 
                                 afisare_date_tabel_oras();
 
-                                cout << setw(5) << " " << "[1] Cautare depozit dupa denumire\n"
-                                     << setw(5) << " " << "[2] Cautare depozit dupa ID\n"
-                                     << setw(5) << " " << "[0] EXIT\n";
+                                cout << setw(5) << " "
+                                     << "[1] Cautare depozit dupa denumire\n"
+                                     << setw(5) << " "
+                                     << "[2] Cautare depozit dupa ID\n"
+                                     << setw(5) << " "
+                                     << "[0] EXIT\n";
 
                                 underline(80, true);
 
@@ -264,15 +278,19 @@ int main(void)
                              << setw(5) << " "
                              << "[3] Sortare alfabetic Z-A\n"
                              << setw(5) << " "
-                             << "[4] Sortare in ordine crescatoare dupa pret\n"
+                             << "[4] Sortare descrescatoare dupa ID\n"
                              << setw(5) << " "
-                             << "[5] Sortare in ordine descrescatoare dupa pret\n"
+                             << "[5] Sortare in ordine crescatoare dupa pret\n"
                              << setw(5) << " "
-                             << "[6] Cautare date\n"
+                             << "[6] Sortare in ordine descrescatoare dupa pret\n"
+                             << setw(5) << " "
+                             << "[7] Reseteaza afisarea\n"
+                             << setw(5) << " "
+                             << "[8] Cautare date\n"
                              << setw(5) << " "
                              << "[0] EXIT\n";
 
-                        underline(80, true);
+                        underline(85, true);
 
                         cout << setw(5) << " "
                              << "Introduceti numarul meniului: ";
@@ -282,18 +300,63 @@ int main(void)
                         switch (MENIU_3_2)
                         {
                         case 1:
+                            sortare_categorie_produs();
                             break;
                         case 2:
+                            sortare_produs_alfabetic(1);
                             break;
                         case 3:
+                            sortare_produs_alfabetic(2);
                             break;
                         case 4:
+                            sortare_date_produs(2);
                             break;
                         case 5:
+                            sortare_produs_pret(1);
                             break;
                         case 6:
+                            sortare_produs_pret(2);
                             break;
                         case 7:
+                            sortare_date_produs(1);
+                            break;
+                        case 8:
+                            unsigned int MENIU_3_2_8;
+
+                            do
+                            {
+                                clear_screen();
+
+                                afisare_date_tabel_produs();
+
+                                cout << setw(5) << " "
+                                     << "[1] Cautare produs dupa denumire\n"
+                                     << setw(5) << " "
+                                     << "[2] Cautare produs dupa ID\n"
+                                     << setw(5) << " "
+                                     << "[0] EXIT\n";
+
+                                underline(80, true);
+
+                                cout << setw(5) << " "
+                                     << "Introduceti numarul meniului: ";
+                                cin >> MENIU_3_2_8;
+
+                                switch (MENIU_3_2_8)
+                                {
+                                case 1:
+                                    cautare_produs_denumire();
+                                    break;
+                                case 2:
+                                    cautare_produs_ID();
+                                    break;
+                                
+                                default:
+                                    break;
+                                }
+
+                            } while (MENIU_3_2_8 != 0);
+
                             break;
 
                         default:
@@ -316,8 +379,6 @@ int main(void)
         case 5:
             _GPS_UPDATE_DATA_();
             _init_();
-            afisare_gps();
-            getch();
             break;
 
         default:
@@ -325,6 +386,8 @@ int main(void)
         }
 
     } while (MENIU != 0);
+
+    free_memory();
 
     return EXIT_SUCCESS;
 }

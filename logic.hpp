@@ -206,7 +206,7 @@ void afisare_date_tabel_produs(void)
     {
         cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
              << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
-             << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 7) << " ";
+             << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
         snprintf(pret, MAXL, "%g", date_produs->pret_produs);
@@ -250,7 +250,7 @@ void sortare_date_depozit(void)
     } while (!vsort);
 }
 
-void sortare_date_produs(void)
+void sortare_date_produs(const int tip_sortare)
 {
     bool vsort = true;
 
@@ -266,15 +266,32 @@ void sortare_date_produs(void)
         while (ptr->next != l_ptr)
         {
             int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
-            if (_ID1 > _ID2)
-            {
-                swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                swap(ptr->pret_produs, ptr->next->pret_produs);
 
-                vsort = false;
+            if (tip_sortare == 1)
+            {
+                if (_ID1 > _ID2)
+                {
+                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                    swap(ptr->pret_produs, ptr->next->pret_produs);
+
+                    vsort = false;
+                }
             }
+            else if (tip_sortare == 2)
+            {
+                if (_ID1 < _ID2)
+                {
+                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                    swap(ptr->pret_produs, ptr->next->pret_produs);
+
+                    vsort = false;
+                }
+            }
+
             ptr = ptr->next;
         }
         l_ptr = ptr;
@@ -336,7 +353,7 @@ bool verificare_orase_stoc_limitat(void)
     return false;
 }
 
-void cautare_produse_ID(const int ID_Depozit)
+void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
 {
     clear_screen();
 
@@ -537,7 +554,7 @@ void vizualizare_status_stoc(void)
                     switch (sMENIU)
                     {
                     case 1:
-                        cautare_produse_ID(_ID_Oras);
+                        cautare_produse_ID_stoc_limitat(_ID_Oras);
                         getch();
                         break;
                     case 2:
@@ -1930,9 +1947,7 @@ void consola_mysql(void)
 
                 cout << "\n";
                 for (int i = 1; i <= cnt_coloane; i++)
-                {
                     cout << setw(5) << " " << setw(coloane[i - 1] + 5) << res->getMetaData()->getColumnName(i) << " ";
-                }
                 cout << "\n";
 
                 underline(90, true);
@@ -1948,14 +1963,16 @@ void consola_mysql(void)
 
                 underline(90, true);
 
+                accesareDate();
+
                 delete stmt;
                 delete res;
             }
             catch (SQLException &e)
             {
-                cout << "Error code: " << e.getErrorCode() << "\n";
-                cout << "Error message: " << e.what() << "\n";
-                cout << "SQLState: " << e.getSQLState() << "\n";
+                cout << setw(5) << " " << "Error code: " << e.getErrorCode() << "\n";
+                cout << setw(5) << " " << "Error message: " << e.what() << "\n";
+                cout << setw(5) << " " << "SQLState: " << e.getSQLState() << "\n";
             }
         }
     }
@@ -1973,7 +1990,7 @@ void sortare_tip_depozit(void)
     char *input = (char *)malloc((MAXL + 1) * sizeof(char));
 
     cout << setw(5) << " "
-         << "Introceti tipul: ";
+         << "Introduceti tipul: ";
     cin >> input;
 
     if (strcasecmp(input, "0") == 0)
@@ -2265,6 +2282,389 @@ void cautare_depozit_denumire(void)
         getch();
         free(I_Denumire);
         cautare_depozit_denumire();
+    }
+}
+
+void sortare_categorie_produs(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_produs();
+
+    char *input = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    cout << setw(5) << " "
+         << "Scrie '0' pentru a te intoarce...\n\n";
+
+    cout << setw(5) << " "
+         << "Introduceti tipul: ";
+    cin >> input;
+
+    if (strcasecmp(input, "0") == 0)
+    {
+        free(input);
+        return;
+    }
+
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(7) << " "
+         << "TABEL-PRODUS\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Produs"
+         << setw(4) << " "
+         << "Denumire_Produs"
+         << setw(cmax_denumire_produse - 8) << " "
+         << "Categorie_Produs"
+         << setw(10) << " "
+         << "Pret_Produs\n";
+
+    underline(85, true);
+
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+        if (strcasecmp(date_produs->Categorie_Produs, input) == 0)
+        {
+            cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
+                 << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
+                 << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+
+            char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+            snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+
+            cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+
+            free(pret);
+        }
+
+    underline(85, true);
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "Apasa 'ENTER' pentru a te intoarce...";
+
+    free(input);
+    getch();
+    sortare_categorie_produs();
+}
+
+void sortare_produs_alfabetic(const int tip_sortare)
+{
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(7) << " "
+         << "TABEL-PRODUS\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Produs"
+         << setw(4) << " "
+         << "Denumire_Produs"
+         << setw(cmax_denumire_produse - 8) << " "
+         << "Categorie_Produs"
+         << setw(10) << " "
+         << "Pret_Produs\n";
+
+    underline(85, true);
+
+    bool sort = true;
+
+    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr;
+    DETALII_PRODUS::NOD_DETALII_PRODUS *l_ptr = nullptr;
+
+    if (produs.getHead() == nullptr)
+        return;
+
+    do
+    {
+        sort = true;
+        ptr = produs.getHead();
+
+        while (ptr->next != l_ptr)
+        {
+            if (tip_sortare == 1)
+            {
+                if (strcmp(ptr->Denumire_Produs, ptr->next->Denumire_Produs) > 0)
+                {
+                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                    swap(ptr->pret_produs, ptr->next->pret_produs);
+
+                    sort = false;
+                }
+            }
+            else if (tip_sortare == 2)
+            {
+                if (strcmp(ptr->Denumire_Produs, ptr->next->Denumire_Produs) < 0)
+                {
+                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                    swap(ptr->pret_produs, ptr->next->pret_produs);
+
+                    sort = false;
+                }
+            }
+            ptr = ptr->next;
+        }
+        l_ptr = ptr;
+    } while (!sort);
+}
+
+void sortare_produs_pret(const int tip_sortare)
+{
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(7) << " "
+         << "TABEL-PRODUS\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Produs"
+         << setw(4) << " "
+         << "Denumire_Produs"
+         << setw(cmax_denumire_produse - 8) << " "
+         << "Categorie_Produs"
+         << setw(10) << " "
+         << "Pret_Produs\n";
+
+    underline(85, true);
+
+    bool sort = true;
+
+    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr;
+    DETALII_PRODUS::NOD_DETALII_PRODUS *l_ptr = nullptr;
+
+    if (produs.getHead() == nullptr)
+        return;
+
+    do
+    {
+        sort = true;
+        ptr = produs.getHead();
+
+        while (ptr->next != l_ptr)
+        {
+            if (tip_sortare == 1)
+            {
+                if (ptr->pret_produs > ptr->next->pret_produs)
+                {
+                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                    swap(ptr->pret_produs, ptr->next->pret_produs);
+
+                    sort = false;
+                }
+            }
+            else if (tip_sortare == 2)
+            {
+                if (ptr->pret_produs < ptr->next->pret_produs)
+                {
+                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
+                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
+                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
+                    swap(ptr->pret_produs, ptr->next->pret_produs);
+
+                    sort = false;
+                }
+            }
+            ptr = ptr->next;
+        }
+        l_ptr = ptr;
+    } while (!sort);
+}
+
+void cautare_produs_ID(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_produs();
+
+    char *I_ID = (char *)malloc(MAXL * sizeof(char) + 1);
+    bool gasit = false;
+
+    cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "\033[0m" << setw(5) << " "
+         << "Introduceti ID-ul: ";
+    cin >> I_ID;
+
+    clear_screen();
+
+    if (strcasecmp(I_ID, "exit") == 0)
+    {
+        free(I_ID);
+        return;
+    }
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(7) << " "
+         << "TABEL-PRODUS\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Produs"
+         << setw(4) << " "
+         << "Denumire_Produs"
+         << setw(cmax_denumire_produse - 8) << " "
+         << "Categorie_Produs"
+         << setw(10) << " "
+         << "Pret_Produs\n";
+    underline(80, true);
+
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    {
+        if (strcasecmp(date_produs->ID_Produs, I_ID) == 0)
+        {
+            gasit = true;
+
+            cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
+                 << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
+                 << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+
+            char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+            snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+
+            cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+
+            free(pret);
+            break;
+        }
+    }
+
+    underline(80, true);
+
+    if (!gasit)
+    {
+        clear_screen();
+
+        cout << "\n\n"
+             << setw(5) << " "
+             << "ID-ul introdus nu este valid...\n";
+
+        free(I_ID);
+        sleepcp(1500);
+        cautare_produs_ID();
+    }
+    else
+    {
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Apasa 'ENTER' pentru a te intoarce...";
+
+        getch();
+        free(I_ID);
+        cautare_produs_ID();
+    }
+}
+
+void cautare_produs_denumire(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_produs();
+
+    char *I_Denumire = (char *)malloc(MAXL * sizeof(char) + 1);
+    bool gasit = false;
+
+    cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "\033[0m" << setw(5) << " "
+         << "Introduceti numele produsului: ";
+
+    cin.get();
+    cin.get(I_Denumire, MAXL);
+
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌──────────────┐\n";
+    cout << setw(7) << " "
+         << "TABEL-PRODUS\n";
+    cout << setw(5) << " "
+         << "└──────────────┘\n\n";
+
+    if (strcasecmp(I_Denumire, "exit") == 0)
+    {
+        free(I_Denumire);
+        return;
+    }
+
+    cout << setw(5) << " "
+         << "ID_Produs"
+         << setw(4) << " "
+         << "Denumire_Produs"
+         << setw(cmax_denumire_produse - 8) << " "
+         << "Categorie_Produs"
+         << setw(10) << " "
+         << "Pret_Produs\n";
+
+    underline(85, true);
+
+    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    {
+        if (strcasecmp(date_produs->Denumire_Produs, I_Denumire) == 0)
+        {
+            gasit = true;
+
+            cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
+                 << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
+                 << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+
+            char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+            snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+
+            cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+
+            free(pret);
+            break;
+        }
+    }
+
+    underline(80, true);
+
+    if (!gasit)
+    {
+        clear_screen();
+
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Numele introdus nu este valid...\n";
+
+        free(I_Denumire);
+        sleepcp(1500);
+        cautare_produs_denumire();
+    }
+    else
+    {
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Apasa 'ENTER' pentru a te intoarce...";
+
+        getch();
+        free(I_Denumire);
+        cautare_produs_denumire();
     }
 }
 
