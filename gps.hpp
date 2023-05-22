@@ -6,6 +6,23 @@
 using namespace std;
 using namespace nlohmann;
 
+string _GET_API_KEY_(const string& config_file_path)
+{
+    ifstream config_file(config_file_path);
+    if (!config_file.is_open())
+    {
+        cerr << "Eroare: " << config_file_path << "\n";
+        return nullptr;
+    }
+
+    json config_data;
+    config_file >> config_data;
+
+    string API_KEY = config_data["API_KEY"];
+
+    return API_KEY;
+}
+
 size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer)
 {
     size_t total_size = size * nmemb;
@@ -49,7 +66,9 @@ void _GPS_UPDATE_DATA_(void)
 
     cout << "\n\n";
 
-    string API_KEY = getenv("API_KEY");
+    string confi_file_path = "config.json";                 // schimba adresa in functie de unde se afla local API-ul gMaps
+    string API_KEY = _GET_API_KEY_(confi_file_path);
+
     unordered_map<string, double> distante_orase;
 
     ifstream file_json("distante_orase.json");
@@ -136,7 +155,7 @@ void _GPS_UPDATE_DATA_(void)
             distante_orase[s_oras2 + "_" + s_oras1] = result;
 
             ofstream gout;
-            gout.open("test_file.txt", ios::app);
+            gout.open("INFO_TRASEE.txt", ios::app);
 
             gout << oras1 << "_" << oras2 << " " << result << " " << duration << "\n";
 

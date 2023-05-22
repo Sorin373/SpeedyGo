@@ -1,0 +1,39 @@
+Brasov_Brasov 0 0
+Brasov_Bucuresti 182.244 161.583
+Brasov_Pitesti 142.263 164.983
+Brasov_Ramnicu Valcea 175.184 214.9
+Brasov_Sibiu 142.848 133.183
+Bucuresti_Brasov 182.501 159.967
+Bucuresti_Bucuresti 0 0
+Bucuresti_Constanta 224.753 144.217
+Bucuresti_Sibiu 279.047 236.967
+Cluj-Napoca_Cluj-Napoca 0 0
+Cluj-Napoca_Suceava 299.978 310.133
+Constanta_Bucuresti 229.705 147.5
+Constanta_Constanta 0 0
+Iasi_Iasi 0 0
+Pitesti_Brasov 140.187 159.25
+Pitesti_Pitesti 0 0
+Pitesti_Ramnicu Valcea 62.222 69.2333
+Pitesti_Sibiu 162.253 159.717
+Ramnicu Valcea_Brasov 173.586 209.7
+Ramnicu Valcea_Pitesti 65.665 70.9333
+Ramnicu Valcea_Ramnicu Valcea 0 0
+Ramnicu Valcea_Sibiu 102.311 97.5333
+Ramnicu Valcea_Suceava 462.971 482.183
+Ramnicu Valcea_Targu Mures 220.895 210.717
+Sibiu_Brasov 142.636 134.867
+Sibiu_Bucuresti 275.951 236.517
+Sibiu_Pitesti 163.119 160.917
+Sibiu_Ramnicu Valcea 99.582 96.9
+Sibiu_Sibiu 0 0
+Sibiu_Suceava 394.302 402.233
+Suceava_Cluj-Napoca 299.352 306.083
+Suceava_Ramnicu Valcea 490.94 482.95
+Suceava_Sibiu 394.215 399.317
+Suceava_Suceava 0 0
+Targu Mures_Ramnicu Valcea 220.497 211.983
+Targu Mures_Targu Mures 0 0
+Targu Mures_Timisoara 348.622 235.7
+Timisoara_Targu Mures 333.728 233.05
+Timisoara_Timisoara 0 0
