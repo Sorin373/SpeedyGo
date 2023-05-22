@@ -196,12 +196,11 @@ void afisare_date_tabel_depozit(void)
     DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
     while (ptr != nullptr)
     {
-        if (ptr->Cantitate_Produs == 0)
-        {
-            cout << "ID_Produs: " << ptr->ID_Produs << ", ";
-            cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-            cout << "ID_oras: " << ptr->ID_Oras << endl;
-        }
+
+        cout << "ID_Produs: " << ptr->ID_Produs << ", ";
+        cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
+        cout << "ID_oras: " << ptr->ID_Oras << endl;
+
         ptr = ptr->next;
     }
 }
@@ -250,14 +249,17 @@ void sortare_date_depozit(void)
 {
     bool vsort = true;
 
-    DEPOZIT::NOD_DEPOZIT *l_date_depozit = nullptr;
+    DEPOZIT::NOD_DEPOZIT *ptr;
+    DEPOZIT::NOD_DEPOZIT *l_ptr = nullptr;
+
     if (depozit.getHead() == nullptr)
         return;
     do
     {
         vsort = true;
-        DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
-        while (ptr->next != nullptr)
+        ptr = depozit.getHead();
+
+        while (ptr->next != l_ptr)
         {
             int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
             if (_ID1 > _ID2)
@@ -265,11 +267,12 @@ void sortare_date_depozit(void)
                 swap(ptr->ID_Produs, ptr->next->ID_Produs);
                 swap(ptr->ID_Oras, ptr->next->ID_Oras);
                 swap(ptr->Cantitate_Produs, ptr->next->Cantitate_Produs);
+
                 vsort = false;
             }
             ptr = ptr->next;
         }
-        l_date_depozit = ptr;
+        l_ptr = ptr;
     } while (!vsort);
 }
 
@@ -277,14 +280,16 @@ void sortare_date_produs(void)
 {
     bool vsort = true;
 
-    DETALII_PRODUS::NOD_DETALII_PRODUS *l_date_produs = nullptr;
+    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr;
+    DETALII_PRODUS::NOD_DETALII_PRODUS *l_ptr = nullptr;
+
     if (produs.getHead() == nullptr)
         return;
     do
     {
         vsort = true;
-        DETALII_PRODUS::NOD_DETALII_PRODUS *ptr = produs.getHead();
-        while (ptr->next != nullptr)
+        ptr = produs.getHead();
+        while (ptr->next != l_ptr)
         {
             int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
             if (_ID1 > _ID2)
@@ -293,39 +298,59 @@ void sortare_date_produs(void)
                 swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
                 swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
                 swap(ptr->pret_produs, ptr->next->pret_produs);
+
                 vsort = false;
             }
             ptr = ptr->next;
         }
-        l_date_produs = ptr;
+        l_ptr = ptr;
     } while (!vsort);
 }
 
-void sortare_date_oras(void)
+void sortare_date_oras(const int tip_sortare)
 {
     bool vsort = true;
 
-    ORAS::NOD_ORAS *l_date_oras = nullptr;
+    ORAS::NOD_ORAS *ptr;
+    ORAS::NOD_ORAS *l_ptr = nullptr;
+
     if (oras.getHead() == nullptr)
         return;
     do
     {
         vsort = true;
-        ORAS::NOD_ORAS *ptr = oras.getHead();
-        while (ptr->next != nullptr)
+        ptr = oras.getHead();
+
+        while (ptr->next != l_ptr)
         {
             int _ID1 = stoi(ptr->ID_Oras), _ID2 = stoi(ptr->next->ID_Oras);
-            if (_ID1 > _ID2)
+
+            if (tip_sortare == 1)
             {
-                swap(ptr->ID_Oras, ptr->next->ID_Oras);
-                swap(ptr->denumire_oras, ptr->next->denumire_oras);
-                swap(ptr->latitudine, ptr->next->latitudine);
-                swap(ptr->longitudine, ptr->next->longitudine);
-                vsort = false;
+                if (_ID1 > _ID2)
+                {
+                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
+                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
+                    swap(ptr->latitudine, ptr->next->latitudine);
+                    swap(ptr->longitudine, ptr->next->longitudine);
+                    vsort = false;
+                }
             }
+            else if (tip_sortare == 2)
+            {
+                if (_ID1 < _ID2)
+                {
+                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
+                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
+                    swap(ptr->latitudine, ptr->next->latitudine);
+                    swap(ptr->longitudine, ptr->next->longitudine);
+                    vsort = false;
+                }
+            }
+
             ptr = ptr->next;
         }
-        l_date_oras = ptr;
+        l_ptr = ptr;
     } while (!vsort);
 }
 
@@ -1935,7 +1960,8 @@ void sortare_tip_depozit(void)
 
     char *input = (char *)malloc((MAXL + 1) * sizeof(char));
 
-    cout << setw(5) << " " << "Introceti tipul: ";
+    cout << setw(5) << " "
+         << "Introceti tipul: ";
     cin >> input;
 
     if (strcasecmp(input, "0") == 0)
@@ -1976,11 +2002,257 @@ void sortare_tip_depozit(void)
 
         underline(80, true);
 
-        cout << "\n\n" << setw(5) << " " << "Apasa 'ENTER' pentru a te intoarce...";
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Apasa 'ENTER' pentru a te intoarce...";
 
         free(input);
         getch();
         sortare_tip_depozit();
+    }
+}
+
+void sortare_depozit_alfabetic(const int tip_sortare)
+{
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌───────────────┐\n";
+    cout << setw(6) << " "
+         << " TABEL-DEPOZIT\n";
+    cout << setw(5) << " "
+         << "└───────────────┘\n\n";
+
+    cout << setw(5) << " "
+         << "ID_Oras"
+         << setw(5) << " "
+         << "Denumire_Oras"
+         << setw(5) << " "
+         << "Tip_Depozit"
+         << setw(5) << " "
+         << "Latitudine"
+         << setw(5) << " "
+         << "Longitudine\n";
+    underline(80, true);
+
+    bool sort = true;
+
+    ORAS::NOD_ORAS *ptr;
+    ORAS::NOD_ORAS *l_ptr = nullptr;
+
+    if (oras.getHead() == nullptr)
+        return;
+
+    do
+    {
+        sort = true;
+        ptr = oras.getHead();
+
+        while (ptr->next != l_ptr)
+        {
+            if (tip_sortare == 1)
+            {
+                if (strcmp(ptr->denumire_oras, ptr->next->denumire_oras) > 0)
+                {
+                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
+                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
+                    swap(ptr->latitudine, ptr->next->latitudine);
+                    swap(ptr->longitudine, ptr->next->longitudine);
+                    swap(ptr->tip_depozit, ptr->next->tip_depozit);
+
+                    sort = false;
+                }
+            }
+            else if (tip_sortare == 2)
+            {
+                if (strcmp(ptr->denumire_oras, ptr->next->denumire_oras) < 0)
+                {
+                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
+                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
+                    swap(ptr->latitudine, ptr->next->latitudine);
+                    swap(ptr->longitudine, ptr->next->longitudine);
+                    swap(ptr->tip_depozit, ptr->next->tip_depozit);
+
+                    sort = false;
+                }
+            }
+
+            ptr = ptr->next;
+        }
+        l_ptr = ptr;
+    } while (!sort);
+}
+
+void cautare_oras_ID(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_oras();
+
+    char *I_ID = (char *)malloc(MAXL * sizeof(char) + 1);
+    bool gasit = false;
+
+    cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "\033[0m" << setw(5) << " "
+         << "Introduceti ID-ul: ";
+    cin >> I_ID;
+
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌───────────────┐\n";
+    cout << setw(6) << " "
+         << " TABEL-DEPOZIT\n";
+    cout << setw(5) << " "
+         << "└───────────────┘\n\n";
+
+    if (strcasecmp(I_ID, "exit") == 0)
+    {
+        free(I_ID);
+        return;
+    }
+
+    cout << setw(5) << " "
+         << "ID_Oras"
+         << setw(5) << " "
+         << "Denumire_Oras"
+         << setw(5) << " "
+         << "Tip_Depozit"
+         << setw(5) << " "
+         << "Latitudine"
+         << setw(5) << " "
+         << "Longitudine\n";
+    underline(80, true);
+
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
+        if (strcasecmp(date_oras->ID_Oras, I_ID) == 0)
+        {
+            gasit = true;
+
+            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
+                 << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
+                 << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+                 << " " << date_oras->longitudine << "\u00B0\n";
+
+            break;
+        }
+    }
+
+    underline(80, true);
+
+    if (!gasit)
+    {
+        clear_screen();
+
+        cout << "\n\n"
+             << setw(5) << " "
+             << "ID-ul introdus nu este valid...\n";
+
+        free(I_ID);
+        sleepcp(1500);
+        cautare_oras_ID();
+    }
+    else
+    {
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Apasa 'ENTER' pentru a te intoarce...";
+
+        getch();
+        free(I_ID);
+        cautare_oras_ID();
+    }
+}
+
+void cautare_depozit_denumire(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_oras();
+
+    char *I_Denumire = (char *)malloc(MAXL * sizeof(char) + 1);
+    bool gasit = false;
+
+    cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "\033[0m" << setw(5) << " "
+         << "Introduceti numele depozitului: ";
+    
+    cin.get();
+    cin.get(I_Denumire, MAXL);
+
+    clear_screen();
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌───────────────┐\n";
+    cout << setw(6) << " "
+         << " TABEL-DEPOZIT\n";
+    cout << setw(5) << " "
+         << "└───────────────┘\n\n";
+
+    if (strcasecmp(I_Denumire, "exit") == 0)
+    {
+        free(I_Denumire);
+        return;
+    }
+
+    cout << setw(5) << " "
+         << "ID_Oras"
+         << setw(5) << " "
+         << "Denumire_Oras"
+         << setw(5) << " "
+         << "Tip_Depozit"
+         << setw(5) << " "
+         << "Latitudine"
+         << setw(5) << " "
+         << "Longitudine\n";
+    underline(80, true);
+
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
+        if (strcasecmp(date_oras->denumire_oras, I_Denumire) == 0)
+        {
+            gasit = true;
+
+            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
+                 << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
+                 << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+                 << " " << date_oras->longitudine << "\u00B0\n";
+
+            break;
+        }
+    }
+
+    underline(80, true);
+
+    if (!gasit)
+    {
+        clear_screen();
+
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Numele introdus nu este valid...\n";
+
+        free(I_Denumire);
+        sleepcp(1500);
+        cautare_depozit_denumire();
+    }
+    else
+    {
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Apasa 'ENTER' pentru a te intoarce...";
+
+        getch();
+        free(I_Denumire);
+        cautare_depozit_denumire();
     }
 }
 

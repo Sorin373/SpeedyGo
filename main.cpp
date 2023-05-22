@@ -1,6 +1,7 @@
 #include "declarations.hpp"
 #include "logic.hpp"
 #include "database.hpp"
+#include "gps.hpp"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ bool start(void)
     cautare_orase_stoc_limitat();
     cautare_orase_izolate();
     sortare_date_depozit();
-    sortare_date_oras();
+    sortare_date_oras(1);
     sortare_date_produs();
     produse_transport_TSP();
     nr_max_caractere_den();
@@ -171,9 +172,11 @@ int main(void)
                              << setw(5) << " "
                              << "[3] Sortare alfabetic Z-A\n"
                              << setw(5) << " "
-                             << "[4] Cautare oras dupa denumire\n"
+                             << "[4] Sortare descrescatoare dupa ID\n"
                              << setw(5) << " "
-                             << "[5] Cautare oras dupa ID\n"
+                             << "[5] Reseteaza afisarea\n"
+                             << setw(5) << " "
+                             << "[6] Cautare date\n"
                              << setw(5) << " "
                              << "[0] EXIT\n";
 
@@ -190,12 +193,51 @@ int main(void)
                             sortare_tip_depozit();
                             break;
                         case 2:
+                            sortare_depozit_alfabetic(1);
                             break;
                         case 3:
+                            sortare_depozit_alfabetic(2);
                             break;
                         case 4:
+                            sortare_date_oras(2);
                             break;
                         case 5:
+                            sortare_date_oras(1);
+                            break;
+                        case 6:
+                            unsigned int MENIU_3_1_6;
+
+                            do
+                            {
+                                clear_screen();
+
+                                afisare_date_tabel_oras();
+
+                                cout << setw(5) << " " << "[1] Cautare depozit dupa denumire\n"
+                                     << setw(5) << " " << "[2] Cautare depozit dupa ID\n"
+                                     << setw(5) << " " << "[0] EXIT\n";
+
+                                underline(80, true);
+
+                                cout << setw(5) << " "
+                                     << "Introduceti numarul meniului: ";
+                                cin >> MENIU_3_1_6;
+
+                                switch (MENIU_3_1_6)
+                                {
+                                case 1:
+                                    cautare_depozit_denumire();
+                                    break;
+                                case 2:
+                                    cautare_oras_ID();
+                                    break;
+
+                                default:
+                                    break;
+                                }
+
+                            } while (MENIU_3_1_6 != 0);
+
                             break;
 
                         default:
@@ -226,9 +268,7 @@ int main(void)
                              << setw(5) << " "
                              << "[5] Sortare in ordine descrescatoare dupa pret\n"
                              << setw(5) << " "
-                             << "[6] Cautare produse dupa denumire\n"
-                             << setw(5) << " "
-                             << "[7] Cautare oras dupa ID\n"
+                             << "[6] Cautare date\n"
                              << setw(5) << " "
                              << "[0] EXIT\n";
 
@@ -274,7 +314,8 @@ int main(void)
             consola_mysql();
             break;
         case 5:
-            getch();
+            _GPS_UPDATE_DATA_();
+            _init_();
             break;
 
         default:

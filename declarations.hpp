@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <cmath>
 #include <vector>
+#include <set>
+#include <unordered_map>
 #include <limits.h>
 #include <string.h>
 #include <nlohmann/json.hpp>
@@ -14,6 +16,7 @@
 #include <mysql_error.h>
 #include <cppconn/statement.h>
 #include <cppconn/resultset.h>
+#include <curl/curl.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -32,6 +35,12 @@
 
 constexpr int N = 11;       // se schimba in functie de numarul depozitelor (trebuie sa coincida cu numarul celor din baza de date sau se strica programul)
                             // daca contorul este de la 0 numarul depozitelor ramane la fel
+
+struct HTTP_RESPONSE
+{
+    string body;
+    long status_cod;
+};
 
 class AUTENTIFICARE
 {
@@ -456,6 +465,12 @@ double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, ca
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
 
+size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);
+
+HTTP_RESPONSE _http_request_(const string &url);
+
+void _GPS_UPDATE_DATA_(void);
+
 bool start(void);
 
 char getch(void);
@@ -490,7 +505,7 @@ void sortare_date_depozit(void);
 
 void sortare_date_produs(void);
 
-void sortare_date_oras(void);
+void sortare_date_oras(const int tip_sortare);
 
 void nr_max_caractere_den(void);
 
@@ -559,5 +574,9 @@ void afisare_detalii_SpeedyGo(sql::Connection *con);
 void consola_mysql(void);
 
 void sortare_tip_depozit(void);
+
+void sortare_depozit_alfabetic(const int tip_sortare);
+
+void cautare_oras_ID(void);
 
 #endif
