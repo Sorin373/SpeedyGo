@@ -33,13 +33,17 @@
 #define VAL_STOC_MINIM 5
 #define VAL_STOC_MAXIM 50
 
-constexpr int N = 11;       // se schimba in functie de numarul depozitelor (trebuie sa coincida cu numarul celor din baza de date sau se strica programul)
-                            // daca contorul este de la 0 numarul depozitelor ramane la fel
+constexpr int N = 1001;
 
 struct HTTP_RESPONSE
 {
     string body;
     long status_cod;
+};
+
+class TRASEE_GPS
+{
+
 };
 
 class AUTENTIFICARE
@@ -459,6 +463,8 @@ std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());              
 std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);     // stocarea traseului optim TSP (travel salesman problem)
 
 long long unsigned int contor_log;                                                          // contorizeaza log-urile dintr-o singura rulare a programului
+int contor_noduri_graf;                                                                     // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
+
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
 bool trasee = false, traseu_completat = false, buffer = true;
 double cost_minim_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;

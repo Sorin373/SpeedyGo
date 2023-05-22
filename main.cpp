@@ -33,6 +33,15 @@ int main(void)
     if (start() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
+    {
+        for (unsigned int j = 0; j < contor_noduri_graf; j++)
+            cout << matrice_drum[i][j] << " ";
+        cout << endl;
+    }
+
+    getch();
+
     do
     {
         clear_screen();

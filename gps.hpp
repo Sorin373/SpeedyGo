@@ -47,14 +47,11 @@ HTTP_RESPONSE _http_request_(const string &url)
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_body);
 
     CURLcode res = curl_easy_perform(curl);
+    
     if (res != CURLE_OK)
-    {
         cerr << "Eroare: " << curl_easy_strerror(res) << "\n";
-    }
     else
-    {
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-    }
 
     curl_easy_cleanup(curl);
     return HTTP_RESPONSE{response_body, response_code};
@@ -64,9 +61,13 @@ void _GPS_UPDATE_DATA_(void)
 {
     clear_screen();
 
-    cout << "\n\n";
+    ofstream ofs;
+    ofs.open("INFO_TRASEE.txt", ofstream::out | ofstream::trunc);
+    ofs.close();
 
-    string confi_file_path = "config.json";                 // schimba adresa in functie de unde se afla local API-ul gMaps
+    cout << "\n\n";
+ 
+    string confi_file_path = "config.json";                                                 // schimba adresa in functie de unde se afla local API-ul gMaps
     string API_KEY = _GET_API_KEY_(confi_file_path);
 
     unordered_map<string, double> distante_orase;
@@ -141,7 +142,7 @@ void _GPS_UPDATE_DATA_(void)
                  << setw(5) << " " << lat_oras1 << "\u00B0" << " " << long_oras1 << "\u00B0" << " " 
                  << lat_oras2 << "\u00B0" << " " << long_oras2 << "\u00B0" << "\n";
 
-            nlohmann::json json_data = nlohmann::json::parse(response.body);
+            json json_data = json::parse(response.body);
             double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
             double duration = json_data["rows"][0]["elements"][0]["duration"]["value"];
 
@@ -157,7 +158,7 @@ void _GPS_UPDATE_DATA_(void)
             ofstream gout;
             gout.open("INFO_TRASEE.txt", ios::app);
 
-            gout << oras1 << "_" << oras2 << " " << result << " " << duration << "\n";
+            gout << result << " " << duration << " " << oras1 << "_" << oras2 << "\n";
 
             gout.close();
         }
@@ -187,7 +188,7 @@ void _GPS_UPDATE_DATA_(void)
         if (success_flag)
             cout << setw(5) << " " << "Done!\n";
         else
-            cout << setw(5) << " " << "Nu s-a putut calcula!\n";
+            cout << setw(5) << " " << "Nu s-au putut calcula datele!\n";
 
         underline(100, true);
     }

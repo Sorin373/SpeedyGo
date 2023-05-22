@@ -356,7 +356,7 @@ void sortare_date_oras(const int tip_sortare)
 
 bool verificare_orase_stoc_limitat(void)
 {
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (orase_stoc_limitat[i])
             return true;
     return false;
@@ -394,7 +394,7 @@ void cautare_produse_ID(const int ID_Depozit)
 void depozite_conectate(int ID_Depozit)
 {
     cout << "\n";
-    vector<bool> temp_depozite(N, false);
+    vector<bool> temp_depozite(contor_noduri_graf, false);
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     char *t_denumire = (char *)malloc(MAXL * sizeof(char) + 1);
 
@@ -407,11 +407,11 @@ void depozite_conectate(int ID_Depozit)
     }
 
     int contor = 0;
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (matrice_drum[ID_Depozit][i] != 0)
             temp_depozite[i] = true;
 
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (temp_depozite[i] == true)
         {
             date_oras = oras.getHead();
@@ -470,10 +470,10 @@ void cautare_orase_stoc_limitat(void)
 
 void cautare_orase_izolate(void)
 {
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
         bool izolat = true;
-        for (unsigned int j = 0; j < matrice_drum.size() && izolat; j++)
+        for (unsigned int j = 0; j < contor_noduri_graf && izolat; j++)
             if (matrice_drum[i][j] > 0)
                 izolat = false;
         if (izolat)
@@ -493,7 +493,7 @@ void vizualizare_status_stoc(void)
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     int cmax = 0, contor_linii = 0;
 
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (orase_stoc_limitat[i])
         {
             date_oras = oras.getHead();
@@ -588,10 +588,10 @@ void vizualizare_status_stoc(void)
 void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
     int contor = 0;
-    vector<bool> temp(matrice_drum.size(), false);
+    vector<bool> temp(contor_noduri_graf, false);
     temp.assign(orase_stoc_limitat.begin(), orase_stoc_limitat.end());
 
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
         contor = 0;
         if (i != start)
@@ -635,15 +635,15 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
 
 void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
-    vector<bool> visited(matrice_drum.size(), false);
+    vector<bool> visited(contor_noduri_graf, false);
     distanta[start] = 0.0;
 
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
         int min_index = 0;
         double min_dist = numeric_limits<double>::infinity();
 
-        for (unsigned int j = 0; j < matrice_drum.size(); j++)
+        for (unsigned int j = 0; j < contor_noduri_graf; j++)
             if (!visited[j] && distanta[j] < min_dist)
             {
                 min_index = j;
@@ -652,7 +652,7 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 
         visited[min_index] = true;
 
-        for (unsigned int j = 0; j < matrice_drum.size(); j++)
+        for (unsigned int j = 0; j < contor_noduri_graf; j++)
         {
             double distanta_noua = distanta[min_index] + matrice_drum[min_index][j];
 
@@ -672,7 +672,7 @@ void afisare_depozite_centralizare(void)
          << "Depozite centralizate\n";
     underline(40, true);
 
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
         if (depozite_centralizate[i])
             for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -808,10 +808,10 @@ void sistem_aprovizionare_independent(void)
 {
     if (!trasee)
     {
-        for (unsigned int i = 0; i < matrice_drum.size(); i++)
+        for (unsigned int i = 0; i < contor_noduri_graf; i++)
         {
-            vector<int> distanta_minima(N, -1);
-            vector<double> distanta(N, numeric_limits<double>::infinity());
+            vector<int> distanta_minima(contor_noduri_graf, -1);
+            vector<double> distanta(contor_noduri_graf, numeric_limits<double>::infinity());
 
             if (depozite_centralizate[i])
             {
@@ -956,10 +956,10 @@ void afisare_depozite_unic_drum(void)
     underline(75, true);
 
     bool gasit = false;
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
         int contor = 0;
-        for (unsigned int j = 0; j < matrice_drum.size(); j++)
+        for (unsigned int j = 0; j < contor_noduri_graf; j++)
             if (matrice_drum[i][j] != 0)
             {
                 contor++;
@@ -1017,7 +1017,7 @@ void init_stiva_hc(void)
 
 bool succesor_hc(void)
 {
-    if (stiva[contor_stiva] < N - 1)
+    if (stiva[contor_stiva] < contor_noduri_graf - 1)
     {
         stiva[contor_stiva]++;
         return true;
@@ -1027,7 +1027,7 @@ bool succesor_hc(void)
 
 bool solutie_hc(void)
 {
-    if (contor_stiva == N)
+    if (contor_stiva == contor_noduri_graf)
         return true;
     return false;
 }
@@ -1097,7 +1097,7 @@ void init_stiva_ac(void)
 
 bool succesor_ac(void)
 {
-    if (stiva[contor_stiva] < N - 1)
+    if (stiva[contor_stiva] < contor_noduri_graf - 1)
     {
         stiva[contor_stiva]++;
         return true;
@@ -1107,16 +1107,16 @@ bool succesor_ac(void)
 
 bool solutie_ac(void)
 {
-    if (contor_stiva == N + 1)
+    if (contor_stiva == contor_noduri_graf + 1)
         return true;
     return false;
 }
 
 bool valid_ac(void)
 {
-    if (contor_stiva == N + 1)
+    if (contor_stiva == contor_noduri_graf + 1)
     {
-        for (unsigned int i = 0; i < matrice_drum.size(); i++)
+        for (unsigned int i = 0; i < contor_noduri_graf; i++)
         {
             bool gasit = false;
             if (orase_stoc_limitat[i] == true && !orase_izolate[i])
@@ -1196,7 +1196,7 @@ void TSP(void)
          << "Se calculeaza traseul cel mai optim...\n";
 
     bool izolat = false;
-    for (unsigned int i = 0; i < matrice_drum.size(); i++)
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (orase_izolate[i] == true)
         {
             izolat = true;

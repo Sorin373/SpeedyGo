@@ -133,6 +133,8 @@ bool accesareDate(void)
 
             oras.insearareDateOrase(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
 
+            contor_noduri_graf++;
+
             free(tempIdOras);
             free(tempDenumireOras);
             free(tempTipDepozit);
