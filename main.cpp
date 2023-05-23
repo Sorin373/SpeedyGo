@@ -37,7 +37,7 @@ void free_memory(void)
     traseu_minim_TSP.clear();
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
     unsigned int MENIU;
 
@@ -379,6 +379,7 @@ int main(void)
         case 5:
             _GPS_UPDATE_DATA_();
             _init_();
+            getch();
             break;
 
         default:

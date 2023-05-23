@@ -1349,12 +1349,14 @@ void pagina_principala_TSP(void)
     clear_screen();
 
     distanta_parcursa = 0.0;
+    durata_parcursa = 0;
 
     cout << "\n";
     if (!traseu_minim_TSP.empty())
     {
         cout << setw(5) << " "
-             << "Lungime traseu: " << cost_minim_TSP << "km\n"
+             << "Lungime traseu: " << cost_minim_TSP << "km | "
+             << "Durata traseu: " << durata_minima_TSP << "min\n"
              << setw(5) << " ";
         for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
         {
@@ -1396,10 +1398,13 @@ void pagina_principala_TSP(void)
         }
     }
 
-    cout << setw(120) << " "
+    cout << setw(100) << " "
          << "\033[1m"
          << "Distanta parcursa: "
-         << "\033[0m" << distanta_parcursa << "km\n";
+         << "\033[0m" << distanta_parcursa << "km | "
+         << "\033[1m"
+         << "Durata de calatorie: "
+         << "\033[0m" << durata_parcursa << "min\n";
 
     cout << "\n\n"
          << setw(5) << " "
@@ -1435,6 +1440,7 @@ void pagina_principala_TSP(void)
     underline(190, false);
 
     distanta_parcursa += matrice_drum[traseu_minim_TSP[1]][traseu_minim_TSP[2]].distanta;
+    durata_parcursa += matrice_drum[traseu_minim_TSP[1]][traseu_minim_TSP[2]].durata;
 }
 
 void pagina_finala_TSP(void)
@@ -1518,13 +1524,16 @@ void pagina_stanga_TSP(void)
         pagina--;
 
         distanta_parcursa -= matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
+        durata_parcursa -= matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].durata;
 
         cout << "\n";
         if (!traseu_minim_TSP.empty())
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km\n"
+                 << "Lungime traseu: " << cost_minim_TSP << " | "
+                 << "Durata traseu: " << durata_minima_TSP << "min\n"
                  << setw(5) << " ";
+
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
                 for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -1568,10 +1577,13 @@ void pagina_stanga_TSP(void)
             }
         }
 
-        cout << setw(120) << " "
+        cout << setw(100) << " "
              << "\033[1m"
              << "Distanta parcursa: "
-             << "\033[0m" << distanta_parcursa << "km\n";
+             << "\033[0m" << distanta_parcursa << "km | "
+             << "\033[1m"
+             << "Durata de calatorie: "
+             << "\033[0m" << durata_parcursa << "min\n";
 
         cout << "\n\n"
              << setw(5) << " "
@@ -1621,7 +1633,10 @@ void pagina_dreapta_TSP(void)
     if (pagina < contor_traseu_TSP)
     {
         if (pagina > 2)
+        {
             distanta_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
+            durata_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].durata;
+        }
 
         pagina++;
 
@@ -1629,7 +1644,8 @@ void pagina_dreapta_TSP(void)
         if (!traseu_minim_TSP.empty())
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km\n"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
+                 << "Durata traseu: " << durata_minima_TSP << "min\n"
                  << setw(5) << " ";
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
@@ -1674,10 +1690,13 @@ void pagina_dreapta_TSP(void)
             }
         }
 
-        cout << setw(120) << " "
+        cout << setw(100) << " "
              << "\033[1m"
              << "Distanta parcursa: "
-             << "\033[0m" << distanta_parcursa << "km\n";
+             << "\033[0m" << distanta_parcursa << "km | "
+             << "\033[1m"
+             << "Durata de calatorie: "
+             << "\033[0m" << durata_parcursa << "min\n";
 
         cout << "\n\n"
              << setw(5) << " "
@@ -1751,7 +1770,10 @@ void pagina_dreapta_TSP(void)
 
         orase_stoc_limitat[traseu_minim_TSP[pagina]] = false;
         if (pagina - 1 == 1)
+        {
             distanta_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
+            durata_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].durata;
+        }
     }
     else
         pagina_finala_TSP();
@@ -1769,9 +1791,9 @@ void parcurgere_traseu_TSP(void)
         else
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
                  << setw(5) << " "
-                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << "Durata traseu: " << durata_minima_TSP << "min\n"
                  << setw(5) << " ";
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
@@ -1970,9 +1992,12 @@ void consola_mysql(void)
             }
             catch (SQLException &e)
             {
-                cout << setw(5) << " " << "Error code: " << e.getErrorCode() << "\n";
-                cout << setw(5) << " " << "Error message: " << e.what() << "\n";
-                cout << setw(5) << " " << "SQLState: " << e.getSQLState() << "\n";
+                cout << setw(5) << " "
+                     << "Error code: " << e.getErrorCode() << "\n";
+                cout << setw(5) << " "
+                     << "Error message: " << e.what() << "\n";
+                cout << setw(5) << " "
+                     << "SQLState: " << e.getSQLState() << "\n";
             }
         }
     }

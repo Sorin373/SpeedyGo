@@ -176,9 +176,9 @@ public:
 
         NOD_DEPOZIT(char *vID_Produs, char *vID_Oras, double vCantitate_Produs)
         {
-            ID_Produs = strdup(vID_Produs);
-            ID_Oras = strdup(vID_Oras);
-            Cantitate_Produs = vCantitate_Produs;
+            this->ID_Produs = strdup(vID_Produs);
+            this->ID_Oras = strdup(vID_Oras);
+            this->Cantitate_Produs = vCantitate_Produs;
             prev = nullptr;
             next = nullptr;
         }
@@ -248,10 +248,10 @@ public:
 
         NOD_DETALII_PRODUS(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs)
         {
-            ID_Produs = strdup(vID_Produs);
-            Denumire_Produs = strdup(vDenumire_Produs);
-            Categorie_Produs = strdup(vCategorie_Produs);
-            pret_produs = vPret_Produs;
+            this->ID_Produs = strdup(vID_Produs);
+            this->Denumire_Produs = strdup(vDenumire_Produs);
+            this->Categorie_Produs = strdup(vCategorie_Produs);
+            this->pret_produs = vPret_Produs;
             next = nullptr;
             prev = nullptr;
         }
@@ -323,11 +323,11 @@ public:
 
         NOD_ORAS(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine)
         {
-            ID_Oras = strdup(vID_Oras);
-            denumire_oras = strdup(vDenumire_Oras);
-            tip_depozit = strdup(vTip_Depozit);
-            latitudine = vLatitudine;
-            longitudine = vLongitudine;
+            this->ID_Oras = strdup(vID_Oras);
+            this->denumire_oras = strdup(vDenumire_Oras);
+            this->tip_depozit = strdup(vTip_Depozit);
+            this->latitudine = vLatitudine;
+            this->longitudine = vLongitudine;
             next = nullptr;
             prev = nullptr;
         }
@@ -542,7 +542,7 @@ int contor_noduri_graf;                                                         
 
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
 bool trasee = false, traseu_completat = false, buffer = true;
-double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
+double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
 
