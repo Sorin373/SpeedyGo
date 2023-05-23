@@ -2,6 +2,7 @@
 #include "logic.hpp"
 #include "database.hpp"
 #include "Maps_Client.hpp"
+#include "gnuplot-iostream.h"
 
 using namespace std;
 
@@ -390,6 +391,7 @@ int main(int argc, char *argv[])
     } while (MENIU != 0);
 
     free_memory();
+    clear_screen();
 
     return EXIT_SUCCESS;
 }
