@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
         clear_screen();
 
         cout << "\n\n";
-        cout << setw(30) << " "
+        cout << setw(28) << " "
              << "┌───────┐\n";
-        cout << setw(32) << " "
-             << "MENIU\n";
         cout << setw(30) << " "
+             << "MENIU\n";
+        cout << setw(28) << " "
              << "└───────┘\n";
         underline(60, true);
 
@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
              << "[3] Vizualizare baza de date\n"
              << setw(5) << " "
              << "[4] SQL Query Tool\n"
+             << setw(5) << " "
+             << "[5] Actualizare trasee GPS\n"
              << setw(5) << " "
              << "[0] EXIT\n";
 
@@ -84,22 +86,22 @@ int main(int argc, char *argv[])
                 clear_screen();
 
                 cout << "\n\n";
+                cout << setw(18) << " "
+                     << "┌──────────────────┐\n";
                 cout << setw(19) << " "
-                     << "┌───────────────────┐\n";
-                cout << setw(20) << " "
-                     << "MENIU APROVIZIONARE\n";
-                cout << setw(19) << " "
-                     << "└───────────────────┘\n";
+                     << "GESTIONARE STOCURI\n";
+                cout << setw(18) << " "
+                     << "└──────────────────┘\n";
                 underline(50, true);
 
                 cout << setw(5) << " "
-                     << "[1] Trasee independente de aprovizionare\n"
+                     << "[1] Ruta optima a aprovizionarii depozitelor\n"
                      << setw(5) << " "
-                     << "[2] Traseu optim de aprovizionare\n"
+                     << "[2] Trasee optime punct-la-punct\n"
                      << setw(5) << " "
                      << "[3] Depozite izolate\n"
                      << setw(5) << " "
-                     << "[4] Depozite cu un singur drum conector\n"
+                     << "[4] Depozite cu o singură ruta de conexiune\n"
                      << setw(5) << " "
                      << "[0] EXIT\n";
                 underline(50, true);
@@ -111,10 +113,10 @@ int main(int argc, char *argv[])
                 switch (MENIU_1)
                 {
                 case 1:
-                    sistem_aprovizionare_independent();
+                    parcurgere_traseu_TSP();
                     break;
                 case 2:
-                    parcurgere_traseu_TSP();
+                    sistem_aprovizionare_independent();
                     break;
                 case 3:
                     afisare_depozite_izolate();
@@ -379,7 +381,6 @@ int main(int argc, char *argv[])
         case 5:
             _GPS_UPDATE_DATA_();
             _init_();
-            getch();
             break;
 
         default:

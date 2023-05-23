@@ -6,6 +6,22 @@
 using namespace std;
 using namespace sql;
 
+void mascare_text_on(void)
+{
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+void mascare_text_off(void)
+{
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag |= ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
 bool autentificare_cont(void)
 {
     clear_screen();
@@ -16,18 +32,21 @@ bool autentificare_cont(void)
 
     cout << "\n\n"
          << setw(10) << " "
-         << "CONECTARE BAZA DE DATE\n";
-    underline(40, true);
+         << "CONEXIUNE LA BAZA DE DATE\n";
+    cout << setw(4) << " "
+         << "======================================\n\n";
 
-    cout << setw(4) << " "
-         << "SERVER NAME: ";
+    cout << setw(5) << " "
+         << "Nume server: ";
     cin >> _HN;
-    cout << setw(4) << " "
-         << "USERNAME: ";
+    cout << setw(5) << " "
+         << "Nume utilizator: ";
     cin >> _UN;
-    cout << setw(4) << " "
-         << "PASSWORD: ";
+    cout << setw(5) << " "
+         << "Introduceti parola: ";
+    mascare_text_on();
     cin >> _P;
+    mascare_text_off();
 
     if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE)
         return EXIT_FAILURE;
@@ -380,11 +399,19 @@ void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
     }
 
     underline(55, true);
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "Apasa 'ENTER' pentru a te intoarce...";
 }
 
 void depozite_conectate(int ID_Depozit)
 {
-    cout << "\n";
+    clear_screen();
+
+    cout << "\n\n";
+    underline(70, true);
+
     vector<bool> temp_depozite(contor_noduri_graf, false);
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     char *t_denumire = (char *)malloc(MAXL * sizeof(char) + 1);
@@ -412,12 +439,18 @@ void depozite_conectate(int ID_Depozit)
                 if (_ID == i && strcasecmp(t_denumire, date_oras->denumire_oras) != 0)
                 {
                     cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5)
-                         << " " << matrice_drum[ID_Depozit][i].distanta << "km\n";
+                         << " (" << matrice_drum[ID_Depozit][i].distanta << "km | " << matrice_drum[ID_Depozit][i].durata << "min)\n";
                     break;
                 }
                 date_oras = date_oras->next;
             }
         }
+
+    underline(70, true);
+
+    cout << setw(5) << " "
+         << "Apasa 'ENTER' pentru a te intoarce...";
+
     free(t_denumire);
 }
 
@@ -476,10 +509,15 @@ void vizualizare_status_stoc(void)
 {
     clear_screen();
 
-    cout << "\n\n"
-         << setw(5) << " "
-         << "Orase cu stocuri insuficiente:\n";
-    underline(100, true);
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "┌───────────────────────┐\n";
+    cout << setw(6) << " "
+         << "Orase cu stocuri reduse\n";
+    cout << setw(5) << " "
+         << "└───────────────────────┘\n";
+
+    underline(80, true);
 
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     int cmax = 0, contor_linii = 0;
@@ -493,7 +531,7 @@ void vizualizare_status_stoc(void)
                 int _ID = stoi(date_oras->ID_Oras);
                 if (_ID == i)
                 {
-                    cout << setw(5) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
+                    cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
                          << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5) << " ";
                     contor_linii++;
                     if (contor_linii % 3 == 0)
@@ -504,7 +542,12 @@ void vizualizare_status_stoc(void)
         }
 
     cout << "\n";
-    underline(100, true);
+    underline(80, true);
+
+    cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "\033[0m";
 
     char *t_ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
     cout << setw(5) << " "
@@ -532,9 +575,12 @@ void vizualizare_status_stoc(void)
                 {
                     clear_screen();
 
-                    cout << "\n\n"
-                         << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
-                         << " | Tip depozit: " << date_oras->tip_depozit << "\n";
+                    cout << "\n\n";
+                    cout << setw(5) << " "
+                         << "┌────────────────────────────────────────────┐\n";
+                    cout << setw(7) << " " << date_oras->denumire_oras << " | Tip depozit: " << date_oras->tip_depozit << "\n";
+                    cout << setw(5) << " "
+                         << "└────────────────────────────────────────────┘\n";
 
                     underline(50, true);
 
@@ -1790,10 +1836,13 @@ void parcurgere_traseu_TSP(void)
             TSP();
         else
         {
-            cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
+            clear_screen();
+            cout << "\n"
                  << setw(5) << " "
+                 << "\033[1m"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
                  << "Durata traseu: " << durata_minima_TSP << "min\n"
+                 << "\033[0m"
                  << setw(5) << " ";
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
@@ -1809,6 +1858,9 @@ void parcurgere_traseu_TSP(void)
                     }
                 }
             }
+
+            cout << "\n";
+            underline(190, false);
         }
     }
     else
@@ -1825,6 +1877,9 @@ void parcurgere_traseu_TSP(void)
     }
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    cout << setw(5) << " "
+         << "Scrie '0' pentru a te intoarce...\n\n";
 
     cout << setw(5) << " "
          << "[S] Start: ";
@@ -1920,7 +1975,9 @@ void consola_mysql(void)
     Connection *con;
 
     driver = mysql::get_mysql_driver_instance();
-    con = driver->connect();
+    con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                          string(autentificare.get_nod()->username),
+                          string(autentificare.get_nod()->parola));
     con->setSchema("SpeedyGo");
 
     afisare_detalii_SpeedyGo(con);

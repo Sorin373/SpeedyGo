@@ -211,9 +211,9 @@ void _GPS_UPDATE_DATA_(void)
         free(oras2);
 
         if (success_flag)
-            cout << setw(5) << " " << "Done!\n";
+            cout << setw(5) << " " << "\033[1m" << "DONE!\n" << "\033[0m";
         else
-            cout << setw(5) << " " << "Nu s-au putut calcula datele!\n";
+            cout << setw(5) << " " << "\033[2m" << "Nu s-au putut calcula datele!\n" << "\033[0m";
 
         underline(100, true);
     }

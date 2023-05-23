@@ -546,6 +546,10 @@ double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa,
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
 
+void mascare_text_on(void);
+
+void mascare_text_off(void);
+
 string _GET_API_KEY_(const string& config_file_path);
 
 size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);

@@ -17,16 +17,11 @@ bool accesareDate(void)
         ResultSet *res;
 
         driver = get_driver_instance();
-        con = driver->connect();
 
-        /*
-         * -------------------------------------------------Scoate comm la sfarsit---------------------------------------------
-        con = driver->connect("tcp://" + 
-                    string(autentificare.get_nod()->host_name), 
-                    string(autentificare.get_nod()->username), 
-                    string(autentificare.get_nod()->parola));
-        */
-        
+        con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                              string(autentificare.get_nod()->username),
+                              string(autentificare.get_nod()->parola));
+
         if (con == nullptr)
         {
             delete res;
@@ -34,7 +29,7 @@ bool accesareDate(void)
             delete con;
             return EXIT_FAILURE;
         }
-            
+
         con->setSchema("SpeedyGo");
 
         stmt = con->createStatement();
