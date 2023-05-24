@@ -16,6 +16,7 @@
 #include <mysql_error.h>
 #include <cppconn/statement.h>
 #include <cppconn/resultset.h>
+#include <cppconn/prepared_statement.h>
 #include <curl/curl.h>
 
 #ifdef _WIN32
@@ -675,5 +676,7 @@ void cautare_produs_ID(void);
 void cautare_produs_denumire(void);
 
 void free_memory(void);
+
+bool update_database(void);
 
 #endif

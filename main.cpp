@@ -2,7 +2,6 @@
 #include "logic.hpp"
 #include "database.hpp"
 #include "Maps_Client.hpp"
-#include "gnuplot-iostream.h"
 
 using namespace std;
 

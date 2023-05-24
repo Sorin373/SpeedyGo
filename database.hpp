@@ -144,11 +144,59 @@ bool accesareDate(void)
     }
     catch (SQLException &e)
     {
-        cout << "Error code: " << e.getErrorCode() << endl;
-        cout << "Error message: " << e.what() << endl;
-        cout << "SQLState: " << e.getSQLState() << endl;
+        cout << "\n"
+             << setw(5) << " "
+             << "Error code: " << e.getErrorCode() << endl;
+        cout << setw(5) << " "
+             << "Error message: " << e.what() << endl;
+        cout << setw(5) << " "
+             << "SQLState: " << e.getSQLState() << endl;
         return EXIT_FAILURE;
     }
+    return EXIT_SUCCESS;
+}
+
+bool update_database(void)
+{
+    Driver *driver;
+    Connection *con;
+
+    driver = mysql::get_mysql_driver_instance();
+    con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                          string(autentificare.get_nod()->username),
+                          string(autentificare.get_nod()->parola));
+    con->setSchema("SpeedyGo");
+
+    if (con == nullptr)
+    {
+        delete con;
+        return EXIT_FAILURE;
+    }
+
+    string deleteQuery = "DELETE FROM depozit";
+    Statement *stmt = con->createStatement();
+    stmt->executeUpdate(deleteQuery);
+    delete stmt;
+
+    string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
+    PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
+
+    for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+    {
+        int ID_Produs = stoi(date_depozit->ID_Produs);
+        int ID_Oras = stoi(date_depozit->ID_Oras);
+        int Cantitate_Produs = date_depozit->Cantitate_Produs;
+
+        prepStmt->setInt(1, ID_Produs);
+        prepStmt->setInt(2, ID_Oras);
+        prepStmt->setInt(3, Cantitate_Produs);
+
+        prepStmt->executeUpdate();
+    }
+
+    delete con;
+    delete prepStmt;
+
     return EXIT_SUCCESS;
 }
 

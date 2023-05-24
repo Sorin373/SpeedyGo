@@ -1512,6 +1512,11 @@ void pagina_finala_TSP(void)
     {
         traseu_completat = true;
 
+        if (!update_database())
+            cerr << "Eroare!";
+        else
+            accesareDate();
+
         ofstream log_out;
         log_out.open("log.txt", ios::app);
 
@@ -1544,7 +1549,7 @@ void pagina_finala_TSP(void)
             clear_screen();
             cout << "\n\n"
                  << setw(5) << " "
-                 << "Aprovizionare completa.\n"
+                 << "Aprovizionare completa. Baza de date reinprostpatata\n"
                  << setw(5) << " "
                  << "Mai multe detalii in fisierul log.txt...";
 
@@ -1771,6 +1776,7 @@ void pagina_dreapta_TSP(void)
                                 cantitate_necesara = VAL_STOC_MAXIM - cantitate_necesara;
                                 cost_aprovizionare_total += cantitate_necesara * date_produs->pret_produs;
                                 cantitate_totala_aprovizionata += cantitate_necesara;
+                                date_depozit->Cantitate_Produs = VAL_STOC_MAXIM;
 
                                 cout << setw(5 + 1) << " [" << date_depozit->ID_Produs << "] " << setw(8) << " " << date_produs->Denumire_Produs
                                      << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5) << " " << cantitate_necesara << " buc. /";
@@ -1815,6 +1821,7 @@ void pagina_dreapta_TSP(void)
         underline(190, false);
 
         orase_stoc_limitat[traseu_minim_TSP[pagina]] = false;
+
         if (pagina - 1 == 1)
         {
             distanta_parcursa += matrice_drum[traseu_minim_TSP[pagina]][traseu_minim_TSP[pagina + 1]].distanta;
@@ -1924,14 +1931,14 @@ void parcurgere_traseu_TSP(void)
 void afisare_detalii_SpeedyGo(Connection *con)
 {
     cout << "\n";
-    underline(90, true);
+    underline(100, true);
 
     cout << "\033[3m"
          << setw(5) << " "
          << "Bun venit în Consola MySQL. Introduceti o interogare SQL (sau 'exit' pentru a incheia)\n"
          << "\033[0m";
 
-    underline(90, true);
+    underline(100, true);
 
     Statement *stmt = con->createStatement();
     ResultSet *res = stmt->executeQuery("SHOW TABLES");
@@ -1955,7 +1962,7 @@ void afisare_detalii_SpeedyGo(Connection *con)
     cout << setw(5) << " "
          << "+" << string(22, '-') << "+" << endl;
 
-    underline(90, true);
+    underline(100, true);
 
     delete stmt;
     delete res;
@@ -2029,7 +2036,7 @@ void consola_mysql(void)
                     cout << setw(5) << " " << setw(coloane[i - 1] + 5) << res->getMetaData()->getColumnName(i) << " ";
                 cout << "\n";
 
-                underline(90, true);
+                underline(100, true);
 
                 res->beforeFirst();
 
@@ -2040,7 +2047,7 @@ void consola_mysql(void)
                     cout << endl;
                 }
 
-                underline(90, true);
+                underline(100, true);
 
                 accesareDate();
 
