@@ -624,18 +624,15 @@ void vizualizare_status_stoc(void)
 
 void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
-    int contor = 0;
-    vector<bool> temp(contor_noduri_graf, false);
-    temp.assign(orase_stoc_limitat.begin(), orase_stoc_limitat.end());
-
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
-        contor = 0;
         if (i != start)
         {
             if (afisare)
-                cout << "Shortest distance from " << start << " to " << i << " is " << distanta[i] << ". traseu: ";
+                cout << "Cea mai scurta distanta de la " << start << " la " << i << " este: " << distanta[i] << " : traseu: ";
+
             vector<int> traseu;
+
             int nod = i;
 
             while (nod != -1)
@@ -644,18 +641,7 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
                 nod = distanta_minima[nod];
             }
 
-            int dimensiune_vector_traseu = traseu.size();
-
             reverse(traseu.begin(), traseu.end());
-
-            for (unsigned int j = 0; j < dimensiune_vector_traseu; j++)
-            {
-                if (orase_stoc_limitat[traseu[j]])
-                {
-                    contor++;
-                    temp[traseu[j]] = false;
-                }
-            }
 
             if (creare_trasee)
                 _traseu.inserareDateTraseu(start, i, distanta[i], traseu);

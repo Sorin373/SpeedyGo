@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                 cout << setw(5) << " "
                      << "[1] Ruta optima a aprovizionarii depozitelor\n"
                      << setw(5) << " "
-                     << "[2] Trasee optime punct-la-punct\n"
+                     << "[2] Traseul optim de la un depozit la altul\n"
                      << setw(5) << " "
                      << "[3] Depozite izolate\n"
                      << setw(5) << " "
