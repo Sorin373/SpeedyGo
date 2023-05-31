@@ -133,7 +133,7 @@ void _GPS_UPDATE_DATA_(void)
         HTTP_RESPONSE response = _http_request_(url);
 
         if (response.status_cod == 200)
-        {   
+        {
             cout << setw(5) << " " << oras1 << " --> " << oras2 << "\n"
                  << setw(5) << " " << lat_oras1 << "\u00B0" << " " << long_oras1 << "\u00B0" << " " 
                  << lat_oras2 << "\u00B0" << " " << long_oras2 << "\u00B0" << "\n";

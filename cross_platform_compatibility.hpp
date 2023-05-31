@@ -43,22 +43,10 @@ void clear_screen(void)
 void sleepcp(const int ms)
 {
 #ifdef _WIN32
-    sleep(ms);
+    Sleep(ms);
 #else
     usleep(ms * 1000);
 #endif // _WIN32
-}
-
-void underline(const unsigned int vWidth, const bool bSetw)
-{
-    if (bSetw)
-        cout << setw(5 - 2) << " ";
-    char fillLine;
-    fillLine = cout.fill('_');
-    cout.width(vWidth);
-    cout << '_' << "\n";
-    cout.fill(fillLine);
-    cout << "\n";
 }
 
 #endif

@@ -27,7 +27,7 @@
 #include <termios.h>
 #endif
 
-#include "compatibilityFunctions.hpp"
+#include "cross_platform_compatibility.hpp"
 
 #define MAX_SIZE 32
 #define MAXL 256
@@ -531,7 +531,7 @@ TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
 std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0}));       // matricea de adiacenta ce contine distantele dintre noduri
-std::vector<bool> depozite_centralizate(N, false);                                                          // stocare ID depozite centralizate                                          
+std::vector<bool> depozite_centralizate(N, false);                                                          // stocare ID depozite centralizate
 std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                                           // stocare ID depozite cu stoc limitat
 std::vector<bool> orase_izolate(matrice_drum.size(), false);                                                // stocare ID depozite izolate
 std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                                        // stocare ID depozite o conexiune unica cu graful
@@ -561,7 +561,9 @@ void _GPS_UPDATE_DATA_(void);
 
 bool start(void);
 
+#ifdef __linux__
 char getch(void);
+#endif
 
 void clear_screen(void);
 
