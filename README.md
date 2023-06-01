@@ -1,26 +1,21 @@
-<h1 style="font-weight: 800; font-size: 50px">SpeedyGo</h1>
+# SpeedyGo
 
-<div style="display: flex; text-align: justify; gap: 1rem;">
-    <img src="Documantation/SpeedyGo_LOGO.png" alt="Project Logo or Banner" width="100" height="100">
-    <p style="font-size: 10px">For my final project in computer science for grade 11, I was required to develop a console application that involved working with graphs. Therefore, I decided to create <b>SpeedyGo</b>, an app which has the main porpuse to generate the most optimal path to supply different deposits in Romania.</p>
-</div>
+![Project Logo or Banner](Documantation/SpeedyGo_LOGO.png)
 
-<br>
+For my final project in computer science for grade 11, I was required to develop a console application that involved working with graphs. Therefore, I decided to create **SpeedyGo**, an app which has the main purpose to generate the most optimal path to supply different deposits in Romania.
 
-<div>
-    <h1 style="font-weight: 800; font-size: 25px">Tabel of contents</h1>
-    <ul style="font-size: 15px">
-        <li><a href="#installation">Installation</a></li>
-        <li><a href="#usage">Usage</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#screenshots">Screenshots</a></li>
-        <li><a href="#roadmap">Roadmap</a></li>
-        <li><a href="#contributing">Contributing</a></li>
-        <li><a href="#license">License</a></li>
-        <li><a href="#acknowledgements">Acknowledgements</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
-</div>
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+- [Contact](#contact)
+
 <!-- This is a comment in Markdown 
 ## Installation
 
