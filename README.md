@@ -1,9 +1,9 @@
 # SpeedyGo
 
-<div style="text-align: center;">
+<p align="center">
   <img src="Documantation/SpeedyGo_LOGO.png" alt="Project Logo or Banner" width="200" height="200">
-  <br>
-</div>
+</p>
+
 
 For my final project in computer science for grade 11, I was required to develop a console application that involved working with graphs. Therefore, I decided to create **SpeedyGo**, an app which has the main purpose to generate the most optimal path to supply different deposits in Romania.
 
