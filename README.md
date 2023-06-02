@@ -1,4 +1,3 @@
-# SpeedyGo
 <p align="center">
   <img src="Documantation/SpeedyGo_LOGO.png" alt="Project Logo or Banner" width="200" height="200">
 </p>
