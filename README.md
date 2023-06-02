@@ -7,7 +7,7 @@ For my final project in computer science for grade 11, I was required to develop
 
 # Table of Contents
 
-- [Installation-Linux(Ubuntu-22.04)](#installation-Linux(Ubuntu-22.04))
+- [Installation-Linux(Ubuntu-22.04)](#Installation-Linux(Ubuntu-22.04))
 - [Usage](#usage)
 - [Features](#features)
 - [Screenshots](#screenshots)
