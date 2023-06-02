@@ -7,7 +7,7 @@ For my final project in computer science for grade 11, I was required to develop
 
 # Table of Contents
 
-- [Installation-Linux(Ubuntu-22.04)](#Installation-Linux(Ubuntu-22.04))
+- [Installation](#Installation)
 - [Usage](#usage)
 - [Features](#features)
 - [Screenshots](#screenshots)
@@ -17,7 +17,7 @@ For my final project in computer science for grade 11, I was required to develop
 - [Acknowledgements](#acknowledgements)
 - [Contact](#contact)
 
-# Installation-Linux(Ubuntu-22.04)
+# Installation
 
 In order to successfully set up and run the app, this section will walk you through all the necessary steps. 
 
