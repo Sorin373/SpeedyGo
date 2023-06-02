@@ -37,7 +37,11 @@ $ sudo apt-get install curl
 $ ./run.sh
 ```
 # Features
-  
+The application not only utilizes Dijkstra's algorithm to generate the most efficient routes between two fixed vertices, but also offers the most optimal supply path to reach all required deposits in a single route. In addition, the following features are available within the app:
+- Database manager using pre-defined funtions
+- The application includes an integrated SQL query tool that enables you to execute nearly any SQL script.
+- You can visualize the deposits that require supply and the products that are in deficit.
+- Last but not least, the graph is created using realtime data provided by the Google Maps API.
 <!--
 1. [Provide step-by-step instructions on how to install or set up your application]
 2. [Include any prerequisites or dependencies that need to be installed]
