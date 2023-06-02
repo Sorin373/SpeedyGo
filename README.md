@@ -7,13 +7,9 @@ For my final project in computer science for grade 11, I was required to develop
 # Table of Contents
 
 - [Installation](#Installation)
-- [Usage](#usage)
 - [Features](#features)
-- [Screenshots](#screenshots)
 - [Roadmap](#roadmap)
-- [Contributing](#contributing)
 - [License](#license)
-- [Acknowledgements](#acknowledgements)
 - [Contact](#contact)
 
 # Installation
@@ -40,6 +36,8 @@ $ sudo apt-get install curl
 ```
 $ ./run.sh
 ```
+# Features
+  
 <!--
 1. [Provide step-by-step instructions on how to install or set up your application]
 2. [Include any prerequisites or dependencies that need to be installed]
