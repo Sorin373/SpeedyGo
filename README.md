@@ -44,9 +44,9 @@ The application not only utilizes Dijkstra's algorithm to generate the most effi
 - Last but not least, the graph is created using realtime data provided by the Google Maps API.
 
 <p align="center">
-  <img src="/Documantation/Meniu_Principal.png" alt="Main Menu" width="300" height="500">
-  <img src="Documantation/SQL_Tool.png" alt="SQL Tool" width="300" height="500">
-  <img src="/Documantation/Route.png" alt="Route" width="300" height="500">
+  <img src="/Documantation/Meniu_Principal.png" alt="Main Menu" width="500" height="300">
+  <img src="Documantation/SQL_Tool.png" alt="SQL Tool" width="500" height="300">
+  <img src="/Documantation/Route.png" alt="Route" width="500" height="300">
 </p>
 
 <!--
