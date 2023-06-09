@@ -43,6 +43,12 @@ The application not only utilizes Dijkstra's algorithm to generate the most effi
 - You can visualize the deposits that require supply and the products that are in deficit.
 - Last but not least, the graph is created using realtime data provided by the Google Maps API.
 
+<p align="center">
+  <img src="/Documantation/Meniu_Principal.png" alt="Main Menu" width="200" height="200">
+  <img src="Documantation/SQL_Tool.png" alt="SQL Tool" width="200" height="200">
+  <img src="D/Documantation/Root.png" alt="Route" width="200" height="200">
+</p>
+
 ![](/Documantation/Meniu_Principal.png)
 ![](/Documantation/SQL_Tool.png)
 ![](/Documantation/Root.png)
