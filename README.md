@@ -42,6 +42,11 @@ The application not only utilizes Dijkstra's algorithm to generate the most effi
 - The application includes an integrated SQL query tool that enables you to execute nearly any SQL script.
 - You can visualize the deposits that require supply and the products that are in deficit.
 - Last but not least, the graph is created using realtime data provided by the Google Maps API.
+
+![](/Documantation/Meniu_Principal.png)
+![](/Documantation/SQL_Tool.png)
+![](/Documantation/Root.png)
+
 <!--
 1. [Provide step-by-step instructions on how to install or set up your application]
 2. [Include any prerequisites or dependencies that need to be installed]
