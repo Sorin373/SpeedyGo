@@ -8,8 +8,6 @@ For my final project in computer science for grade 11, I was required to develop
 
 - [Installation](#Installation)
 - [Features](#features)
-- [Roadmap](#roadmap)
-- [License](#license)
 - [Contact](#contact)
 
 # Installation
@@ -43,11 +41,8 @@ The application not only utilizes Dijkstra's algorithm to generate the most effi
 - You can visualize the deposits that require supply and the products that are in deficit.
 - Last but not least, the graph is created using realtime data provided by the Google Maps API.
 
-<p align="center">
-  <img src="/Documantation/Meniu_Principal.png" alt="Main Menu" width="650" height="350">
-  <img src="Documantation/SQL_Tool.png" alt="SQL Tool" width="650" height="350">
-  <img src="/Documantation/Route.png" alt="Route" width="650" height="350">
-</p>
+# Contact
+- Gmail: sorin.andrei.tudose@gmail.com
 
 <!--
 1. [Provide step-by-step instructions on how to install or set up your application]
