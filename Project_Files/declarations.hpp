@@ -1,6 +1,7 @@
 #ifndef DECLARATIONS
 #define DECLARATIONS
 
+#pragma region libraries
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -28,6 +29,7 @@
 #endif
 
 #include "cross_platform_compatibility.hpp"
+#pragma endregion
 
 #define MAX_SIZE 32
 #define MAXL 256
@@ -547,6 +549,7 @@ double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa,
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
 
+#pragma region functions_init
 void mascare_text_on(void);
 
 void mascare_text_off(void);
@@ -680,5 +683,6 @@ void cautare_produs_denumire(void);
 void free_memory(void);
 
 bool update_database(void);
+#pragma endregion
 
 #endif

@@ -88,9 +88,7 @@ bool autentificare_cont(void)
 void afisare_gps(void)
 {
     for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
-    {
         cout << date_gps->start << " " << date_gps->destinatie << " " << date_gps->distanta << " " << date_gps->durata << endl;
-    }
 }
 
 bool _init_(void)
@@ -2046,6 +2044,18 @@ void consola_mysql(void)
                 }
 
                 underline(100, true);
+                
+                oras.~ORAS();
+                oras.head_oras = nullptr;
+                oras.tail_oras = nullptr;
+
+                produs.~DETALII_PRODUS();
+                produs.head_produs = nullptr;
+                produs.tail_produs = nullptr;
+
+                depozit.~DEPOZIT();
+                depozit.head_depozit = nullptr;
+                depozit.tail_depozit = nullptr;
 
                 accesareDate();
 
