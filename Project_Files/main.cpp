@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
              << setw(5) << " "
              << "[4] SQL Query Tool\n"
              << setw(5) << " "
-             << "[5] Actualizare trasee GPS\n"
+             << "[5] Actualizare date\n"
              << setw(5) << " "
              << "[0] EXIT\n";
 
@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
                                 case 2:
                                     cautare_produs_ID();
                                     break;
-                                
+
                                 default:
                                     break;
                                 }
@@ -379,8 +379,51 @@ int main(int argc, char *argv[])
             consola_mysql();
             break;
         case 5:
-            _GPS_UPDATE_DATA_();
-            _init_();
+            unsigned int MENIU_5;
+
+            do
+            {
+                clear_screen();
+
+                cout << "\n\n";
+                cout << setw(15) << " "
+                     << "┌────────────────┐\n";
+                cout << setw(16) << " "
+                     << "ACTUALIZARE DATE\n";
+                cout << setw(15) << " "
+                     << "└────────────────┘\n";
+
+                underline(40, true);
+
+                cout << setw(5) << " "
+                     << "[1] Actualizare trasee GPS\n"
+                     << setw(5) << " "
+                     << "[2] Adauga un depozit\n"
+                     << setw(5) << " "
+                     << "[2] Sterge un depozit\n"
+                     << setw(5) << " "
+                     << "[0] EXIT\n";
+
+                underline(40, true);
+
+                cout << setw(5) << " "
+                     << "Introduceti numarul meniului: ";
+                cin >> MENIU_5;
+
+                switch (MENIU_5)
+                {
+                case 1:
+                    _GPS_UPDATE_DATA_();
+                    break;
+                case 2:
+                    adaugare_depozit();
+                    break;
+                
+                default:
+                    break;
+                }
+
+            } while (MENIU_5 != 0);
             break;
 
         default:

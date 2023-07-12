@@ -632,6 +632,7 @@ void vizualizare_status_stoc(void)
     }
 }
 
+#pragma region dijkstra
 void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
@@ -901,6 +902,7 @@ void sistem_aprovizionare_independent(void)
         }
     }
 }
+#pragma endregion
 
 void afisare_depozite_izolate(void)
 {
@@ -1043,6 +1045,7 @@ void afisare_depozite_unic_drum(void)
     }
 }
 
+#pragma region backtracking
 void init_stiva_hc(void)
 {
     stiva[contor_stiva] = -1;
@@ -1240,7 +1243,9 @@ void back_ac(void)
             contor_stiva--;
     }
 }
+#pragma endregion
 
+#pragma region TSP
 void TSP(void)
 {
     cout << setw(5) << " "
@@ -1923,6 +1928,7 @@ void parcurgere_traseu_TSP(void)
     }
     free(input);
 }
+#pragma endregion
 
 void afisare_detalii_SpeedyGo(Connection *con)
 {
@@ -2044,7 +2050,7 @@ void consola_mysql(void)
                 }
 
                 underline(100, true);
-                
+
                 oras.~ORAS();
                 oras.head_oras = nullptr;
                 oras.tail_oras = nullptr;
@@ -2763,6 +2769,12 @@ void cautare_produs_denumire(void)
         free(I_Denumire);
         cautare_produs_denumire();
     }
+}
+
+void adaugare_depozit(void)
+{
+    cout << "\n\n" << setw(5) << " " << "Introduceti datele depozituli:\n";
+    
 }
 
 #endif

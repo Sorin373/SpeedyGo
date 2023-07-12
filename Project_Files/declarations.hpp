@@ -7,7 +7,6 @@
 #include <iomanip>
 #include <cmath>
 #include <vector>
-#include <set>
 #include <unordered_map>
 #include <limits.h>
 #include <string.h>
@@ -20,7 +19,7 @@
 #include <cppconn/prepared_statement.h>
 #include <curl/curl.h>
 
-#ifdef _WIN32
+#ifdef WINDOWS
 #include <windows.h>
 #include <conio.h>
 #else
@@ -44,15 +43,16 @@ struct HTTP_RESPONSE
     long status_cod;
 };
 
-typedef struct
+typedef struct GRAF
 {
     double distanta;
     int durata;
 } GRAF_NEORIENTAT;
 
+#pragma region classes
 class TRASEE_GPS
 {
-public: 
+public:
     struct NOD_TRASEE_GPS
     {
         double distanta = 0.0;
@@ -523,6 +523,7 @@ public:
         }
     }
 };
+#pragma endregion
 
 TRASEE_GPS trasee_gps;
 DEPOZIT depozit;
@@ -532,18 +533,19 @@ AUTENTIFICARE autentificare;
 TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
-std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0}));       // matricea de adiacenta ce contine distantele dintre noduri
-std::vector<bool> depozite_centralizate(N, false);                                                          // stocare ID depozite centralizate
-std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                                           // stocare ID depozite cu stoc limitat
-std::vector<bool> orase_izolate(matrice_drum.size(), false);                                                // stocare ID depozite izolate
-std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                                        // stocare ID depozite o conexiune unica cu graful
-std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                                          // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
-std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);                     // stocarea traseului optim TSP (travel salesman problem)
+std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0})); // matricea de adiacenta ce contine distantele dintre noduri
+std::vector<bool> depozite_centralizate(N, false);                                                    // stocare ID depozite centralizate
+std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                                     // stocare ID depozite cu stoc limitat
+std::vector<bool> orase_izolate(matrice_drum.size(), false);                                          // stocare ID depozite izolate
+std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                                  // stocare ID depozite o conexiune unica cu graful
+std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                                    // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
+std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);               // stocarea traseului optim TSP (travel salesman problem)
 
-long long unsigned int contor_log;                                                                          // contorizeaza log-urile dintr-o singura rulare a programului
-int contor_noduri_graf;                                                                                     // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
+long long unsigned int contor_log; // contorizeaza log-urile dintr-o singura rulare a programului
+int contor_noduri_graf;            // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
 
-int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1;
+int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1,
+                                                 contor_orase;
 bool trasee = false, traseu_completat = false, buffer = true;
 double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
 
@@ -554,7 +556,7 @@ void mascare_text_on(void);
 
 void mascare_text_off(void);
 
-string _GET_API_KEY_(const string& config_file_path);
+string _GET_API_KEY_(const string &config_file_path);
 
 size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);
 
@@ -683,6 +685,10 @@ void cautare_produs_denumire(void);
 void free_memory(void);
 
 bool update_database(void);
+
+void adaugare_depozit(void);
+
+void stergere_depozit(void);
 #pragma endregion
 
 #endif

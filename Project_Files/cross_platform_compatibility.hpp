@@ -42,9 +42,9 @@ void clear_screen(void)
 
 void sleepcp(const int ms)
 {
-#ifdef _WIN32
+#ifdef WINDOWS
     Sleep(ms);
-#else
+#elif __linux__
     usleep(ms * 1000);
 #endif // _WIN32
 }
