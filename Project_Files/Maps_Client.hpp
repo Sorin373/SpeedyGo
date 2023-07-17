@@ -72,7 +72,10 @@ void _GPS_UPDATE_DATA_(void)
     ifstream legaturi("legaturi.txt");
 
     if (!legaturi.is_open())
+    {
+        cerr << setw(5) << " " << "Failed to open file!\n";
         return;
+    }
     else
     {
         unsigned int ID_1 = 0, ID_2 = 0;
