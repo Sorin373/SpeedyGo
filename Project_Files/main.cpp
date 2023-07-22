@@ -2,11 +2,12 @@
 #include "logic.hpp"
 #include "database.hpp"
 #include "Maps_Client.hpp"
+#include "distance_calculator.hpp"
 
 using namespace std;
 
 bool start(void)
-{
+{   
     if (autentificare_cont() == EXIT_FAILURE)
         return EXIT_FAILURE;
     else if (_init_() == EXIT_FAILURE)

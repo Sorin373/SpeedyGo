@@ -80,7 +80,9 @@ bool autentificare_cont(void)
     free(_UN);
     free(_P);
 
-    _GPS_UPDATE_DATA_();
+    if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
+        if (load_data("legaturi.txt") == EXIT_FAILURE)
+            return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
@@ -2771,10 +2773,27 @@ void cautare_produs_denumire(void)
     }
 }
 
+/*
 void adaugare_depozit(void)
 {
-    cout << "\n\n" << setw(5) << " " << "Introduceti datele depozituli:\n";
-    
+    char *Denumire_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
+    cout << "\n\n"
+         << setw(5) << " "
+         << "Introduceti datele depozitului:\n";
+    cout << "Denumire oras: ";
+    cin.get(Denumire_Oras, sizeof(Denumire_Oras));
+
+    Driver *driver;
+    Connection *con;
+    Statement *stmt;
+
+    driver = get_driver_instance();
+    con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                          string(autentificare.get_nod()->username),
+                          string(autentificare.get_nod()->parola));
+
+    free(Denumire_Oras);
 }
+*/
 
 #endif

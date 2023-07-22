@@ -34,3 +34,6 @@
 # IDE/Editor specific files
 .idea/
 .vscode/
+
+# Ignore config.json
+config.json

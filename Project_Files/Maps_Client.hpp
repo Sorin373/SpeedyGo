@@ -57,7 +57,7 @@ HTTP_RESPONSE _http_request_(const string &url)
     return HTTP_RESPONSE{response_body, response_code};
 }
 
-void _GPS_UPDATE_DATA_(void)
+bool _GPS_UPDATE_DATA_(void)
 {
     clear_screen();
 
@@ -73,8 +73,10 @@ void _GPS_UPDATE_DATA_(void)
 
     if (!legaturi.is_open())
     {
-        cerr << setw(5) << " " << "Failed to open file!\n";
-        return;
+        cerr << setw(5) << " "
+             << "Failed to open file!\n";
+        getch();
+        return EXIT_FAILURE;
     }
     else
     {
@@ -129,28 +131,40 @@ void _GPS_UPDATE_DATA_(void)
                      << "\n";
 
                 json json_data = json::parse(response.body);
-                double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
-                int durata = json_data["rows"][0]["elements"][0]["duration"]["value"];
 
-                string s_oras1(oras1);
-                string s_oras2(oras2);
+                string status_str = json_data["status"];
+                char status[20];
+                strncpy(status, status_str.c_str(), sizeof(status) - 1);
+                status[sizeof(status) - 1] = '\0';
+                status_str.clear();
 
-                result /= 1000;
-                int durata_finala = durata / 60;
+                if (strcasecmp(status, "REQUEST_DENIED") != 0)
+                {
+                    double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
+                    int durata = json_data["rows"][0]["elements"][0]["duration"]["value"];
 
-                distante_orase[s_oras1 + "_" + s_oras2] = result;
-                distante_orase[s_oras2 + "_" + s_oras1] = result;
+                    string s_oras1(oras1);
+                    string s_oras2(oras2);
 
-                if (result == 1)
-                    result = 0;
+                    result /= 1000;
+                    int durata_finala = durata / 60;
 
-                if (result == 0)
-                    durata_finala = 0;
+                    distante_orase[s_oras1 + "_" + s_oras2] = result;
+                    distante_orase[s_oras2 + "_" + s_oras1] = result;
 
-                trasee_gps.introducere_date_trasee_gps(result, durata_finala, oras1, oras2);
+                    if (result == 1)
+                        result = 0;
+
+                    if (result == 0)
+                        durata_finala = 0;
+
+                    trasee_gps.introducere_date_trasee_gps(result, durata_finala, oras1, oras2);
+                }
+                else
+                    return EXIT_FAILURE;
             }
             else
-                success_flag = false;
+                return EXIT_FAILURE;
 
             json updated_data;
 
@@ -169,22 +183,17 @@ void _GPS_UPDATE_DATA_(void)
 
             fout.close();
 
-            free(oras1);
-            free(oras2);
-
-            if (success_flag)
-                cout << setw(5) << " "
-                     << "\033[1m"
-                     << "DONE!\n"
-                     << "\033[0m";
-            else
-                cout << setw(5) << " "
-                     << "\033[2m"
-                     << "Nu s-au putut calcula datele!\n"
-                     << "\033[0m";
+            cout << setw(5) << " "
+                 << "\033[1m"
+                 << "DONE!\n"
+                 << "\033[0m";
 
             underline(100, true);
+
+            free(oras1);
+            free(oras2);
         }
+        return EXIT_SUCCESS;
     }
 }
 

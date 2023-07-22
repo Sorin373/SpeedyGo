@@ -50,6 +50,7 @@ typedef struct GRAF
 } GRAF_NEORIENTAT;
 
 #pragma region classes
+
 class TRASEE_GPS
 {
 public:
@@ -562,7 +563,14 @@ size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer)
 
 HTTP_RESPONSE _http_request_(const string &url);
 
-void _GPS_UPDATE_DATA_(void);
+bool _GPS_UPDATE_DATA_(void);
+
+bool load_data(const char *path);
+
+double calculare_distante(const char *oras_1, const char *oras_2, const double lat_1,
+                          const double long_1, const double lat_2, const double long_2);
+
+double toRadians(const double degrees);
 
 bool start(void);
 
