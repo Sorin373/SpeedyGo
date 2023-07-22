@@ -35,7 +35,6 @@ void clear_screen(void)
 #ifdef WINDOWS
     system("CLS");
 #elif __linux__
-    // Assume POSIX
     system("clear");
 #endif
 }
@@ -46,7 +45,7 @@ void sleepcp(const int ms)
     Sleep(ms);
 #elif __linux__
     usleep(ms * 1000);
-#endif // _WIN32
+#endif
 }
 
 #endif
