@@ -13,11 +13,11 @@ double toRadians(const double degrees)
 double calculare_distante(const char *oras_1, const char *oras_2, const double lat_1,
                           const double long_1, const double lat_2, const double long_2)
 {
-    double dLat = toRadians(lat_2 - lat_1);
-    double dLon = toRadians(long_2 - long_1);
-    double a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2);
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    const double EARTH_RADIUS_KM = 6371.0;
+    double dLat = toRadians(lat_2 - lat_1),
+           dLon = toRadians(long_2 - long_1),
+           a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2),
+           c = 2 * atan2(sqrt(a), sqrt(1 - a));
+           
     return EARTH_RADIUS_KM * c;
 }
 

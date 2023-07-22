@@ -34,6 +34,7 @@
 #define MAXL 256
 #define VAL_STOC_MINIM 5
 #define VAL_STOC_MAXIM 50
+#define EARTH_RADIUS_KM 6371.0
 
 constexpr int N = 1001;
 
