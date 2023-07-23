@@ -6,6 +6,7 @@
 using namespace std;
 using namespace sql;
 
+#pragma region UTILS
 void underline(const unsigned int vWidth, const bool bSetw)
 {
     if (bSetw)
@@ -18,6 +19,7 @@ void underline(const unsigned int vWidth, const bool bSetw)
     cout << "\n";
 }
 
+#ifdef __linux__
 void mascare_text_on(void)
 {
     struct termios term;
@@ -33,6 +35,8 @@ void mascare_text_off(void)
     term.c_lflag |= ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
+#endif
+#pragma endregion
 
 bool autentificare_cont(void)
 {
@@ -250,6 +254,7 @@ void afisare_date_tabel_produs(void)
     underline(85, true);
 }
 
+#pragma region SORT_DATE_INITIALE
 void sortare_date_depozit(void)
 {
     bool vsort = true;
@@ -375,6 +380,7 @@ void sortare_date_oras(const int tip_sortare)
         l_ptr = ptr;
     } while (!vsort);
 }
+#pragma endregion
 
 bool verificare_orase_stoc_limitat(void)
 {
@@ -634,7 +640,7 @@ void vizualizare_status_stoc(void)
     }
 }
 
-#pragma region dijkstra
+#pragma region Dijkstra
 void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
@@ -2772,28 +2778,5 @@ void cautare_produs_denumire(void)
         cautare_produs_denumire();
     }
 }
-
-/*
-void adaugare_depozit(void)
-{
-    char *Denumire_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
-    cout << "\n\n"
-         << setw(5) << " "
-         << "Introduceti datele depozitului:\n";
-    cout << "Denumire oras: ";
-    cin.get(Denumire_Oras, sizeof(Denumire_Oras));
-
-    Driver *driver;
-    Connection *con;
-    Statement *stmt;
-
-    driver = get_driver_instance();
-    con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                          string(autentificare.get_nod()->username),
-                          string(autentificare.get_nod()->parola));
-
-    free(Denumire_Oras);
-}
-*/
 
 #endif

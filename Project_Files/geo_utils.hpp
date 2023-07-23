@@ -1,5 +1,5 @@
-#ifndef DISTANCE_CALCULATOR
-#define DISTANCE_CALCULATOR
+#ifndef GEO
+#define GEO
 
 #include "declarations.hpp"
 
@@ -10,8 +10,7 @@ double toRadians(const double degrees)
     return degrees * M_PI / 180.0;
 }
 
-double calculare_distante(const char *oras_1, const char *oras_2, const double lat_1,
-                          const double long_1, const double lat_2, const double long_2)
+double calculare_distante(const double lat_1, const double long_1, const double lat_2, const double long_2)
 {
     double dLat = toRadians(lat_2 - lat_1),
            dLon = toRadians(long_2 - long_1),
@@ -58,7 +57,7 @@ bool load_data(const char *path)
             }
         }
 
-        trasee_gps.introducere_date_trasee_gps(calculare_distante(oras1, oras2, lat_oras1, long_oras1, lat_oras2, long_oras2),
+        trasee_gps.introducere_date_trasee_gps(calculare_distante(lat_oras1, long_oras1, lat_oras2, long_oras2),
                                                false, oras1, oras2);
 
         free(oras1);

@@ -144,60 +144,337 @@ bool accesareDate(void)
     }
     catch (SQLException &e)
     {
-        cout << "\n"
+        cerr << "\n"
              << setw(5) << " "
              << "Error code: " << e.getErrorCode() << endl;
-        cout << setw(5) << " "
+        cerr << setw(5) << " "
              << "Error message: " << e.what() << endl;
-        cout << setw(5) << " "
+        cerr << setw(5) << " "
              << "SQLState: " << e.getSQLState() << endl;
+
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
 }
 
+#pragma region Database_Update
 bool update_database(void)
 {
-    Driver *driver;
-    Connection *con;
-
-    driver = mysql::get_mysql_driver_instance();
-    con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                          string(autentificare.get_nod()->username),
-                          string(autentificare.get_nod()->parola));
-    con->setSchema("SpeedyGo");
-
-    if (con == nullptr)
+    try
     {
+        Driver *driver;
+        Connection *con;
+
+        driver = mysql::get_mysql_driver_instance();
+        con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                              string(autentificare.get_nod()->username),
+                              string(autentificare.get_nod()->parola));
+        con->setSchema("SpeedyGo");
+
+        if (con == nullptr)
+        {
+            delete con;
+            return EXIT_FAILURE;
+        }
+
+        string deleteQuery = "DELETE FROM depozit";
+        Statement *stmt = con->createStatement();
+        stmt->executeUpdate(deleteQuery);
+        delete stmt;
+
+        string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
+        PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
+
+        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        {
+            int ID_Produs = stoi(date_depozit->ID_Produs);
+            int ID_Oras = stoi(date_depozit->ID_Oras);
+            int Cantitate_Produs = date_depozit->Cantitate_Produs;
+
+            prepStmt->setInt(1, ID_Produs);
+            prepStmt->setInt(2, ID_Oras);
+            prepStmt->setInt(3, Cantitate_Produs);
+
+            prepStmt->executeUpdate();
+        }
+
         delete con;
+        delete prepStmt;
+
+        return EXIT_SUCCESS;
+    }
+    catch (SQLException &e)
+    {
+        cerr << "\n"
+             << setw(5) << " "
+             << "Error code: " << e.getErrorCode() << endl;
+        cerr << setw(5) << " "
+             << "Error message: " << e.what() << endl;
+        cerr << setw(5) << " "
+             << "SQLState: " << e.getSQLState() << endl;
+
         return EXIT_FAILURE;
     }
 
-    string deleteQuery = "DELETE FROM depozit";
-    Statement *stmt = con->createStatement();
-    stmt->executeUpdate(deleteQuery);
-    delete stmt;
+    return EXIT_SUCCESS;
+}
 
-    string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
-    PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
+bool adaugare_depozit(void)
+{
+    char *Denumire_Depozit = (char *)malloc(MAXL * sizeof(char) + 1);
+    char *Tip_Depozit = (char *)malloc(MAXL * sizeof(char) + 1);
+    double lat = 0.0, lon = 0.0;
 
-    for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+    clear_screen();
+
+    cout << "\n\n"
+         << setw(16) << " "
+         << "Introduceti datele noului depozit\n";
+    underline(60, true);
+
+    cout << setw(5) << " "
+         << "ID depozit: " << contor_noduri_graf << "\n";
+
+    cout << setw(5) << " "
+         << "Denumire depozit: ";
+    cin.get();
+    cin.get(Denumire_Depozit, sizeof(Denumire_Depozit));
+
+    cout << setw(5) << " "
+         << "Tip depozit:\n\n";
+    cout << setw(5) << " "
+         << "[1] Local / [2] Centralizat\n";
+
+    cout << setw(5) << " "
+         << "I: ";
+    char *input = (char *)malloc(MAXL * sizeof(char) + 1);
+    cin >> input;
+
+    if (strcasecmp(input, "1") == 0)
+        strcpy(Tip_Depozit, "local");
+    else if (strcasecmp(input, "2") == 0)
+        strcpy(Tip_Depozit, "centralizat");
+
+    clear_screen();
+
+    cout << "\n\n"
+         << setw(16) << " "
+         << "Introduceti datele noului depozit\n";
+    underline(60, true);
+
+    cout << setw(5) << " "
+         << "ID depozit: " << contor_noduri_graf << "\n"
+         << setw(5) << " "
+         << "Denumire depozit: " << Denumire_Depozit << "\n"
+         << setw(5) << " "
+         << "Tip depozit: " << Tip_Depozit << "\n";
+
+    cout << setw(5) << " "
+         << "Latitudine: ";
+    cin >> lat;
+    cout << setw(5) << " "
+         << "Longitudine: ";
+    cin >> lon;
+
+    underline(60, true);
+
+    cout << setw(5) << " "
+         << "Pentru a finaliza tastati '1', iar '0' pentru a anulat: ";
+    cin >> input;
+
+    if (strcasecmp(input, "0") == 0)
+        return EXIT_FAILURE;
+    else if (strcasecmp(input, "1") == 0)
     {
-        int ID_Produs = stoi(date_depozit->ID_Produs);
-        int ID_Oras = stoi(date_depozit->ID_Oras);
-        int Cantitate_Produs = date_depozit->Cantitate_Produs;
+        try
+        {
+            cout << "\n"
+                 << setw(5) << " "
+                 << "Start...\n";
+            sleepcp(1000);
 
-        prepStmt->setInt(1, ID_Produs);
-        prepStmt->setInt(2, ID_Oras);
-        prepStmt->setInt(3, Cantitate_Produs);
+            Driver *driver;
+            Connection *con;
+            Statement *stmt;
 
-        prepStmt->executeUpdate();
+            driver = get_driver_instance();
+            con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                                  string(autentificare.get_nod()->username),
+                                  string(autentificare.get_nod()->parola));
+
+            if (con == nullptr)
+            {
+                delete stmt;
+                delete con;
+                return EXIT_FAILURE;
+            }
+
+            con->setSchema("SpeedyGo");
+
+            string table_name = "oras";
+            string query = "INSERT INTO " + table_name + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + to_string(contor_noduri_graf) + ", '" + Denumire_Depozit + "', " + to_string(lat) + ", " + to_string(lon) + ", '" + Tip_Depozit + "')";
+            stmt = con->createStatement();
+            stmt->execute(query);
+            stmt->close();
+
+            delete stmt;
+            delete con;
+
+            cout << setw(5) << " "
+                 << "Success...\n";
+            sleepcp(1000);
+
+            return EXIT_SUCCESS;
+        }
+        catch (SQLException &e)
+        {
+            cerr << "\n"
+                 << setw(5) << " "
+                 << "Error code: " << e.getErrorCode() << endl;
+            cerr << setw(5) << " "
+                 << "Error message: " << e.what() << endl;
+            cerr << setw(5) << " "
+                 << "SQLState: " << e.getSQLState() << endl;
+
+            return EXIT_FAILURE;
+        }
     }
 
-    delete con;
-    delete prepStmt;
+    free(Denumire_Depozit);
+    free(Tip_Depozit);
+    free(input);
 
     return EXIT_SUCCESS;
 }
+
+bool stergere_depozit(void)
+{
+    clear_screen();
+
+    afisare_date_tabel_oras();
+
+    unsigned int ID;
+    cout << setw(5) << " "
+         << "Introduceti ID-ul corespunzator: ";
+    cin >> ID;
+
+    if (ID < 0 || ID > contor_noduri_graf)
+    {
+        cerr << setw(5) << " "
+             << "ID invalid!";
+        return EXIT_FAILURE;
+    }
+
+    try
+    {
+        cout << "\n"
+             << setw(5) << " "
+             << "Start...\n";
+        sleepcp(1000);
+
+        Driver *driver;
+        Connection *con;
+        Statement *stmt;
+
+        driver = get_driver_instance();
+        con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
+                              string(autentificare.get_nod()->username),
+                              string(autentificare.get_nod()->parola));
+
+        if (con == nullptr)
+        {
+            delete stmt;
+            delete con;
+            return EXIT_FAILURE;
+        }
+
+        con->setSchema("SpeedyGo");
+
+        string table_name = "oras";
+        string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + to_string(ID);
+        stmt = con->createStatement();
+        stmt->execute(query);
+        stmt->close();
+
+        delete stmt;
+        delete con;
+
+        cout << setw(5) << " "
+             << "Success...\n";
+        sleepcp(1000);
+
+        return EXIT_SUCCESS;
+    }
+    catch (SQLException &e)
+    {
+        cerr << "\n"
+             << setw(5) << " "
+             << "Error code: " << e.getErrorCode() << endl;
+        cerr << setw(5) << " "
+             << "Error message: " << e.what() << endl;
+        cerr << setw(5) << " "
+             << "SQLState: " << e.getSQLState() << endl;
+
+        return EXIT_FAILURE;
+    }
+}
+
+bool SQL_Data_Update(const int input)
+{
+    if (input == 1)
+    {
+        if (adaugare_depozit() == EXIT_FAILURE)
+        {
+            cerr << setw(5) << " "
+                 << "SQL: Failed to add row!\n";
+            getch();
+        }
+        else
+        {
+            oras.~ORAS();
+            oras.head_oras = nullptr;
+            oras.tail_oras = nullptr;
+
+            produs.~DETALII_PRODUS();
+            produs.head_produs = nullptr;
+            produs.tail_produs = nullptr;
+
+            depozit.~DEPOZIT();
+            depozit.head_depozit = nullptr;
+            depozit.tail_depozit = nullptr;
+
+            contor_noduri_graf = 0;
+            accesareDate();
+        }
+    }
+    else if (input == 2)
+    {
+        if (stergere_depozit() == EXIT_FAILURE)
+        {
+            cerr << setw(5) << " "
+                 << "SQL: Failed to delete row!\n";
+            getch();
+        }
+        else
+        {
+            oras.~ORAS();
+            oras.head_oras = nullptr;
+            oras.tail_oras = nullptr;
+
+            produs.~DETALII_PRODUS();
+            produs.head_produs = nullptr;
+            produs.tail_produs = nullptr;
+
+            depozit.~DEPOZIT();
+            depozit.head_depozit = nullptr;
+            depozit.tail_depozit = nullptr;
+            accesareDate();
+
+            return EXIT_SUCCESS;
+        }
+    }
+    return EXIT_SUCCESS;
+}
+#pragma endregion
 
 #endif

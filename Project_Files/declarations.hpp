@@ -553,27 +553,12 @@ double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa,
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
 
-#pragma region functions_init
+#pragma region FUNCTIONS_INITIALISATION
+
+#pragma region utils
 void mascare_text_on(void);
 
 void mascare_text_off(void);
-
-string _GET_API_KEY_(const string &config_file_path);
-
-size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);
-
-HTTP_RESPONSE _http_request_(const string &url);
-
-bool _GPS_UPDATE_DATA_(void);
-
-bool load_data(const char *path);
-
-double calculare_distante(const char *oras_1, const char *oras_2, const double lat_1,
-                          const double long_1, const double lat_2, const double long_2);
-
-double toRadians(const double degrees);
-
-bool start(void);
 
 #ifdef __linux__
 char getch(void);
@@ -584,32 +569,77 @@ void clear_screen(void);
 void sleepcp(const int ms);
 
 void underline(const unsigned int vWidth, const bool bSetw);
+#pragma endregion
 
-bool accesareDate(void);
+#pragma region GOOGLE_DISTANCE_MATRIX_API
+string _GET_API_KEY_(const string &config_file_path);
+
+size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);
+
+HTTP_RESPONSE _http_request_(const string &url);
+
+bool _GPS_UPDATE_DATA_(void);
+#pragma endregion
+
+#pragma region Haversine_Formula
+bool load_data(const char *path);
+
+double calculare_distante(const double lat_1, const double long_1, const double lat_2, const double long_2);
+
+double toRadians(const double degrees);
+#pragma endregion
+
+#pragma region INIT
+bool start(void);
 
 bool autentificare_cont(void);
 
 bool _init_(void);
+#pragma endregion
 
+#pragma region SQL
+bool accesareDate(void);
+
+bool update_database(void);
+
+bool adaugare_depozit(void);
+
+bool stergere_depozit(void);
+
+bool SQL_Data_Update(const int input);
+#pragma endregion
+
+#pragma region Afisare_Date
 void afisare_date_tabel_depozit(void);
 
 void afisare_date_tabel_produs(void);
 
 void afisare_date_tabel_oras(void);
+#pragma endregion
 
 void vizualizare_status_stoc(void);
 
+#pragma region DIJKSTRA
 void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee);
 
 void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
 
 void sistem_aprovizionare_independent(void);
 
+void afisare_trasee_optime(const int _ID, const int vStart);
+
+void afisare_optiuni_trasee_optime(const int vStart);
+
+void afisare_depozite_centralizare(void);
+#pragma endregion
+
+#pragma region SORT
 void sortare_date_depozit(void);
 
 void sortare_date_produs(const int tip_sortare);
 
 void sortare_date_oras(const int tip_sortare);
+#pragma endregion
 
 void nr_max_caractere_den(void);
 
@@ -625,16 +655,11 @@ void cautare_orase_stoc_limitat(void);
 
 void cautare_orase_izolate(void);
 
-void afisare_depozite_centralizare(void);
-
-void afisare_trasee_optime(const int _ID, const int vStart);
-
-void afisare_optiuni_trasee_optime(const int vStart);
-
 void afisare_depozite_izolate(void);
 
 void afisare_depozite_unic_drum(void);
 
+#pragma region Backtracking
 void init_stiva_hc(void);
 
 bool succesor_hc(void);
@@ -658,7 +683,9 @@ bool valid_ac(void);
 void determinare_traseu_minim(void);
 
 void back_ac(void);
+#pragma endregion
 
+#pragma region TSP
 void TSP(void);
 
 void produse_transport_TSP(void);
@@ -672,6 +699,7 @@ void pagina_dreapta_TSP(void);
 void pagina_finala_TSP(void);
 
 void parcurgere_traseu_TSP(void);
+#pragma endregion
 
 void afisare_detalii_SpeedyGo(sql::Connection *con);
 
@@ -693,11 +721,6 @@ void cautare_produs_denumire(void);
 
 void free_memory(void);
 
-bool update_database(void);
-
-void adaugare_depozit(void);
-
-void stergere_depozit(void);
 #pragma endregion
 
 #endif

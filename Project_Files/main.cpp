@@ -2,12 +2,12 @@
 #include "logic.hpp"
 #include "database.hpp"
 #include "Maps_Client.hpp"
-#include "distance_calculator.hpp"
+#include "geo_utils.hpp"
 
 using namespace std;
 
 bool start(void)
-{   
+{
     if (autentificare_cont() == EXIT_FAILURE)
         return EXIT_FAILURE;
     else if (_init_() == EXIT_FAILURE)
@@ -401,7 +401,7 @@ int main(int argc, char *argv[])
                      << setw(5) << " "
                      << "[2] Adauga un depozit\n"
                      << setw(5) << " "
-                     << "[2] Sterge un depozit\n"
+                     << "[3] Sterge un depozit\n"
                      << setw(5) << " "
                      << "[0] EXIT\n";
 
@@ -417,9 +417,20 @@ int main(int argc, char *argv[])
                     _GPS_UPDATE_DATA_();
                     break;
                 case 2:
-                    adaugare_depozit();
+                    if (SQL_Data_Update(1) == EXIT_FAILURE)
+                    {
+                        cerr << setw(5) << " " << "SQL: Failed to updated table!";
+                        getch();
+                    }
                     break;
-                
+                case 3:
+                    if (SQL_Data_Update(2) == EXIT_FAILURE)
+                    {
+                        cerr << setw(5) << " " << "SQL: Failed to updated table!";
+                        getch();
+                    }
+                    break;
+
                 default:
                     break;
                 }
