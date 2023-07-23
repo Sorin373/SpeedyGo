@@ -96,12 +96,6 @@ bool autentificare_cont(void)
     return EXIT_SUCCESS;
 }
 
-void afisare_gps(void)
-{
-    for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
-        cout << date_gps->start << " " << date_gps->destinatie << " " << date_gps->distanta << " " << date_gps->durata << endl;
-}
-
 bool _init_(void)
 {
     for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
