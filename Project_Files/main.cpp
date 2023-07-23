@@ -36,6 +36,7 @@ void free_memory(void)
     orase_conexiune_unica.clear();
     stiva.clear();
     traseu_minim_TSP.clear();
+    free(denumire_depozit_nou);
 }
 
 int main(int argc, char *argv[])
@@ -155,9 +156,9 @@ int main(int argc, char *argv[])
                 underline(40, true);
 
                 cout << setw(5) << " "
-                     << "[1] Tabel depozite Ro\n"
+                     << "[1] Tabel Depozite Ro\n"
                      << setw(5) << " "
-                     << "[2] Tabel produse\n"
+                     << "[2] Tabel Produse\n"
                      << setw(5) << " "
                      << "[0] EXIT\n";
 
@@ -293,7 +294,7 @@ int main(int argc, char *argv[])
                              << setw(5) << " "
                              << "[0] EXIT\n";
 
-                        underline(85, true);
+                        underline(80, true);
 
                         cout << setw(5) << " "
                              << "Introduceti numarul meniului: ";

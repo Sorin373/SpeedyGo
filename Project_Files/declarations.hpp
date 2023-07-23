@@ -546,21 +546,26 @@ std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1
 long long unsigned int contor_log; // contorizeaza log-urile dintr-o singura rulare a programului
 int contor_noduri_graf;            // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
 
-int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, contor_stiva, contor_traseu_TSP, pagina = 1,
-                                                 contor_orase;
-bool trasee = false, traseu_completat = false, buffer = true;
-double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa, cost_aprovizionare_total, cantitate_totala_aprovizionata;
+int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat,
+                                                 contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase;
 
-int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse;
+bool trasee = false, traseu_completat = false, buffer = true;
+double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa,
+       cost_aprovizionare_total, cantitate_totala_aprovizionata;
+
+int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse, cmax_ID_Oras, cmax_lat_oras,
+    cmax_ID_produs;
+
+char *denumire_depozit_nou = (char *)malloc(MAXL * sizeof(char) + 1);
 
 #pragma region FUNCTIONS_INITIALISATION
 
 #pragma region utils
+#ifdef __linux__
 void mascare_text_on(void);
 
 void mascare_text_off(void);
 
-#ifdef __linux__
 char getch(void);
 #endif
 
@@ -720,6 +725,8 @@ void cautare_produs_ID(void);
 void cautare_produs_denumire(void);
 
 void free_memory(void);
+
+void legaturi_graf(void);
 
 #pragma endregion
 

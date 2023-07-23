@@ -60,9 +60,14 @@ bool autentificare_cont(void)
     cin >> _UN;
     cout << setw(5) << " "
          << "Introduceti parola: ";
+
+#ifdef __linux__
     mascare_text_on();
+#endif
     cin >> _P;
+#ifdef __linux__
     mascare_text_off();
+#endif
 
     if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE)
         return EXIT_FAILURE;
@@ -147,8 +152,29 @@ void nr_max_caractere_den(void)
             cmax_denumire_produse = strlen(date_produs->Denumire_Produs);
 
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
         if (strlen(date_oras->denumire_oras) > cmax_denumire_orase)
             cmax_denumire_orase = strlen(date_oras->denumire_oras);
+
+        char temp[MAXL];
+        sprintf(temp, "%f", date_oras->latitudine);
+
+        for (unsigned int i = 0; i < strlen(temp); i++)
+            if (temp[i] == '.')
+                temp[i] = '\0';
+
+        if (strlen(temp) > cmax_lat_oras)
+            cmax_lat_oras = strlen(temp);
+    }
+
+    cmax_lat_oras += 3;
+
+    int temp = contor_noduri_graf;
+    while (temp)
+    {
+        temp /= 10;
+        cmax_ID_Oras++;
+    }
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
@@ -156,13 +182,22 @@ void nr_max_caractere_den(void)
             cmax_categorie_produse = strlen(date_produs->Categorie_Produs);
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
-        snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+        sprintf(pret, "%f", date_produs->pret_produs);
+
+        for (unsigned int i = 0; i < strlen(pret); i++)
+            if (pret[i] == '.')
+                pret[i] = '\0';
 
         if (strlen(pret) > cmax_pret_produse)
             cmax_pret_produse = strlen(pret);
 
+        if (strlen(date_produs->ID_Produs) > cmax_ID_produs)
+            cmax_ID_produs = strlen(date_produs->ID_Produs);
+
         free(pret);
     }
+
+    cmax_pret_produse += 3;
 }
 
 void afisare_date_tabel_oras(void)
@@ -191,9 +226,11 @@ void afisare_date_tabel_oras(void)
 
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
-             << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
-             << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+        cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
+             << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
+             << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
+             << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
+             << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
              << " " << date_oras->longitudine << "\u00B0\n";
     }
 
@@ -230,28 +267,29 @@ void afisare_date_tabel_produs(void)
          << "ID_Produs"
          << setw(4) << " "
          << "Denumire_Produs"
-         << setw(cmax_denumire_produse - 8) << " "
+         << setw(cmax_denumire_produse - 10) << " "
          << "Categorie_Produs"
-         << setw(10) << " "
+         << setw(5) << " "
          << "Pret_Produs\n";
 
-    underline(85, true);
+    underline(80, true);
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
-             << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
-             << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+        cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
+             << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
+             << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
         snprintf(pret, MAXL, "%g", date_produs->pret_produs);
 
-        cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+        cout << fixed << setprecision(2) << date_produs->pret_produs
+             << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
 
         free(pret);
     }
 
-    underline(85, true);
+    underline(80, true);
 }
 
 #pragma region SORT_DATE_INITIALE

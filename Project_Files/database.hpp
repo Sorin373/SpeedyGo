@@ -238,7 +238,8 @@ bool adaugare_depozit(void)
     cout << setw(5) << " "
          << "Denumire depozit: ";
     cin.get();
-    cin.get(Denumire_Depozit, sizeof(Denumire_Depozit));
+    cin.get(Denumire_Depozit, MAXL);
+    strcpy(denumire_depozit_nou, Denumire_Depozit);
 
     cout << setw(5) << " "
          << "Tip depozit:\n\n";
@@ -353,17 +354,17 @@ bool stergere_depozit(void)
 
     afisare_date_tabel_oras();
 
-    unsigned int ID;
+    string ID;
     cout << setw(5) << " "
-         << "Introduceti ID-ul corespunzator: ";
-    cin >> ID;
+         << "Introduceti ID-ul corespunzator ('EXIT' pentru a anula): ";
 
-    if (ID < 0 || ID > contor_noduri_graf)
-    {
-        cerr << setw(5) << " "
-             << "ID invalid!";
-        return EXIT_FAILURE;
-    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    getline(cin, ID);
+
+    const char* cStrID = ID.c_str();
+
+    if (strcasecmp(cStrID, "EXIT") == 0)
+        return EXIT_SUCCESS;
 
     try
     {
@@ -391,7 +392,7 @@ bool stergere_depozit(void)
         con->setSchema("SpeedyGo");
 
         string table_name = "oras";
-        string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + to_string(ID);
+        string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + ID;
         stmt = con->createStatement();
         stmt->execute(query);
         stmt->close();
@@ -417,6 +418,84 @@ bool stergere_depozit(void)
 
         return EXIT_FAILURE;
     }
+}
+
+void legaturi_graf(void)
+{
+    clear_screen();
+    cout << "\n\n";
+
+    afisare_date_tabel_oras();
+
+    cout << setw(5) << " "
+         << "Introduceti legaturile depozitului ('0' pentru a te intoarce):\n";
+    underline(80, true);
+
+    cout << setw(5) << " " << denumire_depozit_nou << " <--> ";
+
+    char *legatura = (char *)malloc(MAXL * sizeof(char) + 1);
+    int ID_Legatura = 0;
+    bool gasit = false;
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get(legatura, MAXL);
+
+    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        if (strcasecmp(date_oras->denumire_oras, legatura) == 0)
+        {
+            gasit = true;
+            ID_Legatura = stoi(date_oras->ID_Oras);
+            break;
+        }
+
+    ofstream fisier;
+    fisier.open("legaturi.txt", ios::out | ios::app);
+    if (!fisier.is_open())
+    {
+        cerr << setw(5) << " "
+             << "Failed to open file!";
+        getch();
+        return;
+    }
+
+    if (gasit)
+        fisier << "\n" << contor_noduri_graf - 1 << " " << ID_Legatura << "\n";
+    else
+        cerr << setw(5) << " " << "Legatura invalida!\n\n";
+
+    while (true)
+    {
+        gasit = false;
+        cout << setw(5) << " " << denumire_depozit_nou << " <--> ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get(legatura, MAXL);
+
+        if (strcasecmp(legatura, "0") == 0)
+            break;
+
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            if (strcasecmp(date_oras->denumire_oras, legatura) == 0)
+            {
+                gasit = true;
+                ID_Legatura = stoi(date_oras->ID_Oras);
+                break;
+            }
+
+        if (gasit)
+            fisier << contor_noduri_graf - 1 << " " << ID_Legatura << "\n";
+        else
+            cerr << setw(5) << " " << "Legatura invalida!\n\n";
+    }
+
+    if (load_data("legaturi.txt") == EXIT_FAILURE)
+    {
+        cerr << setw(5) << " " << "Failed to update matrix!\n";
+        getch();
+        return; 
+    }
+
+    fisier.close();
+    free(legatura);
 }
 
 bool SQL_Data_Update(const int input)
@@ -445,6 +524,7 @@ bool SQL_Data_Update(const int input)
 
             contor_noduri_graf = 0;
             accesareDate();
+            legaturi_graf();
         }
     }
     else if (input == 2)
@@ -457,6 +537,27 @@ bool SQL_Data_Update(const int input)
         }
         else
         {
+            for (unsigned int i = 0; i < contor_noduri_graf; i++)
+            {
+                matrice_drum[contor_noduri_graf - 1][i].distanta = matrice_drum[i][contor_noduri_graf - 1].distanta = 0.0;
+                matrice_drum[contor_noduri_graf - 1][i].durata = matrice_drum[i][contor_noduri_graf - 1].durata = 0;
+            }
+
+            ofstream fisier("legaturi.txt");
+            if (!fisier.is_open())
+            {
+                cerr << setw(5) << " " << "Failed to open file!\n";
+                getch();
+                return EXIT_FAILURE;
+            }
+
+            for (unsigned int i = 0; i < contor_noduri_graf; i++)
+                for (unsigned int j = 0; j < contor_noduri_graf; j++)
+                    if (matrice_drum[i][j].distanta != 0 && i < j)
+                        fisier << j << " " << i << "\n";
+
+            fisier.close();
+
             oras.~ORAS();
             oras.head_oras = nullptr;
             oras.tail_oras = nullptr;
@@ -468,6 +569,8 @@ bool SQL_Data_Update(const int input)
             depozit.~DEPOZIT();
             depozit.head_depozit = nullptr;
             depozit.tail_depozit = nullptr;
+
+            contor_noduri_graf = 0;
             accesareDate();
 
             return EXIT_SUCCESS;
