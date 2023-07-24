@@ -53,13 +53,13 @@ bool autentificare_cont(void)
          << "======================================\n\n";
 
     cout << setw(5) << " "
-         << "Nume server: ";
+         << "Hostname: ";
     cin >> _HN;
     cout << setw(5) << " "
-         << "Nume utilizator: ";
+         << "Username: ";
     cin >> _UN;
     cout << setw(5) << " "
-         << "Introduceti parola: ";
+         << "Password: ";
 
 #ifdef __linux__
     mascare_text_on();

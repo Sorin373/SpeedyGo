@@ -265,5 +265,11 @@ mysql> Select * from produs;
 +-----------+----------------------+------------------+-------------+
 20 rows in set (0,00 sec)
 ```
+- If you want to run the MySQL server locally and only allow connections from the same machine (localhost), you can use localhost as the hostname when connecting to the MySQL server. By default, the MySQL server is configured to listen on 127.0.0.1, which is the loopback IP address for the local machine. As a result, the complete hostname will be "localhost:3306," with "3306" representing the port number.
+- Check the port number:
+```
+mysql> SHOW VARIABLES LIKE 'port';
+```
+
 # Contact
 - Gmail: sorin.andrei.tudose@gmail.com
