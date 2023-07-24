@@ -549,7 +549,7 @@ int contor_noduri_graf;            // se foloseste acest contor, deoarece functi
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat,
                                                  contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase;
 
-bool trasee = false, traseu_completat = false, buffer = true;
+bool trasee = false, traseu_completat = false, buffer = true, use_API = false;
 double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa,
        cost_aprovizionare_total, cantitate_totala_aprovizionata;
 

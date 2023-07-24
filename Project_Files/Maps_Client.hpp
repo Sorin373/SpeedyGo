@@ -72,10 +72,11 @@ bool _GPS_UPDATE_DATA_(void)
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
     char config_file_path[MAXL] = "config.json"; // schimba adresa in functie de unde se afla local API-ul gMaps
 
-    cout << setw(5) << " "
-         << "Daca doriti sa folositi servicile Google pentru a calcula distantele intre orase\n"
-         << setw(5) << " "
-         << "introduceti 1 si 0 in caz contrar!\n";
+    if (!use_API)
+        cout << setw(5) << " "
+            << "Daca doriti sa folositi servicile Google pentru a calcula distantele intre orase\n"
+            << setw(5) << " "
+            << "introduceti 1 si 0 in caz contrar!\n";
 
     underline(85, true);
 
@@ -106,6 +107,8 @@ bool _GPS_UPDATE_DATA_(void)
 
         if (API_KEY.empty())
             return EXIT_FAILURE;
+
+        use_API = true;
 
         unordered_map<string, double> distante_orase;
 
