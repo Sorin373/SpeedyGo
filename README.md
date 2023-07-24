@@ -183,7 +183,7 @@ mysql> SHOW TABLES;
 ```
 
 - Add data (you need to execute this cmd for all the tables):
-- Replace '/path/to/your/data.csv' with the path to you CSV file and fill in the correct table name.
+- Replace '/path/to/your/data.csv' with the path to you CSV file and fill in the correct table names.
 
 ```
 mysql> SET GLOBAL local_infile=1;

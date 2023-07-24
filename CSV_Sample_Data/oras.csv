@@ -1,0 +1,12 @@
+ID_Oras,Denumire_Oras,latitudine,longitudine,Tip_Depozit
+0,Brasov,45.6579752,25.6011985,local
+1,Bucuresti,44.4267674,26.1025384,centralizat
+2,Cluj,46.7712101,23.6236359,local
+3,Constanta,44.1760175,28.6155619,local
+4,Pitesti,44.8561453,24.8698545,local
+5,Ramnicu Valcea,45.0999934,24.3651926,local
+6,Sibiu,45.7979713,24.1374603,centralizat
+7,Suceava,47.6443858,26.2575613,local
+8,Targu Mures,46.5546502,24.5620975,local
+9,Timisoara,45.7488716,21.2086793,local
+10,Iasi,47.15984,27.5877532,local
