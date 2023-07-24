@@ -264,28 +264,6 @@ mysql> Select * from produs;
 |        19 | Suc de ananas        | nealcoolice      |         3.2 |
 +-----------+----------------------+------------------+-------------+
 20 rows in set (0,00 sec)
-
-<p>
-<details>
-<summary>Cool Dropdown #1</summary>
-
-```js
-// so wow, much amazing... you can even put code in these drop downs!
-document.getElementById('root')
-```s
-
-[Or a link - like to google](https://google.com)
-
-- Or a List
-  - or a nested List
-  - like this
-  - with 😊 emojis
-- Like this
-
-Or even just normal text
-
-</details>
-</p>
+```
 # Contact
-
 - Gmail: sorin.andrei.tudose@gmail.com
