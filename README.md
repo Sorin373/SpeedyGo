@@ -60,31 +60,31 @@ In order to use the application you first need to create a local MySql database 
 
 1. Database initalisation
 
-If you have recently installed MySQL, you can execute other MySQL commands using the default user, "root." Access the MySQL command line by entering:
+- If you have recently installed MySQL, you can execute other MySQL commands using the default user, "root." Access the MySQL command line by entering:
 
 ```
 $ mysql -u root
 ```
 
-If you have assigned a password to the "root" user, use the following command, and it will prompt you to log in:
+- If you have assigned a password to the "root" user, use the following command, and it will prompt you to log in:
 
 ```
 $ mysql -u root -p
 ```
 
-To enhance the security of the "root" user, you can set a password using the following command:
+- To enhance the security of the "root" user, you can set a password using the following command:
 
 ```
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
 ```
 
-Now you are ready to create the Database (replace my_schema with the desire Database name):
+- Now you are ready to create the Database (replace my_schema with the desire Database name):
 
 ```
 mysql> CREATE DATABASE my_schema;
 ```
 
-If you want to create additional users and grant them access to the new database, follow these steps:
+- If you want to create additional users and grant them access to the new database, follow these steps:
 
 ```
 mysql> CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'user_password';
@@ -98,7 +98,7 @@ Login as the new user:
 $ mysql -u new_user -p
 ```
 
-You can also view all users by running the following command. However, it is recommended not to delete the system users as they serve specific purposes (the first 5 users):
+- You can also view all users by running the following command. However, it is recommended not to delete the system users as they serve specific purposes (the first 5 users):
 
 ```
 mysql> SELECT user, host FROM mysql.user;
@@ -115,7 +115,7 @@ mysql> SELECT user, host FROM mysql.user;
 6 rows in set (0,00 sec)
 ```
 
-Drop a user:
+- Drop a user:
 
 ```
 mysql> DROP USER 'my_user'@'localhost';
