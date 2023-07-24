@@ -58,7 +58,7 @@ The application not only utilizes Dijkstra's algorithm to generate the most effi
 
 In order to use the application you first need to create a local MySql database witch will house the necessary data (you can use either commands or the MySql workbench).
 
-1. Database initalisation
+1. Database initialisation
 
 - If you have recently installed MySQL, you can execute other MySQL commands using the default user, "root." Access the MySQL command line by entering:
 
