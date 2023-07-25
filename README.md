@@ -172,13 +172,13 @@ mysql> CREATE TABLE table_name_3 (
 
 ```
 mysql> SHOW TABLES;
-+--------------------+
++---------------------+
 | Tables_in_my_schema |
-+--------------------+
++---------------------+
 | table_name_1        |
 | table_name_2        |
 | table_name_3        |
-+--------------------+
++---------------------+
 3 rows in set (0,00 sec)
 ```
 
