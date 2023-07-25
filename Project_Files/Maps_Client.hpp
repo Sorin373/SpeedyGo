@@ -85,7 +85,10 @@ bool _GPS_UPDATE_DATA_(void)
     cin >> input;
 
     if (strcasecmp(input, "0") == 0)
+    {
+        free(input);
         return EXIT_FAILURE;
+    }
     else if (strcasecmp(input, "1") == 0)
     {
         clear_screen();
@@ -101,7 +104,10 @@ bool _GPS_UPDATE_DATA_(void)
         cin >> config_file_path;
 
         if (strcasecmp(config_file_path, "0") == 0)
+        {
+            free(input);
             return EXIT_FAILURE;
+        }
 
         string API_KEY = _GET_API_KEY_(config_file_path);
 
@@ -204,11 +210,19 @@ bool _GPS_UPDATE_DATA_(void)
                         trasee_gps.introducere_date_trasee_gps(result, durata_finala, oras1, oras2);
                     }
                     else
+                    {
+                        free(oras1);
+                        free(oras2);
                         return EXIT_FAILURE;
+                    }
                 }
                 else
+                {
+                    free(oras1);
+                    free(oras2);
                     return EXIT_FAILURE;
-
+                }
+                    
                 json updated_data;
 
                 for (unordered_map<string, double>::const_iterator i = distante_orase.begin(); i != distante_orase.end(); i++)
@@ -236,12 +250,12 @@ bool _GPS_UPDATE_DATA_(void)
                 free(oras1);
                 free(oras2);
             }
+            
+            free(input);
             return EXIT_SUCCESS;
         }
     }
-
-    free(input);
-
+    
     return EXIT_SUCCESS;
 }
 

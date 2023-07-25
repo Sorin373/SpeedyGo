@@ -157,6 +157,9 @@ private:
 public:
     static void introducere_date(char *vHost_name, char *vUsername, char *vParola, char *vDB)
     {
+        if (data)
+            delete data;
+
         data = new NOD_AUTENTIFICARE(vHost_name, vUsername, vParola, vDB);
     }
 
@@ -165,10 +168,16 @@ public:
         return data;
     }
 
-    ~AUTENTIFICARE()
+    static void cleanup()
     {
-        delete data;
+        if (data) // Check if data is not null before deleting it
+        {
+            delete data;
+            data = nullptr; // Set data to nullptr to avoid potential double deletion
+        }
     }
+
+    ~AUTENTIFICARE() = default;
 };
 
 class DEPOZIT
@@ -566,9 +575,7 @@ char *denumire_depozit_nou = (char *)malloc(MAXL * sizeof(char) + 1);
 
 #pragma region utils
 #ifdef __linux__
-void mascare_text_on(void);
-
-void mascare_text_off(void);
+void toggleEcho(bool enableEcho);
 
 char getch(void);
 #endif

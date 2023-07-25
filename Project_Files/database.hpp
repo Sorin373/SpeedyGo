@@ -486,7 +486,7 @@ void legaturi_graf(void)
         else
             cerr << setw(5) << " " << "Legatura invalida!\n\n";
     }
-
+    
     if (load_data("legaturi.txt") == EXIT_FAILURE)
     {
         cerr << setw(5) << " " << "Failed to update matrix!\n";

@@ -13,13 +13,15 @@ bool start(void)
     else if (_init_() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
-    determinare_tip_depozit();
-    cautare_orase_stoc_limitat();
-    cautare_orase_izolate();
     sortare_date_depozit();
     sortare_date_oras(1);
     sortare_date_produs(1);
+
+    determinare_tip_depozit();
+    cautare_orase_stoc_limitat();
+    cautare_orase_izolate();
     produse_transport_TSP();
+
     nr_max_caractere_den();
 
     traseu_minim_TSP[1] = -1;
@@ -37,6 +39,7 @@ void free_memory(void)
     stiva.clear();
     traseu_minim_TSP.clear();
     free(denumire_depozit_nou);
+    AUTENTIFICARE::cleanup();
 }
 
 int main(int argc, char *argv[])
@@ -44,7 +47,10 @@ int main(int argc, char *argv[])
     unsigned int MENIU;
 
     if (start() == EXIT_FAILURE)
+    {
+        free_memory();
         return EXIT_FAILURE;
+    }
 
     do
     {

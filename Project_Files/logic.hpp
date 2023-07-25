@@ -118,14 +118,14 @@ bool autentificare_cont(void)
         getch();
         free(_HN);
         free(_UN);
-        free((void *)_P);
+        free(_P);
         free(_DB);
         return autentificare_cont();
     }
 
     free(_HN);
     free(_UN);
-    free((void *)_P);
+    free(_P);
     free(_DB);
 
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
