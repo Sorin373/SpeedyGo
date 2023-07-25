@@ -170,10 +170,10 @@ public:
 
     static void cleanup()
     {
-        if (data) // Check if data is not null before deleting it
+        if (data)
         {
             delete data;
-            data = nullptr; // Set data to nullptr to avoid potential double deletion
+            data = nullptr;
         }
     }
 
