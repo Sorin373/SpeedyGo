@@ -20,20 +20,17 @@ void underline(const unsigned int vWidth, const bool bSetw)
 }
 
 #ifdef __linux__
-void mascare_text_on(void)
+void toggleEcho(bool enableEcho)
 {
-    struct termios term;
-    tcgetattr(STDIN_FILENO, &term);
-    term.c_lflag &= ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
 
-void mascare_text_off(void)
-{
-    struct termios term;
-    tcgetattr(STDIN_FILENO, &term);
-    term.c_lflag |= ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+    if (enableEcho)
+        tty.c_lflag |= ECHO;
+    else
+        tty.c_lflag &= ~ECHO;
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 }
 #endif
 #pragma endregion
@@ -44,6 +41,7 @@ bool autentificare_cont(void)
 
     char *_HN = (char *)malloc(MAXL * sizeof(char) + 1),
          *_UN = (char *)malloc(MAXL * sizeof(char) + 1),
+         *_DB = (char *)malloc(MAXL * sizeof(char) + 1), 
          *_P = (char *)malloc(MAXL * sizeof(char) + 1);
 
     cout << "\n\n"
@@ -61,18 +59,57 @@ bool autentificare_cont(void)
     cout << setw(5) << " "
          << "Password: ";
 
+#pragma region PASSWORD_MASK
 #ifdef __linux__
-    mascare_text_on();
+    toggleEcho(false);
+#elif WINDOWS
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    DWORD mode = 0;
+    GetConsoleMode(hStdin, &mode);
+    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
 #endif
-    cin >> _P;
-#ifdef __linux__
-    mascare_text_off();
-#endif
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE)
+    char ch;
+    int i = 0;
+
+    while ((ch = cin.get()) != '\n' && i < MAXL)
+    {
+        if (ch == '\r') // Handle Enter (newline) key
+            break;
+
+        if (ch == '\b')
+        { // Handle backspace
+            if (i > 0)
+            {
+                cout << "\b \b"; // Erase the last character and move the cursor back
+                i--;
+            }
+        }
+        else
+        {
+            cout << '*';
+            _P[i++] = ch; // Append the character to the password array
+        }
+    }
+    _P[i] = '\0'; // Null-terminate the password array
+
+#ifdef __linux__
+    toggleEcho(true);
+#elif WINDOWS
+    SetConsoleMode(hStdin, mode);
+#endif
+#pragma endregion
+
+    cout << "\n"
+         << setw(5) << " "
+         << "Database name: ";
+    cin >> _DB;
+
+    if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE || strlen(_DB) > MAX_SIZE)
         return EXIT_FAILURE;
 
-    autentificare.introducere_date(_HN, _UN, _P);
+    AUTENTIFICARE::introducere_date(_HN, _UN, _P, _DB);
 
     clear_screen();
 
@@ -81,13 +118,15 @@ bool autentificare_cont(void)
         getch();
         free(_HN);
         free(_UN);
-        free(_P);
+        free((void *)_P);
+        free(_DB);
         return autentificare_cont();
     }
 
     free(_HN);
     free(_UN);
-    free(_P);
+    free((void *)_P);
+    free(_DB);
 
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
         if (load_data("legaturi.txt") == EXIT_FAILURE)
@@ -2024,10 +2063,10 @@ void consola_mysql(void)
     Connection *con;
 
     driver = mysql::get_mysql_driver_instance();
-    con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                          string(autentificare.get_nod()->username),
-                          string(autentificare.get_nod()->parola));
-    con->setSchema("SpeedyGo");
+    con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
+                          string(AUTENTIFICARE::get_nod()->username),
+                          string(AUTENTIFICARE::get_nod()->parola));
+    con->setSchema(AUTENTIFICARE::get_nod()->DB);
 
     afisare_detalii_SpeedyGo(con);
 

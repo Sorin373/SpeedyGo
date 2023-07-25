@@ -18,10 +18,10 @@ bool accesareDate(void)
 
         driver = get_driver_instance();
 
-        con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                              string(autentificare.get_nod()->username),
-                              string(autentificare.get_nod()->parola));
-
+        con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
+                          string(AUTENTIFICARE::get_nod()->username),
+                          string(AUTENTIFICARE::get_nod()->parola));
+        
         if (con == nullptr)
         {
             delete res;
@@ -30,7 +30,7 @@ bool accesareDate(void)
             return EXIT_FAILURE;
         }
 
-        con->setSchema("SpeedyGo");
+        con->setSchema(AUTENTIFICARE::get_nod()->DB);
 
         stmt = con->createStatement();
         res = stmt->executeQuery("SELECT * FROM depozit");
@@ -166,10 +166,10 @@ bool update_database(void)
         Connection *con;
 
         driver = mysql::get_mysql_driver_instance();
-        con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                              string(autentificare.get_nod()->username),
-                              string(autentificare.get_nod()->parola));
-        con->setSchema("SpeedyGo");
+        con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
+                          string(AUTENTIFICARE::get_nod()->username),
+                          string(AUTENTIFICARE::get_nod()->parola));
+        con->setSchema(AUTENTIFICARE::get_nod()->DB);
 
         if (con == nullptr)
         {
@@ -299,9 +299,9 @@ bool adaugare_depozit(void)
             Statement *stmt;
 
             driver = get_driver_instance();
-            con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                                  string(autentificare.get_nod()->username),
-                                  string(autentificare.get_nod()->parola));
+            con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
+                          string(AUTENTIFICARE::get_nod()->username),
+                          string(AUTENTIFICARE::get_nod()->parola));
 
             if (con == nullptr)
             {
@@ -310,7 +310,7 @@ bool adaugare_depozit(void)
                 return EXIT_FAILURE;
             }
 
-            con->setSchema("SpeedyGo");
+            con->setSchema(AUTENTIFICARE::get_nod()->DB);
 
             string table_name = "oras";
             string query = "INSERT INTO " + table_name + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + to_string(contor_noduri_graf) + ", '" + Denumire_Depozit + "', " + to_string(lat) + ", " + to_string(lon) + ", '" + Tip_Depozit + "')";
@@ -378,9 +378,9 @@ bool stergere_depozit(void)
         Statement *stmt;
 
         driver = get_driver_instance();
-        con = driver->connect("tcp://" + string(autentificare.get_nod()->host_name),
-                              string(autentificare.get_nod()->username),
-                              string(autentificare.get_nod()->parola));
+        con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
+                          string(AUTENTIFICARE::get_nod()->username),
+                          string(AUTENTIFICARE::get_nod()->parola));
 
         if (con == nullptr)
         {
@@ -389,7 +389,7 @@ bool stergere_depozit(void)
             return EXIT_FAILURE;
         }
 
-        con->setSchema("SpeedyGo");
+        con->setSchema(AUTENTIFICARE::get_nod()->DB);
 
         string table_name = "oras";
         string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + ID;

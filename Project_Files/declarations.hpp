@@ -133,12 +133,14 @@ private:
         char *host_name = nullptr;
         char *username = nullptr;
         char *parola = nullptr;
+        char *DB = nullptr;
 
-        NOD_AUTENTIFICARE(char *host_name, char *username, char *parola)
+        NOD_AUTENTIFICARE(char *host_name, char *username, char *parola, char *DB)
         {
             this->host_name = strdup(host_name);
             this->username = strdup(username);
             this->parola = strdup(parola);
+            this->DB = strdup(DB);
         }
 
         ~NOD_AUTENTIFICARE()
@@ -146,18 +148,19 @@ private:
             free(host_name);
             free(username);
             free(parola);
+            free(DB);
         }
     };
 
-    NOD_AUTENTIFICARE *data = nullptr;
+    static NOD_AUTENTIFICARE *data;
 
 public:
-    void introducere_date(char *vHost_name, char *vUsername, char *vParola)
+    static void introducere_date(char *vHost_name, char *vUsername, char *vParola, char *vDB)
     {
-        data = new NOD_AUTENTIFICARE(vHost_name, vUsername, vParola);
+        data = new NOD_AUTENTIFICARE(vHost_name, vUsername, vParola, vDB);
     }
 
-    NOD_AUTENTIFICARE *get_nod()
+    static NOD_AUTENTIFICARE *get_nod()
     {
         return data;
     }
@@ -527,11 +530,12 @@ public:
 };
 #pragma endregion
 
+AUTENTIFICARE::NOD_AUTENTIFICARE *AUTENTIFICARE::data = nullptr;
+
 TRASEE_GPS trasee_gps;
 DEPOZIT depozit;
 ORAS oras;
 DETALII_PRODUS produs;
-AUTENTIFICARE autentificare;
 TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
