@@ -1590,10 +1590,39 @@ void pagina_principala_TSP(void)
 
 void pagina_finala_TSP(void)
 {
+    ifstream get_contor("utils/contor_TSP_log.txt");
+    if (!get_contor.is_open())
+    {
+        cerr << setw(5) << " "
+             << "Failed to open utils file!\n";
+        getch();
+    }
+    else
+    {
+        long long unsigned int contor_temp;
+        get_contor >> contor_temp;
+        contor_log = contor_temp;
+    }
+    get_contor.close();
+
     traseu_completat = true;
+    contor_log++;
+
+    ofstream file("utils/contor_TSP_log.txt");
+    if (!file.is_open())
+    {
+        cerr << setw(5) << " "
+             << "Failed to open file!\n";
+        getch();
+    }
+    else
+        file << contor_log;
+
+    file.close();
 
     if (!update_database())
-        cerr << setw(5) << " " << "Could not update the database!\n";
+        cerr << setw(5) << " "
+             << "Could not update the database!\n";
     else
         accesareDate();
 
@@ -1605,33 +1634,36 @@ void pagina_finala_TSP(void)
         cerr << setw(5) << " "
              << "Failed to open TSP log!\n";
         getch();
-        return;
     }
-
-    string s(500, '=');
-    log_out << "LOG [" << contor_log << "]\n";
-
-    for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+    else
     {
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        string s(500, '=');
+        log_out << "LOG [" << contor_log << "]\n";
+
+        for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
         {
-            int ID = stoi(date_oras->ID_Oras);
-            if (ID == traseu_minim_TSP[i])
+            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
-                log_out << date_oras->denumire_oras;
-                if (i < contor_traseu_TSP)
-                    log_out << " --> ";
-                break;
+                int ID = stoi(date_oras->ID_Oras);
+                if (ID == traseu_minim_TSP[i])
+                {
+                    log_out << date_oras->denumire_oras;
+                    if (i < contor_traseu_TSP)
+                        log_out << " --> ";
+                    break;
+                }
             }
         }
-    }
 
-    log_out << "\n"
-            << s << "\n"
-            << "Distanta parcursa: " << cost_minim_TSP << "km\n"
-            << "Cantitate totala transportata: " << cantitate_totala_aprovizionata << "BUC.\n"
-            << "Cost total: " << cost_aprovizionare_total << "RON\nEND-LOG\n"
-            << s << "\n\n\n";
+        log_out << "\n"
+                << s << "\n"
+                << "Distanta parcursa: " << cost_minim_TSP << "km\n"
+                << "Cantitate totala transportata: " << cantitate_totala_aprovizionata << "BUC.\n"
+                << "Cost total: " << cost_aprovizionare_total << "RON\nEND-LOG\n"
+                << s << "\n\n\n";
+
+        log_out.close();
+    }
 
     clear_screen();
 

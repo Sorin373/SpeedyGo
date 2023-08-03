@@ -556,8 +556,8 @@ std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);            
 std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                                    // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
 std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);               // stocarea traseului optim TSP (travel salesman problem)
 
-long long unsigned int contor_log; // contorizeaza log-urile dintr-o singura rulare a programului
-int contor_noduri_graf;            // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
+long long unsigned int contor_log;
+int contor_noduri_graf; // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
 
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat,
                                                  contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase;
