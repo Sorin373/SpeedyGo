@@ -1161,7 +1161,7 @@ bool succesor_hc(void)
 
 bool solutie_hc(void)
 {
-    if (contor_stiva == contor_noduri_graf)
+    if (contor_stiva == contor_orase_stoc_limitat)
         return true;
     return false;
 }

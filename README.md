@@ -355,8 +355,283 @@ double calculare_distante(const double lat_1, const double long_1, const double 
 Not only is the application able to generate the most efficient path between two points (eg. **Bucharest --> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
 
 ## Dijkstra's alghorithm
+1. This function takes a start node and two vectors (distanta and distanta_minima) as input. The distanta vector represents the distances from the start node to each node in the graph, while the distanta_minima vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the distanta vector and the shortest paths (previous nodes) in the distanta_minima vector.
+```c++
+void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
+{
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
+    {
+        if (i != start)
+        {
+            if (afisare)
+                cout << "Cea mai scurta distanta de la " << start << " la " << i << " este: " << distanta[i] << " : traseu: ";
+
+            vector<int> traseu;
+
+            int nod = i;
+
+            while (nod != -1)
+            {
+                traseu.push_back(nod);
+                nod = distanta_minima[nod];
+            }
+
+            reverse(traseu.begin(), traseu.end());
+
+            if (creare_trasee)
+                _traseu.inserareDateTraseu(start, i, distanta[i], traseu);
+
+            if (afisare)
+                for (unsigned int j = 0; j < traseu.size(); j++)
+                    cout << traseu[j] << " ";
+
+            if (afisare)
+                cout << "\n";
+        }
+    }
+}
+```
+
+2. This function takes the start node, the distanta vector, and the distanta_minima vector as input. It also accepts two boolean flags, afisare and creare_trasee. The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the distanta_minima vector from the start node to the current node. It reverses the path to display it in the correct order. If creare_trasee is true, the function inserts the path into a data structure. The afisare flag controls whether the results are printed to the console.
+```c++
+void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
+{
+    vector<bool> visited(contor_noduri_graf, false);
+    distanta[start] = 0.0;
+
+    for (unsigned int i = 0; i < contor_noduri_graf; i++)
+    {
+        int min_index = 0;
+        double min_dist = numeric_limits<double>::infinity();
+
+        for (unsigned int j = 0; j < contor_noduri_graf; j++)
+            if (!visited[j] && distanta[j] < min_dist)
+            {
+                min_index = j;
+                min_dist = distanta[j];
+            }
+
+        visited[min_index] = true;
+
+        for (unsigned int j = 0; j < contor_noduri_graf; j++)
+        {
+            double distanta_noua = distanta[min_index] + matrice_drum[min_index][j].distanta;
+
+            if (!visited[j] && matrice_drum[min_index][j].distanta > 0 && distanta_noua < distanta[j])
+            {
+                distanta[j] = distanta_noua;
+                distanta_minima[j] = min_index;
+            }
+        }
+    }
+}
+```
 
 ## Backtracking
+When I thought on how to build this part of the program 2 posible situations came to my mind. The first was the best case cenario where the graph is Hamiltonian which means it has a Hamiltonian cycle representing the most efficient route and the other one was when the graph was acyclic (has no cycles). Therefore I needed to build 2 Backtracking alghorithms for managing both Acyclic and Hamiltonian graphs. The functions were mostly similar to the point when I needed to create the solutions. In the first case the solution has to have the same amount of elements as the number of towns we need to supply. However if the graph is acyclic the elements in a solution will most definitely surpass that number, because in some situations we will need to visit a town twice in order to get to other towns.
+### Hamiltonian Graph
+```c++
+void init_stiva_hc(void)
+{
+    stiva[contor_stiva] = -1;
+}
+
+bool succesor_hc(void)
+{
+    if (stiva[contor_stiva] < contor_noduri_graf - 1)
+    {
+        stiva[contor_stiva]++;
+        return true;
+    }
+    return false;
+}
+
+bool solutie_hc(void)
+{
+    if (contor_stiva == contor_orase_stoc_limitat)
+        return true;
+    return false;
+}
+
+bool valid_hc(void)
+{
+    for (unsigned int i = 1; i < contor_stiva; i++)
+        if (stiva[contor_stiva] == stiva[i])
+            return false;
+
+    if (contor_stiva > 1)
+        if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]].distanta == 0)
+            return false;
+
+    if (contor_stiva > 1)
+        if (depozite_centralizate[stiva[1]] == false)
+            return false;
+
+    return true;
+}
+
+void determinare_ciclu_hc_minim(void)
+{
+    double suma_dist = 0.0;
+    int suma_durata = 0;
+
+    for (int i = 1; i <= contor_stiva; i++)
+    {
+        suma_dist += matrice_drum[stiva[i]][stiva[i + 1]].distanta;
+        suma_durata += matrice_drum[stiva[i]][stiva[i + 1]].durata;
+    }
+
+    if (suma_dist < cost_minim_TSP || (suma_dist == cost_minim_TSP && suma_durata < durata_minima_TSP))
+    {
+        cost_minim_TSP = suma_dist;
+        durata_minima_TSP = suma_durata;
+
+        for (int i = 1; i <= contor_stiva; i++)
+        {
+            traseu_minim_TSP[i] = stiva[i];
+            contor_traseu_TSP = contor_stiva;
+        }
+    }
+}
+
+void back_hc(void)
+{
+    contor_stiva = 1;
+    init_stiva_hc();
+    while (contor_stiva > 0)
+    {
+        int vSuccesor, vValid;
+        do
+        {
+            vSuccesor = succesor_hc();
+            if (vSuccesor == 1)
+                vValid = valid_hc();
+        } while (vSuccesor == 1 && vValid == 0);
+        if (vSuccesor == 1)
+        {
+            if (solutie_hc() == 1)
+                determinare_ciclu_hc_minim();
+            else
+            {
+                contor_stiva++;
+                init_stiva_hc();
+            }
+        }
+        else
+            contor_stiva--;
+    }
+}
+```
+### Acyclic Graph
+```c++
+
+void init_stiva_ac(void)
+{
+    stiva[contor_stiva] = -1;
+}
+
+bool succesor_ac(void)
+{
+    if (stiva[contor_stiva] < contor_noduri_graf - 1)
+    {
+        stiva[contor_stiva]++;
+        return true;
+    }
+    return false;
+}
+
+bool solutie_ac(void)
+{
+    if (contor_stiva == contor_noduri_graf + 1)
+        return true;
+    return false;
+}
+
+bool valid_ac(void)
+{
+    if (contor_stiva == contor_noduri_graf + 1)
+    {
+        for (unsigned int i = 0; i < contor_noduri_graf; i++)
+        {
+            bool gasit = false;
+            if (orase_stoc_limitat[i] == true && !orase_izolate[i])
+            {
+                for (unsigned int j = 1; j <= contor_stiva; j++)
+                {
+                    if (stiva[j] == i)
+                    {
+                        gasit = true;
+                        break;
+                    }
+                }
+
+                if (!gasit)
+                    return false;
+            }
+        }
+    }
+
+    if (contor_stiva > 1)
+        if (matrice_drum[stiva[contor_stiva]][stiva[contor_stiva - 1]].distanta == 0)
+            return false;
+
+    if (contor_stiva > 1)
+        if (depozite_centralizate[stiva[1]] == false)
+            return false;
+
+    return true;
+}
+
+void determinare_traseu_minim(void)
+{
+    double suma_dist = 0.0;
+    int suma_durata = 0;
+
+    for (int i = 1; i < contor_stiva; i++)
+    {
+        suma_dist += matrice_drum[stiva[i]][stiva[i + 1]].distanta;
+        suma_durata += matrice_drum[stiva[i]][stiva[i + 1]].durata;
+    }
+
+    if (suma_dist < cost_minim_TSP || (suma_dist == cost_minim_TSP && suma_durata < durata_minima_TSP))
+    {
+        cost_minim_TSP = suma_dist;
+        durata_minima_TSP = suma_durata;
+
+        for (int i = 1; i <= contor_stiva; i++)
+        {
+            traseu_minim_TSP[i] = stiva[i];
+            contor_traseu_TSP = contor_stiva;
+        }
+    }
+}
+
+void back_ac(void)
+{
+    int vSuccesor, vValid;
+    contor_stiva = 1;
+    init_stiva_ac();
+    while (contor_stiva > 0)
+    {
+        do
+        {
+            vSuccesor = succesor_ac();
+            if (vSuccesor == 1)
+                vValid = valid_ac();
+        } while (vSuccesor == 1 && vValid == 0);
+        if (vSuccesor == 1)
+            if (solutie_ac() == 1)
+                determinare_traseu_minim();
+            else
+            {
+                contor_stiva++;
+                init_stiva_ac();
+            }
+        else
+            contor_stiva--;
+    }
+}
+```
 
 # Contact
 - Gmail: sorin.andrei.tudose@gmail.com
