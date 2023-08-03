@@ -328,6 +328,29 @@ HTTP_RESPONSE _http_request_(const string &url)
 
 ## The Haversine Formula
 
+- The Haversine formula provides an approximation of the distance between two points on a sphere, such as the Earth.
+
+1. This is the first part of the Haversine formula. It represents the square of half the chord length between the two points on the Earth's surface.
+```txt
+a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2)
+```
+2. This is the second part of the Haversine formula. It calculates the angular distance between the two points in radians.
+```txt
+c = 2 * atan2(sqrt(a), sqrt(1 - a))
+```
+
+```c++
+double calculare_distante(const double lat_1, const double long_1, const double lat_2, const double long_2)
+{
+    double dLat = toRadians(lat_2 - lat_1),
+           dLon = toRadians(long_2 - long_1),
+           a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2),
+           c = 2 * atan2(sqrt(a), sqrt(1 - a));
+           
+    return EARTH_RADIUS_KM * c;
+}
+```
+
 # Distances
 Not only is the application able to generate the most efficient path between two points (eg. **Bucharest --> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
 
