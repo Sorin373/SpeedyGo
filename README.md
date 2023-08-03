@@ -49,7 +49,7 @@ $ ./run.sh
 ```
 
 # Features
-The application not only utilizes Dijkstra's algorithm to generate the most efficient routes between two fixed vertices, but also offers the most optimal supply path to reach all required deposits in a single route. In addition, the following features are available within the app:
+Not only does the application use Dijkstra's algorithm to generate the most efficient routes between two fixed vertices, but also offers the most optimal supply path to reach all required deposits in a single route. In addition, the following features are available within the app:
 
 - Database manager using pre-defined funtions
 - The application includes an integrated SQL query tool that enables you to execute nearly any SQL script.
@@ -123,7 +123,7 @@ mysql> SELECT user, host FROM mysql.user;
 mysql> DROP USER 'my_user'@'localhost';
 ```
 
-2. Create required tables
+2. Create the required tables
 
 The tables have fixed structures and require specific predefined columns. However, you have the freedom to select the name of the table.
 
@@ -147,7 +147,7 @@ mysql> SHOW DATABASES;
 mysql> USE my_schema;
 ```
 
-- Create tables:
+- Create the tables:
 
 ```sql
 mysql> CREATE TABLE table_name_1 (
@@ -170,7 +170,7 @@ mysql> CREATE TABLE table_name_3 (
        );
 ```
 
-- Show all tables:
+- Show all the tables:
 
 ```sql
 mysql> SHOW TABLES;
@@ -185,7 +185,7 @@ mysql> SHOW TABLES;
 ```
 
 - Add data (you need to execute this cmd for all the tables):
-- Replace '/path/to/your/data.csv' with the path to you CSV file and fill in the correct table names.
+- Replace '/path/to/your/data.csv' with the path to your CSV file and fill in the correct table names.
 
 ```sql
 mysql> SET GLOBAL local_infile=1;
@@ -281,7 +281,7 @@ mysql> SHOW VARIABLES LIKE 'port';
 1. Create a callback function to handle the response data received from the HTTP request. It first calculates the total size of the received data. Than it converts the received data from __void*__ to a __char*__ using a __static_cast__. At the end it appends the converted data to the string object pointed to by buffer. This effectively stores the received data in the response_body string. The function takes four parameters:
 
 - __void *content:__ A pointer to the received data from the server.
-- __size_t element_size:__ The size of each data element received 
+- __size_t element_size:__ The size of each received data element.
 - __size_t elements:__ The number of data elements received.
 - __string *buffer:__ A pointer to a string object where the received data should be stored.
 
@@ -392,7 +392,7 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
 }
 ```
 
-2. This function takes the start node, the distanta vector, and the distanta_minima vector as input. It also accepts two boolean flags, afisare and creare_trasee. The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the distanta_minima vector from the start node to the current node. It reverses the path to display it in the correct order. If creare_trasee is true, the function inserts the path into a data structure. The afisare flag controls whether the results are printed to the console.
+2. This function takes the start node, the distanta vector, and the "distanta_minima" vector as input. It also accepts two boolean flags, "afisare" and "creare_trasee". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the distanta_minima vector from the start node to the current node. It reverses the path to display it in the correct order. If creare_trasee is true, the function inserts the path into a data structure. The afisare flag controls whether the results are printed to the console.
 ```c++
 void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
@@ -428,7 +428,7 @@ void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 ```
 
 ## Backtracking
-When I thought on how to build this part of the program 2 posible situations came to my mind. The first was the best case cenario where the graph is Hamiltonian which means it has a Hamiltonian cycle representing the most efficient route and the other one was when the graph was acyclic (has no cycles). Therefore I needed to build 2 Backtracking alghorithms for managing both Acyclic and Hamiltonian graphs. The functions were mostly similar to the point when I needed to create the solutions. In the first case the solution has to have the same amount of elements as the number of towns we need to supply. However if the graph is acyclic the elements in a solution will most definitely surpass that number, because in some situations we will need to visit a town twice in order to get to other towns.
+When I analyzed how to build this part of the program, 2 posible different situations came to my mind. The first was the best case cenario where the graph is Hamiltonian, which means it consists of a Hamiltonian cycle representing the most efficient route and the other one was when the graph was acyclic (has no cycles). Therefore, I needed to build 2 Backtracking alghorithms for managing both Acyclic and Hamiltonian graphs. The functions were mostly similar to the point when I needed to create the solutions. In the first case the solution has to have the same amount of elements as the number of towns we need to supply. However if the graph is acyclic the elements in a solution will most definitely surpass that number, because in some situations we will need to visit a town twice in order to get to other towns.
 ### Hamiltonian Graph
 ```c++
 void init_stiva_hc(void)
