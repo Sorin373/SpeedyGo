@@ -10,6 +10,8 @@ For my final project in computer science for grade 11, I was required to develop
 - [Features](#features)
 - [Contact](#contact)
 - [MySql](#mysql)
+- [How is the graph initiated?](#how-is-the-graph-initiated?)
+- [How are the distances calculated?](#how-are-the-paths-calculated?)
 
 # Installation
 
@@ -46,7 +48,6 @@ $ ./run.sh
 ```
 
 # Features
-
 The application not only utilizes Dijkstra's algorithm to generate the most efficient routes between two fixed vertices, but also offers the most optimal supply path to reach all required deposits in a single route. In addition, the following features are available within the app:
 
 - Database manager using pre-defined funtions
@@ -270,6 +271,19 @@ mysql> Select * from produs;
 ```
 mysql> SHOW VARIABLES LIKE 'port';
 ```
+# How is the graph initiated?
+
+## Google Matrix API
+
+## The Haversine formula
+
+# How are the paths calculated?
+Not only is the application able to generate the most efficient path between two points (eg. **Bucharest --> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
+
+## Dijkstra's alghorithm
+
+
+## Backtracking
 
 # Contact
 - Gmail: sorin.andrei.tudose@gmail.com
