@@ -634,4 +634,4 @@ void back_ac(void)
 ```
 
 # Contact
-- Gmail: sorin.andrei.tudose@gmail.com
+- I hope you enjoyed my application. If you want to get in touch with me you can do so through my personal Email: sorin.andrei.tudose@gmail.com.<br><br>Have a deightful day :D
