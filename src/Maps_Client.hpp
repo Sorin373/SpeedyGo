@@ -28,9 +28,9 @@ string _GET_API_KEY_(const string &config_file_path)
     return API_KEY;
 }
 
-size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer)
+size_t _response_data_(void *content, size_t element_size, size_t elements, string *buffer)
 {
-    size_t total_size = size * nmemb;
+    size_t total_size = element_size * elements;
     buffer->append(static_cast<char *>(content), total_size);
     return total_size;
 }
@@ -40,7 +40,7 @@ HTTP_RESPONSE _http_request_(const string &url)
     CURL *curl = curl_easy_init();
     if (!curl)
     {
-        cerr << "Eroare!\n";
+        cerr << setw(5) << " " << "Failed to initialize Curl!\n";
         return HTTP_RESPONSE{};
     }
 
@@ -54,7 +54,7 @@ HTTP_RESPONSE _http_request_(const string &url)
     CURLcode res = curl_easy_perform(curl);
 
     if (res != CURLE_OK)
-        cerr << "Eroare: " << curl_easy_strerror(res) << "\n";
+        cerr << curl_easy_strerror(res) << "\n";
     else
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 

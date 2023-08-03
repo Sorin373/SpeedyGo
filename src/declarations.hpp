@@ -590,7 +590,7 @@ void underline(const unsigned int vWidth, const bool bSetw);
 #pragma region GOOGLE_DISTANCE_MATRIX_API
 string _GET_API_KEY_(const string &config_file_path);
 
-size_t _response_data_(void *content, size_t size, size_t nmemb, string *buffer);
+size_t _response_data_(void *content, size_t element_size, size_t elements, string *buffer);
 
 HTTP_RESPONSE _http_request_(const string &url);
 
