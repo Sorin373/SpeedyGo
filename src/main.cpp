@@ -44,13 +44,13 @@ void free_memory(void)
 
 int main(int argc, char **argv)
 {
-    unsigned int MENIU;
-
     if (start() == EXIT_FAILURE)
     {
         free_memory();
         return EXIT_FAILURE;
     }
+
+    unsigned int MENIU;
 
     do
     {

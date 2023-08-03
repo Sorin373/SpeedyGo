@@ -449,7 +449,7 @@ void legaturi_graf(void)
         }
 
     ofstream fisier;
-    fisier.open("legaturi.txt", ios::out | ios::app);
+    fisier.open("utils/legaturi.txt", ios::out | ios::app);
     if (!fisier.is_open())
     {
         cerr << setw(5) << " "
@@ -487,7 +487,7 @@ void legaturi_graf(void)
             cerr << setw(5) << " " << "Legatura invalida!\n\n";
     }
     
-    if (load_data("legaturi.txt") == EXIT_FAILURE)
+    if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
     {
         cerr << setw(5) << " " << "Failed to update matrix!\n";
         getch();
@@ -543,7 +543,7 @@ bool SQL_Data_Update(const int input)
                 matrice_drum[contor_noduri_graf - 1][i].durata = matrice_drum[i][contor_noduri_graf - 1].durata = 0;
             }
 
-            ofstream fisier("legaturi.txt");
+            ofstream fisier("utils/legaturi.txt");
             if (!fisier.is_open())
             {
                 cerr << setw(5) << " " << "Failed to open file!\n";

@@ -70,7 +70,7 @@ bool _GPS_UPDATE_DATA_(void)
     cout << "\n\n";
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
-    char config_file_path[MAXL] = "config.json"; // schimba adresa in functie de unde se afla local API-ul gMaps
+    char config_file_path[MAXL] = "utils/config.json"; // schimba adresa in functie de unde se afla local API-ul gMaps
 
     if (!use_API)
         cout << setw(5) << " "
@@ -118,8 +118,7 @@ bool _GPS_UPDATE_DATA_(void)
 
         unordered_map<string, double> distante_orase;
 
-        ifstream file_json("distante_orase.json");
-        ifstream legaturi("legaturi.txt");
+        ifstream legaturi("utils/legaturi.txt");
 
         if (!legaturi.is_open())
         {
@@ -233,7 +232,7 @@ bool _GPS_UPDATE_DATA_(void)
                     updated_data[key] = value;
                 }
 
-                ofstream fout("distante_orase.json");
+                ofstream fout("utils/distante_orase.json");
 
                 string json_string = updated_data.dump(4);
                 fout << json_string;
@@ -252,10 +251,8 @@ bool _GPS_UPDATE_DATA_(void)
             }
             
             free(input);
-            return EXIT_SUCCESS;
         }
     }
-    
     return EXIT_SUCCESS;
 }
 
