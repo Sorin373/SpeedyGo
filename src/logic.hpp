@@ -35,27 +35,47 @@ void toggleEcho(bool enableEcho)
 #endif
 #pragma endregion
 
-bool autentificare_cont(void)
+bool autentificare_cont(int contor_greseli)
 {
     clear_screen();
 
     char *_HN = (char *)malloc(MAXL * sizeof(char) + 1),
          *_UN = (char *)malloc(MAXL * sizeof(char) + 1),
-         *_DB = (char *)malloc(MAXL * sizeof(char) + 1), 
+         *_DB = (char *)malloc(MAXL * sizeof(char) + 1),
          *_P = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (contor_greseli == 3)
+    {
+        AUTENTIFICARE::cleanup();
+        contor_greseli = 0;
+    }
+    else if (contor_greseli != 0)
+    {
+        strcpy(_HN, AUTENTIFICARE::get_nod()->host_name);
+        strcpy(_UN, AUTENTIFICARE::get_nod()->username);
+        AUTENTIFICARE::cleanup();
+    }
 
     cout << "\n\n"
          << setw(10) << " "
-         << "CONEXIUNE LA BAZA DE DATE\n";
-    cout << setw(4) << " "
-         << "======================================\n\n";
+         << "CONEXIUNE LA BAZA DE DATE   -" << contor_greseli << "-\n"
+         << setw(4) << " "
+         << "======================================\n\n"
+         << setw(5) << " "
+         << "Hostname: ";
+
+    if (contor_greseli == 0)
+        cin >> _HN;
+    else
+        cout << _HN << "\n";
 
     cout << setw(5) << " "
-         << "Hostname: ";
-    cin >> _HN;
-    cout << setw(5) << " "
          << "Username: ";
-    cin >> _UN;
+
+    if (contor_greseli == 0)
+        cin >> _UN;
+    else
+        cout << _UN << "\n";
     cout << setw(5) << " "
          << "Password: ";
 
@@ -75,25 +95,24 @@ bool autentificare_cont(void)
 
     while ((ch = cin.get()) != '\n' && i < MAXL)
     {
-        if (ch == '\r') // Handle Enter (newline) key
+        if (ch == '\r')
             break;
 
         if (ch == '\b')
-        { // Handle backspace
+        {
             if (i > 0)
             {
-                cout << "\b \b"; // Erase the last character and move the cursor back
+                cout << "\b \b";
                 i--;
             }
         }
         else
         {
             cout << '*';
-            _P[i++] = ch; // Append the character to the password array
+            _P[i++] = ch;
         }
     }
-    _P[i] = '\0'; // Null-terminate the password array
-
+    _P[i] = '\0';
 #ifdef __linux__
     toggleEcho(true);
 #elif WINDOWS
@@ -120,7 +139,7 @@ bool autentificare_cont(void)
         free(_UN);
         free(_P);
         free(_DB);
-        return autentificare_cont();
+        return autentificare_cont(contor_greseli + 1);
     }
 
     free(_HN);
@@ -1571,79 +1590,67 @@ void pagina_principala_TSP(void)
 
 void pagina_finala_TSP(void)
 {
+    traseu_completat = true;
+
+    if (!update_database())
+        cerr << setw(5) << " " << "Could not update the database!\n";
+    else
+        accesareDate();
+
+    ofstream log_out;
+    log_out.open("logs/TSP_log.txt", ios::app);
+
+    if (!log_out.is_open())
+    {
+        cerr << setw(5) << " "
+             << "Failed to open TSP log!\n";
+        getch();
+        return;
+    }
+
+    string s(500, '=');
+    log_out << "LOG [" << contor_log << "]\n";
+
+    for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+    {
+        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        {
+            int ID = stoi(date_oras->ID_Oras);
+            if (ID == traseu_minim_TSP[i])
+            {
+                log_out << date_oras->denumire_oras;
+                if (i < contor_traseu_TSP)
+                    log_out << " --> ";
+                break;
+            }
+        }
+    }
+
+    log_out << "\n"
+            << s << "\n"
+            << "Distanta parcursa: " << cost_minim_TSP << "km\n"
+            << "Cantitate totala transportata: " << cantitate_totala_aprovizionata << "BUC.\n"
+            << "Cost total: " << cost_aprovizionare_total << "RON\nEND-LOG\n"
+            << s << "\n\n\n";
+
     clear_screen();
 
     cout << "\n";
-    underline(35, true);
+    underline(50, true);
+
     cout << setw(5) << " "
-         << "Doriti sa finalizati traseul?\n\n"
+         << "-> Aprovizionare completa!\n"
          << setw(5) << " "
-         << "[D] Da"
-         << setw(15) << " "
-         << "[N] Nu\n";
-    underline(35, true);
+         << "-> Baza de date reinprostpatata!\n"
+         << setw(5) << " "
+         << "-> Mai multe detalii in fisierul TSP_log.txt!\n";
 
-    char *input = (char *)malloc(MAXL * sizeof(char) + 1);
+    underline(50, true);
+
     cout << setw(5) << " "
-         << "I: ";
-    cin >> input;
+         << "Apasati 'ENTER' pentru a va intoarce...";
 
-    if (strcasecmp(input, "d") == 0)
-    {
-        traseu_completat = true;
-
-        if (!update_database())
-            cerr << "Eroare!";
-        else
-            accesareDate();
-
-        ofstream log_out;
-        log_out.open("log.txt", ios::app);
-
-        string s(1000, '-');
-
-        if (log_out.is_open())
-        {
-            log_out << "LOG [" << contor_log << "]: ";
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
-            {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-                {
-                    int ID = stoi(date_oras->ID_Oras);
-                    if (ID == traseu_minim_TSP[i])
-                    {
-                        log_out << date_oras->denumire_oras;
-                        if (i < contor_traseu_TSP)
-                            log_out << " --> ";
-                        break;
-                    }
-                }
-            }
-            log_out << "\n"
-                    << s << "\n";
-            log_out << "Distanta parcursa: " << cost_minim_TSP << "km\n";
-            log_out << "Cantitate totala transportata: " << cantitate_totala_aprovizionata << "BUC.\n";
-            log_out << "Cost total: " << cost_aprovizionare_total << "RON\nEND-LOG\n";
-            log_out << s << "\n\n\n";
-
-            clear_screen();
-            cout << "\n\n"
-                 << setw(5) << " "
-                 << "Aprovizionare completa. Baza de date reinprostpatata\n"
-                 << setw(5) << " "
-                 << "Mai multe detalii in fisierul log.txt...";
-
-            free(input);
-            getch();
-            return;
-        }
-    }
-    else if (!traseu_completat)
-    {
-        pagina = 1;
-        free(input);
-        pagina_principala_TSP();
-    }
+    getch();
 }
 
 void pagina_stanga_TSP(void)

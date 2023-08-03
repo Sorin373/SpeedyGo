@@ -608,7 +608,7 @@ double toRadians(const double degrees);
 #pragma region INIT
 bool start(void);
 
-bool autentificare_cont(void);
+bool autentificare_cont(int contor_greseli);
 
 bool _init_(void);
 #pragma endregion

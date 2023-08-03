@@ -8,7 +8,7 @@ using namespace std;
 
 bool start(void)
 {
-    if (autentificare_cont() == EXIT_FAILURE)
+    if (autentificare_cont(0) == EXIT_FAILURE)
         return EXIT_FAILURE;
     else if (_init_() == EXIT_FAILURE)
         return EXIT_FAILURE;
@@ -42,7 +42,7 @@ void free_memory(void)
     AUTENTIFICARE::cleanup();
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
     unsigned int MENIU;
 
@@ -426,14 +426,16 @@ int main(int argc, char *argv[])
                 case 2:
                     if (SQL_Data_Update(1) == EXIT_FAILURE)
                     {
-                        cerr << setw(5) << " " << "SQL: Failed to updated table!";
+                        cerr << setw(5) << " "
+                             << "SQL: Failed to updated table!";
                         getch();
                     }
                     break;
                 case 3:
                     if (SQL_Data_Update(2) == EXIT_FAILURE)
                     {
-                        cerr << setw(5) << " " << "SQL: Failed to updated table!";
+                        cerr << setw(5) << " "
+                             << "SQL: Failed to updated table!";
                         getch();
                     }
                     break;
