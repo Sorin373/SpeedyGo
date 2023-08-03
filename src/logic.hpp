@@ -2152,7 +2152,7 @@ void consola_mysql(void)
                 }
 
                 cout << "\n";
-                for (int i = 1; i <= cnt_coloane; i++)
+                for (unsigned int i = 1; i <= cnt_coloane; i++)
                     cout << setw(5) << " " << setw(coloane[i - 1] + 5) << res->getMetaData()->getColumnName(i) << " ";
                 cout << "\n";
 
@@ -2162,9 +2162,9 @@ void consola_mysql(void)
 
                 while (res->next())
                 {
-                    for (int i = 1; i <= cnt_coloane; i++)
+                    for (unsigned int i = 1; i <= cnt_coloane; i++)
                         cout << setw(5) << " " << setw(coloane[i - 1] + 5) << res->getString(i) << " ";
-                    cout << endl;
+                    cout << "\n";
                 }
 
                 underline(100, true);
@@ -2211,6 +2211,9 @@ void sortare_tip_depozit(void)
     char *input = (char *)malloc((MAXL + 1) * sizeof(char));
 
     cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti '0' pentru a iesi\n\n"
+         << "\033[0m" << setw(5) << " "
          << "Introduceti tipul: ";
     cin >> input;
 
@@ -2245,9 +2248,11 @@ void sortare_tip_depozit(void)
 
         for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             if (strcasecmp(date_oras->tip_depozit, input) == 0)
-                cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
-                     << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
-                     << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+                cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
+                     << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
+                     << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
+                     << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
+                     << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
                      << " " << date_oras->longitudine << "\u00B0\n";
 
         underline(80, true);
@@ -2350,6 +2355,12 @@ void cautare_oras_ID(void)
          << "Introduceti ID-ul: ";
     cin >> I_ID;
 
+    if (strcasecmp(I_ID, "exit") == 0)
+    {
+        free(I_ID);
+        return;
+    }
+
     clear_screen();
 
     cout << "\n\n";
@@ -2359,12 +2370,6 @@ void cautare_oras_ID(void)
          << " TABEL-DEPOZIT\n";
     cout << setw(5) << " "
          << "└───────────────┘\n\n";
-
-    if (strcasecmp(I_ID, "exit") == 0)
-    {
-        free(I_ID);
-        return;
-    }
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -2384,9 +2389,11 @@ void cautare_oras_ID(void)
         {
             gasit = true;
 
-            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
-                 << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
-                 << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
+                 << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
+                 << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
+                 << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
+                 << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
                  << " " << date_oras->longitudine << "\u00B0\n";
 
             break;
@@ -2399,17 +2406,17 @@ void cautare_oras_ID(void)
     {
         clear_screen();
 
-        cout << "\n\n"
+        cout << "\n"
              << setw(5) << " "
-             << "ID-ul introdus nu este valid...\n";
+             << "ID-ul introdus nu este valid...";
 
         free(I_ID);
-        sleepcp(1500);
+        getch();
         cautare_oras_ID();
     }
     else
     {
-        cout << "\n\n"
+        cout << "\n"
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
@@ -2437,6 +2444,12 @@ void cautare_depozit_denumire(void)
     cin.get();
     cin.get(I_Denumire, MAXL);
 
+    if (strcasecmp(I_Denumire, "exit") == 0)
+    {
+        free(I_Denumire);
+        return;
+    }
+
     clear_screen();
 
     cout << "\n\n";
@@ -2446,12 +2459,6 @@ void cautare_depozit_denumire(void)
          << " TABEL-DEPOZIT\n";
     cout << setw(5) << " "
          << "└───────────────┘\n\n";
-
-    if (strcasecmp(I_Denumire, "exit") == 0)
-    {
-        free(I_Denumire);
-        return;
-    }
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -2471,9 +2478,11 @@ void cautare_depozit_denumire(void)
         {
             gasit = true;
 
-            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(9) << " " << date_oras->denumire_oras
-                 << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4) << " " << date_oras->tip_depozit
-                 << setw(11 - strlen(date_oras->tip_depozit) + 5) << " " << date_oras->latitudine << "\u00B0" << setw(7)
+            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
+                 << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
+                 << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
+                 << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
+                 << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
                  << " " << date_oras->longitudine << "\u00B0\n";
 
             break;
@@ -2488,15 +2497,15 @@ void cautare_depozit_denumire(void)
 
         cout << "\n\n"
              << setw(5) << " "
-             << "Numele introdus nu este valid...\n";
+             << "Numele introdus nu este valid...";
 
         free(I_Denumire);
-        sleepcp(1500);
+        getch();
         cautare_depozit_denumire();
     }
     else
     {
-        cout << "\n\n"
+        cout << "\n"
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
@@ -2515,9 +2524,9 @@ void sortare_categorie_produs(void)
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
 
     cout << setw(5) << " "
-         << "Scrie '0' pentru a te intoarce...\n\n";
-
-    cout << setw(5) << " "
+         << "\033[3m"
+         << "Scrieti '0' pentru a iesi\n\n"
+         << "\033[0m" << setw(5) << " "
          << "Introduceti tipul: ";
     cin >> input;
 
@@ -2541,29 +2550,30 @@ void sortare_categorie_produs(void)
          << "ID_Produs"
          << setw(4) << " "
          << "Denumire_Produs"
-         << setw(cmax_denumire_produse - 8) << " "
+         << setw(cmax_denumire_produse - 10) << " "
          << "Categorie_Produs"
-         << setw(10) << " "
+         << setw(5) << " "
          << "Pret_Produs\n";
 
-    underline(85, true);
+    underline(80, true);
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
         if (strcasecmp(date_produs->Categorie_Produs, input) == 0)
         {
-            cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
-                 << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
-                 << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+            cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
+                 << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
+                 << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
             snprintf(pret, MAXL, "%g", date_produs->pret_produs);
 
-            cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+            cout << fixed << setprecision(2) << date_produs->pret_produs
+                 << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
 
             free(pret);
         }
 
-    underline(85, true);
+    underline(80, true);
 
     cout << "\n\n"
          << setw(5) << " "
@@ -2746,9 +2756,9 @@ void cautare_produs_ID(void)
          << "ID_Produs"
          << setw(4) << " "
          << "Denumire_Produs"
-         << setw(cmax_denumire_produse - 8) << " "
+         << setw(cmax_denumire_produse - 10) << " "
          << "Categorie_Produs"
-         << setw(10) << " "
+         << setw(5) << " "
          << "Pret_Produs\n";
     underline(80, true);
 
@@ -2758,14 +2768,15 @@ void cautare_produs_ID(void)
         {
             gasit = true;
 
-            cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
-                 << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
-                 << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+            cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
+                 << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
+                 << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
             snprintf(pret, MAXL, "%g", date_produs->pret_produs);
 
-            cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+            cout << fixed << setprecision(2) << date_produs->pret_produs
+                 << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
 
             free(pret);
             break;
@@ -2780,15 +2791,15 @@ void cautare_produs_ID(void)
 
         cout << "\n\n"
              << setw(5) << " "
-             << "ID-ul introdus nu este valid...\n";
+             << "ID-ul introdus nu este valid...";
 
         free(I_ID);
-        sleepcp(1500);
+        getch();
         cautare_produs_ID();
     }
     else
     {
-        cout << "\n\n"
+        cout << "\n"
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
@@ -2816,6 +2827,12 @@ void cautare_produs_denumire(void)
     cin.get();
     cin.get(I_Denumire, MAXL);
 
+    if (strcasecmp(I_Denumire, "exit") == 0)
+    {
+        free(I_Denumire);
+        return;
+    }
+
     clear_screen();
 
     cout << "\n\n";
@@ -2826,22 +2843,16 @@ void cautare_produs_denumire(void)
     cout << setw(5) << " "
          << "└──────────────┘\n\n";
 
-    if (strcasecmp(I_Denumire, "exit") == 0)
-    {
-        free(I_Denumire);
-        return;
-    }
-
     cout << setw(5) << " "
          << "ID_Produs"
          << setw(4) << " "
          << "Denumire_Produs"
-         << setw(cmax_denumire_produse - 8) << " "
+         << setw(cmax_denumire_produse - 10) << " "
          << "Categorie_Produs"
-         << setw(10) << " "
+         << setw(5) << " "
          << "Pret_Produs\n";
 
-    underline(85, true);
+    underline(80, true);
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
@@ -2849,14 +2860,15 @@ void cautare_produs_denumire(void)
         {
             gasit = true;
 
-            cout << setw(5) << " " << date_produs->ID_Produs << setw(12) << " " << date_produs->Denumire_Produs
-                 << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 7) << " " << date_produs->Categorie_Produs
-                 << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 15) << " ";
+            cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
+                 << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
+                 << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
             snprintf(pret, MAXL, "%g", date_produs->pret_produs);
 
-            cout << date_produs->pret_produs << setw(cmax_pret_produse - strlen(pret) + 5) << "RON\n";
+            cout << fixed << setprecision(2) << date_produs->pret_produs
+                 << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
 
             free(pret);
             break;
@@ -2871,15 +2883,15 @@ void cautare_produs_denumire(void)
 
         cout << "\n\n"
              << setw(5) << " "
-             << "Numele introdus nu este valid...\n";
+             << "Numele introdus nu este valid...";
 
         free(I_Denumire);
-        sleepcp(1500);
+        getch();
         cautare_produs_denumire();
     }
     else
     {
-        cout << "\n\n"
+        cout << "\n"
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
