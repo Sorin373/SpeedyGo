@@ -80,7 +80,7 @@ $ mysql -u root -p
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
 ```
 
-- Now you are ready to create the Database (replace my_schema with the desire Database name):
+- Now you are ready to create the Database (replace my_schema with the desired Database name):
 
 ```sql
 mysql> CREATE DATABASE my_schema;
@@ -194,7 +194,7 @@ mysql> quit;
 Bye
 ```
 
-```sql
+```bash
 $ mysql --local-infile=1 -u root -p
 ```
 
@@ -392,7 +392,7 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
 }
 ```
 
-2. This function takes the start node, the distanta vector, and the "distanta_minima" vector as input. It also accepts two boolean flags, "afisare" and "creare_trasee". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the distanta_minima vector from the start node to the current node. It reverses the path to display it in the correct order. If creare_trasee is true, the function inserts the path into a data structure. The afisare flag controls whether the results are printed to the console.
+2. This function takes the start node, the "distanta vector", and the "distanta_minima" vector as input. It also accepts two boolean flags, "afisare" and "creare_trasee". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the "distanta_minima" vector from the start node to the current node. It reverses the path to display it in the correct order. If "creare_trasee" is true, the function inserts the path into a data structure. The "afisare" flag controls whether the results are printed to the console.
 ```c++
 void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
 {
