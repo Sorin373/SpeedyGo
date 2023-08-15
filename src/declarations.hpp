@@ -2,35 +2,35 @@
 #define DECLARATIONS
 
 #pragma region libraries
-#include <iostream>                     // For standard input/output
-#include <fstream>                      // For file input/output
-#include <iomanip>                      // For stream manipulators
-#include <cmath>                        // For math functions
-#include <vector>                       // For using vectors
-#include <unordered_map>                // For using unordered maps
-#include <limits.h>                     // For limits of integer types
-#include <string.h>                     // For string handling
-#include <nlohmann/json.hpp>            // For JSON parsing and serialization
-#include <mysql_connection.h>           // For MySQL database connection
-#include <mysql_driver.h>               // For MySQL database driver
-#include <mysql_error.h>                // For MySQL error handling
-#include <cppconn/statement.h>          // For MySQL statement handling
-#include <cppconn/resultset.h>          // For MySQL result set handling
-#include <cppconn/prepared_statement.h> // For MySQL prepared statements
-#include <curl/curl.h>                  // For making HTTP requests using libcurl
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <cmath>
+#include <vector>
+#include <unordered_map>
+#include <limits.h>
+#include <string.h>
+#include <nlohmann/json.hpp>
+#include <mysql_connection.h>
+#include <mysql_driver.h>
+#include <mysql_error.h>
+#include <cppconn/statement.h>
+#include <cppconn/resultset.h>
+#include <cppconn/prepared_statement.h>
+#include <curl/curl.h>
 
 #ifdef WINDOWS
-#include <windows.h> // For Windows API functions
-#include <conio.h>   // For console input/output functions
+#include <windows.h>
+#include <conio.h>
 #else
-#include <unistd.h>  // For POSIX operating systems
-#include <termios.h> // For terminal input/output control
+#include <unistd.h>
+#include <termios.h>
 #endif
 
-#include "cross_platform_compatibility.hpp" // Custom header for cross-platform compatibility
+#include "cross_platform_compatibility.hpp"
 #pragma endregion
 
-#define MAX_SIZE 32            // Maximum size for arrays or strings
+#define MAX_SIZE 32
 #define MAXL 256               // Maximum length for strings
 #define VAL_STOC_MINIM 5       // Minimum stock value
 #define VAL_STOC_MAXIM 50      // Maximum stock value
