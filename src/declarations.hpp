@@ -11,15 +11,15 @@
 #include <limits.h>
 #include <string.h>
 #include <nlohmann/json.hpp>
-#include <mysql_connection.h>
-#include <mysql_driver.h>
-#include <mysql_error.h>
-#include <cppconn/statement.h>
-#include <cppconn/resultset.h>
-#include <cppconn/prepared_statement.h>
 #include <curl/curl.h>
+#include <jdbc/mysql_connection.h>
+#include <jdbc/mysql_driver.h>
+#include <jdbc/mysql_error.h>
+#include <jdbc/cppconn/prepared_statement.h>
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
 
-#ifdef WINDOWS
+#ifdef WIN32
 #include <windows.h>
 #include <conio.h>
 #else
@@ -76,8 +76,8 @@ public:
 
         ~NOD_TRASEE_GPS()
         {
-            free(start);
-            free(destinatie);
+            delete[] start;
+            delete[] destinatie;
         }
     };
 
@@ -145,10 +145,10 @@ private:
 
         ~NOD_AUTENTIFICARE()
         {
-            free(host_name);
-            free(username);
-            free(parola);
-            free(DB);
+            delete[] host_name;
+            delete[] username;
+            delete[] parola;
+            delete[] DB;
         }
     };
 
@@ -202,8 +202,8 @@ public:
 
         ~NOD_DEPOZIT()
         {
-            free(ID_Produs);
-            free(ID_Oras);
+            delete[] ID_Produs;
+            delete[] ID_Oras;
         }
     };
 
@@ -275,9 +275,9 @@ public:
 
         ~NOD_DETALII_PRODUS()
         {
-            free(ID_Produs);
-            free(Denumire_Produs);
-            free(Categorie_Produs);
+            delete[] ID_Produs;
+            delete[] Denumire_Produs;
+            delete[] Categorie_Produs;
         }
     };
 
@@ -351,9 +351,9 @@ public:
 
         ~NOD_ORAS()
         {
-            free(ID_Oras);
-            free(denumire_oras);
-            free(tip_depozit);
+            delete[] ID_Oras;
+            delete[] denumire_oras;
+            delete[] tip_depozit;
         }
     };
 
@@ -490,7 +490,7 @@ public:
 
         ~NOD_APROVIZIONARE()
         {
-            free(ID_Produs);
+            delete[] ID_Produs;
         }
     };
 

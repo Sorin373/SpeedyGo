@@ -1,0 +1,15 @@
+{
+    "name": "speedygo",
+    "version": "1.0.0",
+    "dependencies": [
+        {
+            "name": "nlohmann-json", 
+            "version>=": "3.11.2"
+        },
+        {   
+            "name": "curl", 
+            "version>=": "7.78.0"
+        }
+    ],
+    "builtin-baseline": "c7fc2998445046e8ba3a470eeb49ee1520fbd370"
+}

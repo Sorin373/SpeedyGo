@@ -34,6 +34,11 @@
 # IDE/Editor specific files
 .idea/
 .vscode/
+.vs/
 
 # Ignore config.json
 config.json
+
+# Build folders
+/build
+/out

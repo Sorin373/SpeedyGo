@@ -32,7 +32,7 @@ char getch(void)
 
 void clear_screen(void)
 {
-#ifdef WINDOWS
+#ifdef WIN32
     system("CLS");
 #elif __linux__
     system("clear");
@@ -41,7 +41,7 @@ void clear_screen(void)
 
 void sleepcp(const int ms)
 {
-#ifdef WINDOWS
+#ifdef WIN32
     Sleep(ms);
 #elif __linux__
     usleep(ms * 1000);
