@@ -5,12 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <cmath>
 #include <vector>
 #include <unordered_map>
 #include <limits.h>
 #include <string.h>
-#include <cstring>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 #include <jdbc/mysql_connection.h>
@@ -33,13 +31,14 @@
 #include "cross_platform_compatibility.hpp"
 #pragma endregion
 
+#define M_PI 3.14159265358979323846
 #define MAX_SIZE 32
-#define MAXL 256               // Maximum length for strings
-#define VAL_STOC_MINIM 5       // Minimum stock value
-#define VAL_STOC_MAXIM 50      // Maximum stock value
-#define EARTH_RADIUS_KM 6371.0 // Earth's approximate radius in kilometers
+#define MAXL 256
+#define VAL_STOC_MINIM 5
+#define VAL_STOC_MAXIM 50
+#define EARTH_RADIUS_KM 6371.0
 
-constexpr int N = 1001; // maximum no. of nodes
+constexpr int N = 1001;
 
 struct HTTP_RESPONSE
 {

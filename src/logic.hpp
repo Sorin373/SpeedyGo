@@ -23,21 +23,6 @@ void underline(const unsigned int vWidth, const bool bSetw)
     cout.fill(fillLine);
     cout << "\n";
 }
-
-#ifdef __linux__
-void toggleEcho(bool enableEcho)
-{
-    struct termios tty;
-    tcgetattr(STDIN_FILENO, &tty);
-
-    if (enableEcho)
-        tty.c_lflag |= ECHO;
-    else
-        tty.c_lflag &= ~ECHO;
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
-}
-#endif
 #pragma endregion
 
 bool autentificare_cont(int contor_greseli)
@@ -84,50 +69,7 @@ bool autentificare_cont(int contor_greseli)
     cout << setw(5) << " "
          << "Password: ";
     cin >> _P;
-/*
-#pragma region PASSWORD_MASK
-#ifdef __linux__
-    toggleEcho(false);
-#elif WINDOWS
-    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-    DWORD mode = 0;
-    GetConsoleMode(hStdin, &mode);
-    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
-#endif
-    cin.ignore(9999, '\n');
-
-    char ch;
-    int i = 0;
-
-    while ((ch = cin.get()) != '\n' && i < MAXL)
-    {
-        if (ch == '\r')
-            break;
-
-        if (ch == '\b')
-        {
-            if (i > 0)
-            {
-                cout << "\b \b";
-                i--;
-            }
-        }
-        else
-        {
-            cout << '*';
-            _P[i++] = ch;
-        }
-    }
-    _P[i] = '\0';
-#ifdef __linux__
-    toggleEcho(true);
-#elif WINDOWS
-    SetConsoleMode(hStdin, mode);
-#endif
-#pragma endregion*/
-
-    cout << "\n"
-         << setw(5) << " "
+    cout << setw(5) << " "
          << "Database name: ";
     cin >> _DB;
 
@@ -138,12 +80,8 @@ bool autentificare_cont(int contor_greseli)
 
     clear_screen();
 
-    cout << "success!\n";
-    getch();
-
     if (accesareDate() == EXIT_FAILURE)
     {
-        cout << "Failed!\n";
         getch();
         free(_HN);
         free(_UN);
@@ -157,15 +95,12 @@ bool autentificare_cont(int contor_greseli)
     free(_P);
     free(_DB);
 
-    cout << "success2!\n";
     getch();
 
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
         if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
             return EXIT_FAILURE;
     
-    cout << "success!\n";
-    getch();
     return EXIT_SUCCESS;
 }
 
