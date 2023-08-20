@@ -39,6 +39,10 @@
 # Ignore config.json
 config.json
 
-# Build folders
-/build
-/out
+# CMake
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+*.vcxproj
