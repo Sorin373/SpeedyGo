@@ -11,24 +11,16 @@ bool accesareDate(void)
 {
     try
     {
-        Driver *driver;
-        Connection *con;
+        Driver *driver = nullptr;
+        Connection *con = nullptr;
         Statement *stmt = nullptr;
         ResultSet *res = nullptr;
 
         driver = mysql::get_mysql_driver_instance();
-        cout << "success1!\n";
-        getch();
 
-        con = driver->connect("tcp://localhost:3306", "root", "Sorin!2005");
-
-        /*
         con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
                           string(AUTENTIFICARE::get_nod()->username),
-                          string(AUTENTIFICARE::get_nod()->parola));*/
-        
-        cout << "success2!\n";
-        getch();
+                          string(AUTENTIFICARE::get_nod()->parola));
 
         if (con == nullptr)
         {
@@ -159,6 +151,7 @@ bool accesareDate(void)
              << "Error message: " << e.what() << endl;
         cerr << setw(5) << " "
              << "SQLState: " << e.getSQLState() << endl;
+        return EXIT_FAILURE;
 
     }
     return EXIT_SUCCESS;

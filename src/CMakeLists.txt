@@ -18,9 +18,21 @@ target_link_libraries(main PRIVATE
     nlohmann_json::nlohmann_json
 )
 
+add_custom_command(
+    TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/Release/utils
+)
+
+add_custom_command(
+    TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/Release/logs
+)
+
 configure_file(${CMAKE_SOURCE_DIR}/utils/legaturi.txt ${CMAKE_BINARY_DIR}/Release/utils/legaturi.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/utils/contor_TSP_log.txt ${CMAKE_BINARY_DIR}/Release/utils/contor_TSP_log.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/utils/distante_orase.json ${CMAKE_BINARY_DIR}/Release/utils/ldistante_orase.json COPYONLY)
+
+configure_file(${CMAKE_SOURCE_DIR}/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 
 # Add mysql-connector-cpp Dlls (if you come across errors try to manually renew the DLLs)
 # Add inside src/utils/DLLs the dlls from the msi installation 

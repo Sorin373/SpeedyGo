@@ -95,8 +95,6 @@ bool autentificare_cont(int contor_greseli)
     free(_P);
     free(_DB);
 
-    getch();
-
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
         if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
             return EXIT_FAILURE;
