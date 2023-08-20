@@ -83,7 +83,8 @@ bool autentificare_cont(int contor_greseli)
         cout << _UN << "\n";
     cout << setw(5) << " "
          << "Password: ";
-
+    cin >> _P;
+/*
 #pragma region PASSWORD_MASK
 #ifdef __linux__
     toggleEcho(false);
@@ -123,7 +124,7 @@ bool autentificare_cont(int contor_greseli)
 #elif WINDOWS
     SetConsoleMode(hStdin, mode);
 #endif
-#pragma endregion
+#pragma endregion*/
 
     cout << "\n"
          << setw(5) << " "
@@ -137,8 +138,12 @@ bool autentificare_cont(int contor_greseli)
 
     clear_screen();
 
+    cout << "success!\n";
+    getch();
+
     if (accesareDate() == EXIT_FAILURE)
     {
+        cout << "Failed!\n";
         getch();
         free(_HN);
         free(_UN);
@@ -152,10 +157,15 @@ bool autentificare_cont(int contor_greseli)
     free(_P);
     free(_DB);
 
+    cout << "success2!\n";
+    getch();
+
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
         if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
             return EXIT_FAILURE;
-
+    
+    cout << "success!\n";
+    getch();
     return EXIT_SUCCESS;
 }
 

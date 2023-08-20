@@ -9,7 +9,11 @@ using namespace std;
 bool start(void)
 {
     if (autentificare_cont(0) == EXIT_FAILURE)
+    {
+        cerr << "Auth failed!\n";
+        getch();
         return EXIT_FAILURE;
+    }
     else if (_init_() == EXIT_FAILURE)
         return EXIT_FAILURE;
 
@@ -47,6 +51,7 @@ int main(int argc, char **argv)
     if (start() == EXIT_FAILURE)
     {
         free_memory();
+        cerr << setw(5) << " " << "App init failure!\n";
         return EXIT_FAILURE;
     }
 

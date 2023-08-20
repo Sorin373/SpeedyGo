@@ -22,10 +22,14 @@ double calculare_distante(const double lat_1, const double long_1, const double 
 
 bool load_data(const char *path)
 {
+    cout << path;
     ifstream fisier(path);
 
+    cout << "success3\n";
     if (!fisier.is_open())
         return EXIT_FAILURE;
+
+        cout << "success4\n";
 
     unsigned int ID_1 = 0, ID_2 = 0;
     while (fisier >> ID_1 >> ID_2)
