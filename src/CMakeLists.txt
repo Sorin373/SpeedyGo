@@ -44,4 +44,3 @@ configure_file(${CMAKE_SOURCE_DIR}/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/
 configure_file(${CMAKE_SOURCE_DIR}/utils/DLLs/libcrypto-3-x64.dll ${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/utils/DLLs/libssl-3-x64.dll ${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/utils/DLLs/mysqlcppconn-9-vs14.dll ${CMAKE_BINARY_DIR}/Release/mysqlcppconn-9-vs14.dll COPYONLY)
-
