@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <limits.h>
 #include <string.h>
+#include <cstring>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 #include <jdbc/mysql_connection.h>
@@ -22,7 +23,9 @@
 #ifdef WIN32
 #include <windows.h>
 #include <conio.h>
+#define STRCASECMP _stricmp
 #else
+#define STRCASECMP strcasecmp
 #include <unistd.h>
 #include <termios.h>
 #endif
@@ -579,6 +582,8 @@ void toggleEcho(bool enableEcho);
 
 char getch(void);
 #endif
+
+int _strcasecmp_(const char* str1, const char* str2);
 
 void clear_screen(void);
 

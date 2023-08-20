@@ -84,12 +84,12 @@ bool _GPS_UPDATE_DATA_(void)
          << "I: ";
     cin >> input;
 
-    if (strcasecmp(input, "0") == 0)
+    if (_strcasecmp_(input, "0") == 0)
     {
         free(input);
         return EXIT_FAILURE;
     }
-    else if (strcasecmp(input, "1") == 0)
+    else if (_strcasecmp_(input, "1") == 0)
     {
         clear_screen();
 
@@ -103,7 +103,7 @@ bool _GPS_UPDATE_DATA_(void)
 
         cin >> config_file_path;
 
-        if (strcasecmp(config_file_path, "0") == 0)
+        if (_strcasecmp_(config_file_path, "0") == 0)
         {
             free(input);
             return EXIT_FAILURE;
@@ -186,7 +186,7 @@ bool _GPS_UPDATE_DATA_(void)
                     status[sizeof(status) - 1] = '\0';
                     status_str.clear();
 
-                    if (strcasecmp(status, "REQUEST_DENIED") != 0)
+                    if (_strcasecmp_(status, "REQUEST_DENIED") != 0)
                     {
                         double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
                         int durata = json_data["rows"][0]["elements"][0]["duration"]["value"];

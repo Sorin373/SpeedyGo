@@ -7,6 +7,11 @@ using namespace std;
 using namespace sql;
 
 #pragma region UTILS
+int _strcasecmp_(const char* str1, const char* str2)
+{
+    return STRCASECMP(str1, str2);
+}
+
 void underline(const unsigned int vWidth, const bool bSetw)
 {
     if (bSetw)
@@ -88,7 +93,7 @@ bool autentificare_cont(int contor_greseli)
     GetConsoleMode(hStdin, &mode);
     SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
 #endif
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(9999, '\n');
 
     char ch;
     int i = 0;
@@ -171,7 +176,7 @@ bool _init_(void)
 
         for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            if (strcasecmp(date_oras->denumire_oras, oras1) == 0)
+            if (_strcasecmp_(date_oras->denumire_oras, oras1) == 0)
             {
                 ID_Oras1 = stoi(date_oras->ID_Oras);
                 break;
@@ -180,7 +185,7 @@ bool _init_(void)
 
         for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            if (strcasecmp(date_oras->denumire_oras, oras2) == 0)
+            if (_strcasecmp_(date_oras->denumire_oras, oras2) == 0)
             {
                 ID_Oras2 = stoi(date_oras->ID_Oras);
                 break;
@@ -544,7 +549,7 @@ void depozite_conectate(int ID_Depozit)
             while (date_oras != nullptr)
             {
                 int _ID = stoi(date_oras->ID_Oras);
-                if (_ID == i && strcasecmp(t_denumire, date_oras->denumire_oras) != 0)
+                if (_ID == i && _strcasecmp_(t_denumire, date_oras->denumire_oras) != 0)
                 {
                     cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5)
                          << " (" << matrice_drum[ID_Depozit][i].distanta << "km | " << matrice_drum[ID_Depozit][i].durata << "min)\n";
@@ -567,7 +572,7 @@ void determinare_tip_depozit(void)
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     while (date_oras != nullptr)
     {
-        if (strcasecmp(date_oras->tip_depozit, "centralizat") == 0)
+        if (_strcasecmp_(date_oras->tip_depozit, "centralizat") == 0)
         {
             int ID = stoi(date_oras->ID_Oras);
             depozite_centralizate[ID] = true;
@@ -662,7 +667,7 @@ void vizualizare_status_stoc(void)
          << "Introduceti ID-ul orasului: ";
     cin >> t_ID_Oras;
 
-    if (strcasecmp(t_ID_Oras, "exit") == 0)
+    if (_strcasecmp_(t_ID_Oras, "exit") == 0)
     {
         free(t_ID_Oras);
         return;
@@ -916,7 +921,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
     cout << setw(5) << " "
          << "Introduceti ID-ul corespunzator: ";
     cin >> _ID;
-    if (strcasecmp(_ID, "exit") == 0)
+    if (_strcasecmp_(_ID, "exit") == 0)
     {
         free(_ID);
         free(oras_start);
@@ -974,7 +979,7 @@ void sistem_aprovizionare_independent(void)
     cout << setw(5) << " "
          << "Introduceti ID-ul corespunzator: ";
     cin >> _ID;
-    if (strcasecmp(_ID, "exit") == 0)
+    if (_strcasecmp_(_ID, "exit") == 0)
     {
         free(_ID);
         return;
@@ -2011,12 +2016,12 @@ void parcurgere_traseu_TSP(void)
          << "[S] Start: ";
     cin >> input;
 
-    if (strcasecmp(input, "0") == 0)
+    if (_strcasecmp_(input, "0") == 0)
     {
         free(input);
         return;
     }
-    else if (strcasecmp(input, "s") == 0)
+    else if (_strcasecmp_(input, "s") == 0)
     {
         unsigned int MENIU;
 
@@ -2095,7 +2100,7 @@ void consola_mysql(void)
     if (buffer)
     {
         buffer = false;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(9999, '\n');
     }
 
     Driver *driver;
@@ -2217,7 +2222,7 @@ void sortare_tip_depozit(void)
          << "Introduceti tipul: ";
     cin >> input;
 
-    if (strcasecmp(input, "0") == 0)
+    if (_strcasecmp_(input, "0") == 0)
     {
         free(input);
         return;
@@ -2247,7 +2252,7 @@ void sortare_tip_depozit(void)
         underline(80, true);
 
         for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (strcasecmp(date_oras->tip_depozit, input) == 0)
+            if (_strcasecmp_(date_oras->tip_depozit, input) == 0)
                 cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
                      << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
                      << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
@@ -2355,7 +2360,7 @@ void cautare_oras_ID(void)
          << "Introduceti ID-ul: ";
     cin >> I_ID;
 
-    if (strcasecmp(I_ID, "exit") == 0)
+    if (_strcasecmp_(I_ID, "exit") == 0)
     {
         free(I_ID);
         return;
@@ -2385,7 +2390,7 @@ void cautare_oras_ID(void)
 
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (strcasecmp(date_oras->ID_Oras, I_ID) == 0)
+        if (_strcasecmp_(date_oras->ID_Oras, I_ID) == 0)
         {
             gasit = true;
 
@@ -2444,7 +2449,7 @@ void cautare_depozit_denumire(void)
     cin.get();
     cin.get(I_Denumire, MAXL);
 
-    if (strcasecmp(I_Denumire, "exit") == 0)
+    if (_strcasecmp_(I_Denumire, "exit") == 0)
     {
         free(I_Denumire);
         return;
@@ -2474,7 +2479,7 @@ void cautare_depozit_denumire(void)
 
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (strcasecmp(date_oras->denumire_oras, I_Denumire) == 0)
+        if (_strcasecmp_(date_oras->denumire_oras, I_Denumire) == 0)
         {
             gasit = true;
 
@@ -2530,7 +2535,7 @@ void sortare_categorie_produs(void)
          << "Introduceti tipul: ";
     cin >> input;
 
-    if (strcasecmp(input, "0") == 0)
+    if (_strcasecmp_(input, "0") == 0)
     {
         free(input);
         return;
@@ -2558,7 +2563,7 @@ void sortare_categorie_produs(void)
     underline(80, true);
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-        if (strcasecmp(date_produs->Categorie_Produs, input) == 0)
+        if (_strcasecmp_(date_produs->Categorie_Produs, input) == 0)
         {
             cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
                  << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
@@ -2738,7 +2743,7 @@ void cautare_produs_ID(void)
 
     clear_screen();
 
-    if (strcasecmp(I_ID, "exit") == 0)
+    if (_strcasecmp_(I_ID, "exit") == 0)
     {
         free(I_ID);
         return;
@@ -2764,7 +2769,7 @@ void cautare_produs_ID(void)
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (strcasecmp(date_produs->ID_Produs, I_ID) == 0)
+        if (_strcasecmp_(date_produs->ID_Produs, I_ID) == 0)
         {
             gasit = true;
 
@@ -2827,7 +2832,7 @@ void cautare_produs_denumire(void)
     cin.get();
     cin.get(I_Denumire, MAXL);
 
-    if (strcasecmp(I_Denumire, "exit") == 0)
+    if (_strcasecmp_(I_Denumire, "exit") == 0)
     {
         free(I_Denumire);
         return;
@@ -2856,7 +2861,7 @@ void cautare_produs_denumire(void)
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (strcasecmp(date_produs->Denumire_Produs, I_Denumire) == 0)
+        if (_strcasecmp_(date_produs->Denumire_Produs, I_Denumire) == 0)
         {
             gasit = true;
 

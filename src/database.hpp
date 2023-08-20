@@ -11,10 +11,10 @@ bool accesareDate(void)
 {
     try
     {
-        Driver *driver;
-        Connection *con;
-        Statement *stmt;
-        ResultSet *res;
+        Driver *driver = nullptr;
+        Connection *con = nullptr;
+        Statement *stmt = nullptr;
+        ResultSet *res = nullptr;
 
         driver = get_driver_instance();
 
@@ -162,8 +162,8 @@ bool update_database(void)
 {
     try
     {
-        Driver *driver;
-        Connection *con;
+        Driver *driver = nullptr;
+        Connection *con = nullptr;
 
         driver = mysql::get_mysql_driver_instance();
         con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
@@ -251,9 +251,9 @@ bool adaugare_depozit(void)
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
     cin >> input;
 
-    if (strcasecmp(input, "1") == 0)
+    if (_strcasecmp_(input, "1") == 0)
         strcpy(Tip_Depozit, "local");
-    else if (strcasecmp(input, "2") == 0)
+    else if (_strcasecmp_(input, "2") == 0)
         strcpy(Tip_Depozit, "centralizat");
 
     clear_screen();
@@ -283,9 +283,9 @@ bool adaugare_depozit(void)
          << "Pentru a finaliza tastati '1', iar '0' pentru a anulat: ";
     cin >> input;
 
-    if (strcasecmp(input, "0") == 0)
+    if (_strcasecmp_(input, "0") == 0)
         return EXIT_FAILURE;
-    else if (strcasecmp(input, "1") == 0)
+    else if (_strcasecmp_(input, "1") == 0)
     {
         try
         {
@@ -294,9 +294,9 @@ bool adaugare_depozit(void)
                  << "Start...\n";
             sleepcp(1000);
 
-            Driver *driver;
-            Connection *con;
-            Statement *stmt;
+            Driver *driver = nullptr;
+            Connection *con = nullptr;
+            Statement *stmt = nullptr;
 
             driver = get_driver_instance();
             con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
@@ -358,12 +358,12 @@ bool stergere_depozit(void)
     cout << setw(5) << " "
          << "Introduceti ID-ul corespunzator ('EXIT' pentru a anula): ";
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(9999, '\n');
     getline(cin, ID);
 
     const char* cStrID = ID.c_str();
 
-    if (strcasecmp(cStrID, "EXIT") == 0)
+    if (_strcasecmp_(cStrID, "EXIT") == 0)
         return EXIT_SUCCESS;
 
     try
@@ -373,9 +373,9 @@ bool stergere_depozit(void)
              << "Start...\n";
         sleepcp(1000);
 
-        Driver *driver;
-        Connection *con;
-        Statement *stmt;
+        Driver *driver = nullptr;
+        Connection *con = nullptr;
+        Statement *stmt = nullptr;
 
         driver = get_driver_instance();
         con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
@@ -437,11 +437,11 @@ void legaturi_graf(void)
     int ID_Legatura = 0;
     bool gasit = false;
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(9999, '\n');
     cin.get(legatura, MAXL);
 
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-        if (strcasecmp(date_oras->denumire_oras, legatura) == 0)
+        if (_strcasecmp_(date_oras->denumire_oras, legatura) == 0)
         {
             gasit = true;
             ID_Legatura = stoi(date_oras->ID_Oras);
@@ -467,14 +467,14 @@ void legaturi_graf(void)
     {
         gasit = false;
         cout << setw(5) << " " << denumire_depozit_nou << " <--> ";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(9999, '\n');
         cin.get(legatura, MAXL);
 
-        if (strcasecmp(legatura, "0") == 0)
+        if (_strcasecmp_(legatura, "0") == 0)
             break;
 
         for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (strcasecmp(date_oras->denumire_oras, legatura) == 0)
+            if (_strcasecmp_(date_oras->denumire_oras, legatura) == 0)
             {
                 gasit = true;
                 ID_Legatura = stoi(date_oras->ID_Oras);
