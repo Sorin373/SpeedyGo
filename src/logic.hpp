@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LOGIC
 #define LOGIC
 
