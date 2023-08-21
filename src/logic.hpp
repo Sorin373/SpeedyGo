@@ -65,7 +65,7 @@ bool autentificare_cont(int contor_greseli)
          << setw(10) << " "
          << "CONEXIUNE LA BAZA DE DATE   -" << contor_greseli << "-\n"
          << setw(4) << " "
-         << "======================================\n\n"
+         << "======================================\n"
          << setw(5) << " "
          << "Hostname: ";
 
@@ -88,12 +88,13 @@ bool autentificare_cont(int contor_greseli)
          << "Database name: ";
     cin >> _DB;
 
+    cout << setw(4) << " "
+         << "======================================\n";
+
     if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE || strlen(_DB) > MAX_SIZE)
         return EXIT_FAILURE;
 
     AUTENTIFICARE::introducere_date(_HN, _UN, _P, _DB);
-
-    clear_screen();
 
     if (accesareDate() == EXIT_FAILURE)
     {

@@ -13,13 +13,13 @@ string _GET_API_KEY_(const string &config_file_path)
     ifstream config_file(config_file_path);
     if (!config_file.is_open())
     {
-        cerr << "Eroare: " << config_file_path << "\n";
+        cerr << "-> Eroare: " << config_file_path << "\n";
         return nullptr;
     }
     else
         cout << "\n"
              << setw(5) << " "
-             << "File found!\n";
+             << "-> File found!\n";
 
     json config_data;
     config_file >> config_data;
@@ -41,7 +41,8 @@ HTTP_RESPONSE _http_request_(const string &url)
     CURL *curl = curl_easy_init();
     if (!curl)
     {
-        cerr << setw(5) << " " << "Failed to initialize Curl!\n";
+        cerr << setw(5) << " "
+             << "Failed to initialize Curl!\n";
         return HTTP_RESPONSE{};
     }
 
@@ -66,54 +67,38 @@ HTTP_RESPONSE _http_request_(const string &url)
 
 bool _GPS_UPDATE_DATA_(void)
 {
-    clear_screen();
-
-    cout << "\n\n";
+    cout << "\n";
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
-    char config_file_path[MAXL] = "utils/config.json"; // schimba adresa in functie de unde se afla local API-ul gMaps
 
     if (!use_API)
         cout << setw(5) << " "
-            << "Daca doriti sa folositi servicile Google pentru a calcula distantele intre orase\n"
-            << setw(5) << " "
-            << "introduceti 1 si 0 in caz contrar!\n";
+             << "-- Doriti sa folositi serviciile Google pentru a calcula distantele intre orase? [Y]/[N]: ";
 
-    underline(85, true);
-
-    cout << setw(5) << " "
-         << "I: ";
     cin >> input;
 
-    if (_strcasecmp_(input, "0") == 0)
+    if (_strcasecmp_(input, "N") == 0)
     {
         free(input);
         return EXIT_FAILURE;
     }
-    else if (_strcasecmp_(input, "1") == 0)
+    else if (_strcasecmp_(input, "Y") == 0)
     {
-        clear_screen();
-
-        cout << "\n\n" << setw(5) << " "
-             << "Introduceti numele fisierului unde se afla API-ul si '0' pentru a anula:\n";
-
-        underline(85, true);
-
-        cout << setw(5) << " "
-             << "I: ";
-
-        cin >> config_file_path;
-
-        if (_strcasecmp_(config_file_path, "0") == 0)
-        {
-            free(input);
-            return EXIT_FAILURE;
-        }
-
-        string API_KEY = _GET_API_KEY_(config_file_path);
+        string API_KEY = _GET_API_KEY_("utils/config.json");
 
         if (API_KEY.empty())
+        {
+            cerr << setw(5) << " "
+                 << "-> API key not found.\n\n"
+                 << setw(5) << " "
+                 << "Check 'config.json' or the file path to be in 'src/utils' and to contain a valid key.\n"
+                 << setw(5) << " "
+                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n"
+                 << setw(5) << " "
+                 << "Rebuild application after solving the issues or the API key will not be used...";
+            _getch();
             return EXIT_FAILURE;
+        }
 
         use_API = true;
 
@@ -123,6 +108,7 @@ bool _GPS_UPDATE_DATA_(void)
 
         if (!legaturi.is_open())
         {
+            use_API = false;
             cerr << setw(5) << " "
                  << "Failed to open file!\n";
             _getch();
@@ -211,6 +197,7 @@ bool _GPS_UPDATE_DATA_(void)
                     }
                     else
                     {
+                        use_API = false;
                         free(oras1);
                         free(oras2);
                         return EXIT_FAILURE;
@@ -218,11 +205,12 @@ bool _GPS_UPDATE_DATA_(void)
                 }
                 else
                 {
+                    use_API = false;
                     free(oras1);
                     free(oras2);
                     return EXIT_FAILURE;
                 }
-                    
+
                 json updated_data;
 
                 for (unordered_map<string, double>::const_iterator i = distante_orase.begin(); i != distante_orase.end(); i++)
@@ -239,18 +227,23 @@ bool _GPS_UPDATE_DATA_(void)
                 fout << json_string;
 
                 fout.close();
-
+#ifdef _WIN32
+                changeText(FOREGROUND_GREEN);
+                cout << setw(5) << " "
+                     << "DONE!" << endl;
+                resetText();
+#elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
                      << "DONE!\n"
                      << "\033[0m";
-
+#endif
                 underline(100, true);
 
                 free(oras1);
                 free(oras2);
             }
-            
+
             free(input);
         }
     }
