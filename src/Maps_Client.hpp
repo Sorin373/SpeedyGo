@@ -125,7 +125,7 @@ bool _GPS_UPDATE_DATA_(void)
         {
             cerr << setw(5) << " "
                  << "Failed to open file!\n";
-            getch();
+            _getch();
             return EXIT_FAILURE;
         }
         else

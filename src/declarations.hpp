@@ -18,17 +18,15 @@
 #include <jdbc/cppconn/prepared_statement.h>
 #include <jdbc/cppconn/resultset.h>
 #include <jdbc/cppconn/statement.h>
-
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
 #define STRCASECMP _stricmp
-#else
+#elif __linux__
 #define STRCASECMP strcasecmp
 #include <unistd.h>
 #include <termios.h>
 #endif
-
 #include "cross_platform_compatibility.hpp"
 #pragma endregion
 
@@ -551,6 +549,10 @@ DETALII_PRODUS produs;
 TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
+HANDLE hConsole;
+CONSOLE_SCREEN_BUFFER_INFO csbi;
+WORD originalAttributes;
+
 std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0})); // matricea de adiacenta ce contine distantele dintre noduri
 std::vector<bool> depozite_centralizate(N, false);                                                    // stocare ID depozite centralizate
 std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                                     // stocare ID depozite cu stoc limitat
@@ -560,7 +562,7 @@ std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());              
 std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);               // stocarea traseului optim TSP (travel salesman problem)
 
 long long unsigned int contor_log;
-int contor_noduri_graf; // se foloseste acest contor, deoarece functia size() nu returneaza nr. corect
+int contor_noduri_graf;
 
 int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat,
                                                  contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase;
@@ -578,9 +580,11 @@ char *denumire_depozit_nou = (char *)malloc(MAXL * sizeof(char) + 1);
 
 #pragma region utils
 #ifdef __linux__
-void toggleEcho(bool enableEcho);
+char _getch(void);
+#elif _WIN32
+void changeText(WORD attributes);
 
-char getch(void);
+void resetText();
 #endif
 
 int _strcasecmp_(const char* str1, const char* str2);

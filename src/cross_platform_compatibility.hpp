@@ -7,7 +7,7 @@
 using namespace std;
 
 #ifdef __linux__
-char getch(void)
+char _getch(void)
 {
     char buf = 0;
     struct termios old = {0};
@@ -33,7 +33,7 @@ char getch(void)
 
 void clear_screen(void)
 {
-#ifdef WIN32
+#ifdef _WIN32
     system("CLS");
 #elif __linux__
     system("clear");
@@ -42,7 +42,7 @@ void clear_screen(void)
 
 void sleepcp(const int ms)
 {
-#ifdef WIN32
+#ifdef _WIN32
     Sleep(ms);
 #elif __linux__
     usleep(ms * 1000);

@@ -8,6 +8,12 @@ using namespace std;
 
 bool start(void)
 {
+#ifdef _WIN32
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    originalAttributes = csbi.wAttributes;
+#endif
+
     if (autentificare_cont(0) == EXIT_FAILURE)
         return EXIT_FAILURE;
     else if (_init_() == EXIT_FAILURE)
@@ -16,12 +22,10 @@ bool start(void)
     sortare_date_depozit();
     sortare_date_oras(1);
     sortare_date_produs(1);
-
     determinare_tip_depozit();
     cautare_orase_stoc_limitat();
     cautare_orase_izolate();
     produse_transport_TSP();
-
     nr_max_caractere_den();
 
     traseu_minim_TSP[1] = -1;
@@ -56,13 +60,13 @@ int main(int argc, char **argv)
     {
         clear_screen();
 
-        cout << "\n\n";
-        cout << setw(28) << " "
-             << "┌───────┐\n";
-        cout << setw(30) << " "
-             << "MENIU\n";
-        cout << setw(28) << " "
-             << "└───────┘\n";
+        cout << "\n\n"
+             << setw(30) << " "
+             << "+-------+\n"
+             << setw(30) << " "
+             << "| MENIU |\n"
+             << setw(30) << " "
+             << "+-------+\n";
         underline(60, true);
 
         cout << setw(5) << " "
@@ -93,13 +97,13 @@ int main(int argc, char **argv)
             {
                 clear_screen();
 
-                cout << "\n\n";
-                cout << setw(18) << " "
-                     << "┌──────────────────┐\n";
-                cout << setw(19) << " "
-                     << "GESTIONARE STOCURI\n";
-                cout << setw(18) << " "
-                     << "└──────────────────┘\n";
+                cout << "\n\n"
+                     << setw(18) << " "
+                     << "+--------------------+\n"
+                     << setw(18) << " "
+                     << "| GESTIONARE STOCURI |\n"
+                     << setw(18) << " "
+                     << "+--------------------+\n";
                 underline(50, true);
 
                 cout << setw(5) << " "
@@ -109,7 +113,7 @@ int main(int argc, char **argv)
                      << setw(5) << " "
                      << "[3] Depozite izolate\n"
                      << setw(5) << " "
-                     << "[4] Depozite cu o singură ruta de conexiune\n"
+                     << "[4] Depozite cu o singura ruta de conexiune\n"
                      << setw(5) << " "
                      << "[0] EXIT\n";
                 underline(50, true);
@@ -128,11 +132,11 @@ int main(int argc, char **argv)
                     break;
                 case 3:
                     afisare_depozite_izolate();
-                    getch();
+                    _getch();
                     break;
                 case 4:
                     afisare_depozite_unic_drum();
-                    getch();
+                    _getch();
                     break;
 
                 default:
@@ -151,13 +155,13 @@ int main(int argc, char **argv)
             {
                 clear_screen();
 
-                cout << "\n\n";
-                cout << setw(15) << " "
-                     << "┌────────────┐\n";
-                cout << setw(16) << " "
-                     << "BAZA DE DATE\n";
-                cout << setw(15) << " "
-                     << "└────────────┘\n";
+                cout << "\n\n"
+                     << setw(15) << " "
+                     << "+--------------+\n"
+                     << setw(15) << " "
+                     << "| BAZA DE DATE |\n"
+                     << setw(15) << " "
+                     << "+--------------+\n";
 
                 underline(40, true);
 
@@ -393,13 +397,13 @@ int main(int argc, char **argv)
             {
                 clear_screen();
 
-                cout << "\n\n";
-                cout << setw(15) << " "
-                     << "┌────────────────┐\n";
-                cout << setw(16) << " "
-                     << "ACTUALIZARE DATE\n";
-                cout << setw(15) << " "
-                     << "└────────────────┘\n";
+                cout << "\n\n"
+                     << setw(15) << " "
+                     << "+------------------+\n"
+                     << setw(15) << " "
+                     << "| ACTUALIZARE DATE |\n"
+                     << setw(15) << " "
+                     << "+------------------+\n";
 
                 underline(40, true);
 
@@ -428,7 +432,7 @@ int main(int argc, char **argv)
                     {
                         cerr << setw(5) << " "
                              << "SQL: Failed to updated table!";
-                        getch();
+                        _getch();
                     }
                     break;
                 case 3:
@@ -436,7 +440,7 @@ int main(int argc, char **argv)
                     {
                         cerr << setw(5) << " "
                              << "SQL: Failed to updated table!";
-                        getch();
+                        _getch();
                     }
                     break;
 

@@ -8,7 +8,7 @@ using namespace std;
 using namespace sql;
 
 #pragma region UTILS
-int _strcasecmp_(const char* str1, const char* str2)
+int _strcasecmp_(const char *str1, const char *str2)
 {
     return STRCASECMP(str1, str2);
 }
@@ -24,6 +24,20 @@ void underline(const unsigned int vWidth, const bool bSetw)
     cout.fill(fillLine);
     cout << "\n";
 }
+
+#ifdef _WIN32
+void changeText(WORD attributes)
+{
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    SetConsoleTextAttribute(hConsole, attributes);
+}
+
+void resetText()
+{
+    SetConsoleTextAttribute(hConsole, originalAttributes);
+}
+#endif
 #pragma endregion
 
 bool autentificare_cont(int contor_greseli)
@@ -83,7 +97,7 @@ bool autentificare_cont(int contor_greseli)
 
     if (accesareDate() == EXIT_FAILURE)
     {
-        getch();
+        _getch();
         free(_HN);
         free(_UN);
         free(_P);
@@ -99,7 +113,7 @@ bool autentificare_cont(int contor_greseli)
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
         if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
             return EXIT_FAILURE;
-    
+
     return EXIT_SUCCESS;
 }
 
@@ -207,11 +221,11 @@ void afisare_date_tabel_oras(void)
 
     cout << "\n\n";
     cout << setw(5) << " "
-         << "┌───────────────┐\n";
+         << "+---------------+\n";
     cout << setw(6) << " "
          << " TABEL-DEPOZIT\n";
     cout << setw(5) << " "
-         << "└───────────────┘\n\n";
+         << "+---------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -230,9 +244,20 @@ void afisare_date_tabel_oras(void)
         cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
              << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
              << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-             << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
-             << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-             << " " << date_oras->longitudine << "\u00B0\n";
+             << " " << fixed << setprecision(2) << date_oras->latitudine;
+#ifdef _WIN32
+        cout << "\370";
+#elif __linux__
+        cout << "\u00B0";
+#endif
+        cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
+             << " " << date_oras->longitudine;
+#ifdef _WIN32
+        cout << "\370" << endl;
+#elif __linux__
+        cout << "\u00B0\n"
+             << endl;
+#endif
     }
 
     underline(80, true);
@@ -658,11 +683,11 @@ void vizualizare_status_stoc(void)
                     {
                     case 1:
                         cautare_produse_ID_stoc_limitat(_ID_Oras);
-                        getch();
+                        _getch();
                         break;
                     case 2:
                         depozite_conectate(_ID_Oras);
-                        getch();
+                        _getch();
                         break;
 
                     default:
@@ -880,7 +905,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
         free(_ID);
 
         afisare_trasee_optime(_ID_temp, vStart);
-        getch();
+        _getch();
         afisare_optiuni_trasee_optime(vStart);
     }
 }
@@ -944,7 +969,7 @@ void sistem_aprovizionare_independent(void)
                  << setw(5) << " "
                  << "Nu exista depozitul central cu acest ID...";
             free(_ID);
-            getch();
+            _getch();
             sistem_aprovizionare_independent();
         }
     }
@@ -955,13 +980,13 @@ void afisare_depozite_izolate(void)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌────────────────┐\n";
-    cout << setw(6) << " "
-         << "DEPOZITE IZOLATE\n";
-    cout << setw(5) << " "
-         << "└────────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+------------------+\n"
+         << setw(5) << " "
+         << "| DEPOZITE IZOLATE |\n"
+         << setw(5) << " "
+         << "+------------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -993,10 +1018,23 @@ void afisare_depozite_izolate(void)
                 int ID = stoi(date_oras->ID_Oras);
                 if (ID == i)
                 {
-                    cout << setw(7) << " " << date_oras->ID_Oras << setw(12) << " " << date_oras->denumire_oras
-                         << setw(cmax - strlen(date_oras->denumire_oras) + 18) << " " << date_oras->tip_depozit
-                         << setw(11 - strlen(date_oras->tip_depozit) + 4) << " " << date_oras->latitudine << "\u00B0" << setw(8)
-                         << " " << date_oras->longitudine << "\u00B0\n";
+                    cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
+                         << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
+                         << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
+                         << " " << fixed << setprecision(2) << date_oras->latitudine;
+#ifdef _WIN32
+                    cout << "\370";
+#elif __linux__
+                    cout << "\u00B0";
+#endif
+                    cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
+                         << " " << date_oras->longitudine;
+#ifdef _WIN32
+                    cout << "\370" << endl;
+#elif __linux__
+                    cout << "\u00B0\n"
+                         << endl;
+#endif
                     break;
                 }
             }
@@ -1018,11 +1056,11 @@ void afisare_depozite_unic_drum(void)
 
     cout << "\n\n";
     cout << setw(5) << " "
-         << "┌─────────────────────────────┐\n";
-    cout << setw(6) << " "
-         << "DEPOZITE CU O UNICA CONEXIUNE\n";
+         << "+-------------------------------+\n";
     cout << setw(5) << " "
-         << "└─────────────────────────────┘\n\n";
+         << "| DEPOZITE CU O UNICA CONEXIUNE |\n";
+    cout << setw(5) << " "
+         << "+-------------------------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -1073,10 +1111,23 @@ void afisare_depozite_unic_drum(void)
                     int ID = stoi(date_oras->ID_Oras);
                     if (ID == i)
                     {
-                        cout << setw(7) << " " << date_oras->ID_Oras << setw(10) << " " << date_oras->denumire_oras
-                             << setw(cmax - strlen(date_oras->denumire_oras) + 20) << " " << date_oras->tip_depozit
-                             << setw(11 - strlen(date_oras->tip_depozit) + 4) << " " << date_oras->latitudine << "\u00B0" << setw(8)
-                             << " " << date_oras->longitudine << "\u00B0\n";
+                        cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
+                             << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
+                             << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
+                             << " " << fixed << setprecision(2) << date_oras->latitudine;
+#ifdef _WIN32
+                        cout << "\370";
+#elif __linux__
+                        cout << "\u00B0";
+#endif
+                        cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
+                             << " " << date_oras->longitudine;
+#ifdef _WIN32
+                        cout << "\370" << endl;
+#elif __linux__
+                        cout << "\u00B0\n"
+                             << endl;
+#endif
                         break;
                     }
                 }
@@ -1295,11 +1346,19 @@ void back_ac(void)
 #pragma region TSP
 void TSP(void)
 {
+#ifdef _WIN32
+
+    changeText(FOREGROUND_INTENSITY | FOREGROUND_BLUE);
+
     cout << setw(5) << " "
-         << "\033[3m"
+         << "Se calculeaza traseul cel mai optim...\n";
+
+    resetText();
+#elif __linux__
+    cout << "\033[1;34m" << setw(5) << " "
          << "Se calculeaza traseul cel mai optim..."
-         << "\033[0m"
-         << "\n";
+         << "\033[0m" << endl;
+#endif
 
     bool izolat = false;
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
@@ -1317,12 +1376,23 @@ void TSP(void)
 
         if (!traseu_minim_TSP.empty())
         {
+#ifdef _WIN32
+            changeText(FOREGROUND_INTENSITY);
+
+            cout << setw(5) << " "
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << " Durata traseu: " << durata_minima_TSP << endl
+                 << setw(5) << " ";
+
+            resetText();
+#elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
                  << "Lungime traseu: " << cost_minim_TSP << "km"
                  << "Durata traseu: " << durata_minima_TSP << "\n"
                  << setw(5) << " "
                  << "\033[0m";
+#endif
 
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
@@ -1353,12 +1423,23 @@ void TSP(void)
 
             if (!traseu_minim_TSP.empty())
             {
+#ifdef _WIN32
+                changeText(FOREGROUND_INTENSITY);
+
+                cout << setw(5) << " "
+                     << "Lungime traseu: " << cost_minim_TSP << "km"
+                     << " Durata traseu: " << durata_minima_TSP << endl
+                     << setw(5) << " ";
+
+                resetText();
+#elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
                      << "Lungime traseu: " << cost_minim_TSP << "km"
                      << "Durata traseu: " << durata_minima_TSP << "\n"
                      << setw(5) << " "
                      << "\033[0m";
+#endif
 
                 for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
                 {
@@ -1389,12 +1470,23 @@ void TSP(void)
         cout << "\n";
         if (!traseu_minim_TSP.empty())
         {
+#ifdef _WIN32
+            changeText(FOREGROUND_INTENSITY);
+
+            cout << setw(5) << " "
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << " Durata traseu: " << durata_minima_TSP << endl
+                 << setw(5) << " ";
+
+            resetText();
+#elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km" << setw(2) << " | "
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
                  << "Durata traseu: " << durata_minima_TSP << "\n"
                  << setw(5) << " "
                  << "\033[0m";
+#endif
 
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
@@ -1414,7 +1506,9 @@ void TSP(void)
             underline(190, false);
         }
         else
-            cout << "Toate depozitele sunt izolate!";
+            cout << "\n"
+                 << setw(5) << " "
+                 << "Toate depozitele sunt izolate!";
     }
 }
 
@@ -1460,9 +1554,19 @@ void pagina_principala_TSP(void)
 
                 if (i == 1)
                     if (ID == traseu_minim_TSP[1])
+                    {
+#ifdef _WIN32
+                        changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
+                        cout << date_oras->denumire_oras;
+                        resetText();
+
+                        cout << " --> ";
+#elif __linux__
                         cout << "\033[4m"
                              << "\033[1m" << date_oras->denumire_oras << "\033[0m"
                              << " --> ";
+#endif
+                    }
 
                 if (ID == traseu_minim_TSP[i] && i != 1)
                 {
@@ -1484,14 +1588,26 @@ void pagina_principala_TSP(void)
         if (ID == traseu_minim_TSP[1])
         {
             cout << setw(5) << " "
-                 << "┌───────────────────────┐\n";
-            cout << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << " - START\n";
-            cout << setw(5) << " "
-                 << "└───────────────────────┘";
+                 << "+-----------------------+\n"
+                 << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << " - START\n"
+                 << setw(5) << " "
+                 << "+-----------------------+";
             break;
         }
     }
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(100) << " "
+         << "Distanta parcursa: " << distanta_parcursa;
+    resetText();
+    cout << "km | ";
+    changeText(FOREGROUND_INTENSITY);
+    cout << "Durata de calatorie: " << durata_parcursa;
+    resetText();
+    cout << "min\n";
+
+#elif __linux__
     cout << setw(100) << " "
          << "\033[1m"
          << "Distanta parcursa: "
@@ -1499,6 +1615,7 @@ void pagina_principala_TSP(void)
          << "\033[1m"
          << "Durata de calatorie: "
          << "\033[0m" << durata_parcursa << "min\n";
+#endif
 
     cout << "\n\n"
          << setw(5) << " "
@@ -1544,7 +1661,7 @@ void pagina_finala_TSP(void)
     {
         cerr << setw(5) << " "
              << "Failed to open utils file!\n";
-        getch();
+        _getch();
     }
     else
     {
@@ -1562,7 +1679,7 @@ void pagina_finala_TSP(void)
     {
         cerr << setw(5) << " "
              << "Failed to open file!\n";
-        getch();
+        _getch();
     }
     else
         file << contor_log;
@@ -1582,7 +1699,7 @@ void pagina_finala_TSP(void)
     {
         cerr << setw(5) << " "
              << "Failed to open TSP log!\n";
-        getch();
+        _getch();
     }
     else
     {
@@ -1631,7 +1748,7 @@ void pagina_finala_TSP(void)
     cout << setw(5) << " "
          << "Apasati 'ENTER' pentru a va intoarce...";
 
-    getch();
+    _getch();
 }
 
 void pagina_stanga_TSP(void)
@@ -1661,8 +1778,19 @@ void pagina_stanga_TSP(void)
 
                     if (ID == traseu_minim_TSP[pagina] && i == pagina)
                     {
+#ifdef _WIN32
+                        changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
+
+                        cout << date_oras->denumire_oras;
+
+                        resetText();
+
+                        cout << " --> ";
+#elif __linux__
                         cout << "\033[4m"
-                             << "\033[1m" << date_oras->denumire_oras << "\033[0m";
+                             << "\033[1m" << date_oras->denumire_oras << "\033[0m"
+                             << " --> ";
+#endif
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -1688,14 +1816,26 @@ void pagina_stanga_TSP(void)
             if (ID == traseu_minim_TSP[pagina])
             {
                 cout << setw(5) << " "
-                     << "┌───────────────────────┐\n";
-                cout << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << "\n";
-                cout << setw(5) << " "
-                     << "└───────────────────────┘";
+                     << "+-----------------------+\n"
+                     << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << "\n"
+                     << setw(5) << " "
+                     << "+-----------------------+";
                 break;
             }
         }
 
+#ifdef _WIN32
+        changeText(FOREGROUND_INTENSITY);
+        cout << setw(100) << " "
+             << "Distanta parcursa: " << distanta_parcursa;
+        resetText();
+        cout << "km | ";
+        changeText(FOREGROUND_INTENSITY);
+        cout << "Durata de calatorie: " << durata_parcursa;
+        resetText();
+        cout << "min\n";
+
+#elif __linux__
         cout << setw(100) << " "
              << "\033[1m"
              << "Distanta parcursa: "
@@ -1703,6 +1843,7 @@ void pagina_stanga_TSP(void)
              << "\033[1m"
              << "Durata de calatorie: "
              << "\033[0m" << durata_parcursa << "min\n";
+#endif
 
         cout << "\n\n"
              << setw(5) << " "
@@ -1714,17 +1855,37 @@ void pagina_stanga_TSP(void)
         if (depozite_centralizate[traseu_minim_TSP[pagina]] == false)
         {
             if (orase_stoc_limitat[traseu_minim_TSP[pagina]] == false)
+            {
+#ifdef _WIN32
+                changeText(FOREGROUND_INTENSITY);
+
+                cout << setw(5) << " "
+                     << "Depozitul a fost aprovizionat!" << endl;
+
+                resetText();
+#elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
                      << "Depozitul a fost aprovizionat!\n"
                      << "\033[0m";
+#endif
+            }
         }
         else
         {
+#ifdef _WIN32
+            changeText(FOREGROUND_INTENSITY);
+
+            cout << setw(5) << " "
+                 << "Depozit centralizat!!" << endl;
+
+            resetText();
+#elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
                  << "Depozit centralizat!\n"
                  << "\033[0m";
+#endif
         }
 
         underline(70, true);
@@ -1774,8 +1935,19 @@ void pagina_dreapta_TSP(void)
 
                     if (ID == traseu_minim_TSP[pagina] && i == pagina)
                     {
+#ifdef _WIN32
+                        changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
+
+                        cout << date_oras->denumire_oras;
+
+                        resetText();
+
+                        cout << " --> ";
+#elif __linux__
                         cout << "\033[4m"
-                             << "\033[1m" << date_oras->denumire_oras << "\033[0m";
+                             << "\033[1m" << date_oras->denumire_oras << "\033[0m"
+                             << " --> ";
+#endif
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -1801,14 +1973,26 @@ void pagina_dreapta_TSP(void)
             if (ID == traseu_minim_TSP[pagina])
             {
                 cout << setw(5) << " "
-                     << "┌───────────────────────┐\n";
-                cout << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << "\n";
-                cout << setw(5) << " "
-                     << "└───────────────────────┘";
+                     << "+-----------------------+\n"
+                     << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << "\n"
+                     << setw(5) << " "
+                     << "+-----------------------+";
                 break;
             }
         }
 
+#ifdef _WIN32
+        changeText(FOREGROUND_INTENSITY);
+        cout << setw(100) << " "
+             << "Distanta parcursa: " << distanta_parcursa;
+        resetText();
+        cout << "km | ";
+        changeText(FOREGROUND_INTENSITY);
+        cout << "Durata de calatorie: " << durata_parcursa;
+        resetText();
+        cout << "min\n";
+
+#elif __linux__
         cout << setw(100) << " "
              << "\033[1m"
              << "Distanta parcursa: "
@@ -1816,6 +2000,7 @@ void pagina_dreapta_TSP(void)
              << "\033[1m"
              << "Durata de calatorie: "
              << "\033[0m" << durata_parcursa << "min\n";
+#endif
 
         cout << "\n\n"
              << setw(5) << " "
@@ -1866,16 +2051,38 @@ void pagina_dreapta_TSP(void)
                 }
             }
             else
+            {
+#ifdef _WIN32
+                changeText(FOREGROUND_INTENSITY);
+
+                cout << setw(5) << " "
+                     << "Depozitul a fost aprovizionat!" << endl;
+
+                resetText();
+#elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
                      << "Depozitul a fost aprovizionat!\n"
                      << "\033[0m";
+#endif
+            }
         }
         else
+        {
+#ifdef _WIN32
+            changeText(FOREGROUND_INTENSITY);
+
+            cout << setw(5) << " "
+                 << "Depozit centralizat!!" << endl;
+
+            resetText();
+#elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
                  << "Depozit centralizat!\n"
                  << "\033[0m";
+#endif
+        }
 
         underline(70, true);
 
@@ -1912,13 +2119,23 @@ void parcurgere_traseu_TSP(void)
         else
         {
             clear_screen();
-            cout << "\n"
-                 << setw(5) << " "
-                 << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << "Durata traseu: " << durata_minima_TSP << "min\n"
-                 << "\033[0m"
+#ifdef _WIN32
+            changeText(FOREGROUND_INTENSITY);
+
+            cout << setw(5) << " "
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << " Durata traseu: " << durata_minima_TSP << endl
                  << setw(5) << " ";
+
+            resetText();
+#elif __linux__
+            cout << setw(5) << " "
+                 << "\033[1m"
+                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << setw(5) << " "
+                 << "\033[0m";
+#endif
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
                 for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -1941,13 +2158,24 @@ void parcurgere_traseu_TSP(void)
     else
     {
         clear_screen();
+
+#ifdef _WIN32
+        changeText(FOREGROUND_INTENSITY);
+
+        cout << "\n\n"
+             << setw(5) << " "
+             << "Nu exista depozite cu stoc limitat/epuizat...";
+
+        resetText();
+#elif __linux__
         cout << "\n\n"
              << setw(5) << " "
              << "\033[1m"
              << "Nu exista depozite cu stoc limitat/epuizat..."
              << "\033[0m";
+#endif
         traseu_minim_TSP.clear();
-        getch();
+        _getch();
         return;
     }
 
@@ -2004,7 +2232,7 @@ void afisare_detalii_SpeedyGo(Connection *con)
 
     cout << "\033[3m"
          << setw(5) << " "
-         << "Bun venit în Consola MySQL. Introduceti o interogare SQL (sau 'exit' pentru a incheia)\n"
+         << "Bun venit in Consola MySQL. Introduceti o interogare SQL (sau 'exit' pentru a incheia)\n"
          << "\033[0m";
 
     underline(100, true);
@@ -2197,12 +2425,25 @@ void sortare_tip_depozit(void)
 
         for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             if (_strcasecmp_(date_oras->tip_depozit, input) == 0)
+            {
                 cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
                      << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
                      << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                     << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
-                     << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                     << " " << date_oras->longitudine << "\u00B0\n";
+                     << " " << fixed << setprecision(2) << date_oras->latitudine;
+#ifdef _WIN32
+                cout << "\370";
+#elif __linux__
+                cout << "\u00B0";
+#endif
+                cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
+                     << " " << date_oras->longitudine;
+#ifdef _WIN32
+                cout << "\370" << endl;
+#elif __linux__
+                cout << "\u00B0\n"
+                     << endl;
+#endif
+            }
 
         underline(80, true);
 
@@ -2211,7 +2452,7 @@ void sortare_tip_depozit(void)
              << "Apasa 'ENTER' pentru a te intoarce...";
 
         free(input);
-        getch();
+        _getch();
         sortare_tip_depozit();
     }
 }
@@ -2341,9 +2582,20 @@ void cautare_oras_ID(void)
             cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
                  << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
                  << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                 << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
-                 << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                 << " " << date_oras->longitudine << "\u00B0\n";
+                 << " " << fixed << setprecision(2) << date_oras->latitudine;
+#ifdef _WIN32
+            cout << "\370";
+#elif __linux__
+            cout << "\u00B0";
+#endif
+            cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
+                 << " " << date_oras->longitudine;
+#ifdef _WIN32
+            cout << "\370" << endl;
+#elif __linux__
+            cout << "\u00B0\n"
+                 << endl;
+#endif
 
             break;
         }
@@ -2360,7 +2612,7 @@ void cautare_oras_ID(void)
              << "ID-ul introdus nu este valid...";
 
         free(I_ID);
-        getch();
+        _getch();
         cautare_oras_ID();
     }
     else
@@ -2369,7 +2621,7 @@ void cautare_oras_ID(void)
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
-        getch();
+        _getch();
         free(I_ID);
         cautare_oras_ID();
     }
@@ -2430,9 +2682,20 @@ void cautare_depozit_denumire(void)
             cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
                  << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
                  << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                 << " " << fixed << setprecision(2) << date_oras->latitudine << "\u00B0"
-                 << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                 << " " << date_oras->longitudine << "\u00B0\n";
+                 << " " << fixed << setprecision(2) << date_oras->latitudine;
+#ifdef _WIN32
+            cout << "\370";
+#elif __linux__
+            cout << "\u00B0";
+#endif
+            cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
+                 << " " << date_oras->longitudine;
+#ifdef _WIN32
+            cout << "\370" << endl;
+#elif __linux__
+            cout << "\u00B0\n"
+                 << endl;
+#endif
 
             break;
         }
@@ -2449,7 +2712,7 @@ void cautare_depozit_denumire(void)
              << "Numele introdus nu este valid...";
 
         free(I_Denumire);
-        getch();
+        _getch();
         cautare_depozit_denumire();
     }
     else
@@ -2458,7 +2721,7 @@ void cautare_depozit_denumire(void)
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
-        getch();
+        _getch();
         free(I_Denumire);
         cautare_depozit_denumire();
     }
@@ -2529,7 +2792,7 @@ void sortare_categorie_produs(void)
          << "Apasa 'ENTER' pentru a te intoarce...";
 
     free(input);
-    getch();
+    _getch();
     sortare_categorie_produs();
 }
 
@@ -2743,7 +3006,7 @@ void cautare_produs_ID(void)
              << "ID-ul introdus nu este valid...";
 
         free(I_ID);
-        getch();
+        _getch();
         cautare_produs_ID();
     }
     else
@@ -2752,7 +3015,7 @@ void cautare_produs_ID(void)
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
-        getch();
+        _getch();
         free(I_ID);
         cautare_produs_ID();
     }
@@ -2835,7 +3098,7 @@ void cautare_produs_denumire(void)
              << "Numele introdus nu este valid...";
 
         free(I_Denumire);
-        getch();
+        _getch();
         cautare_produs_denumire();
     }
     else
@@ -2844,7 +3107,7 @@ void cautare_produs_denumire(void)
              << setw(5) << " "
              << "Apasa 'ENTER' pentru a te intoarce...";
 
-        getch();
+        _getch();
         free(I_Denumire);
         cautare_produs_denumire();
     }
