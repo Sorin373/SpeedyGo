@@ -2275,8 +2275,8 @@ void consola_mysql(void)
         cin.ignore(9999, '\n');
     }
 
-    Driver *driver;
-    Connection *con;
+    Driver *driver = nullptr;
+    Connection *con = nullptr;
 
     driver = mysql::get_mysql_driver_instance();
     con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
@@ -2387,11 +2387,21 @@ void sortare_tip_depozit(void)
 
     char *input = (char *)malloc((MAXL + 1) * sizeof(char));
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti '0' pentru a iesi\n\n";
+    resetText();
+    cout << setw(5) << " "
+         << "Introduceti tipul: ";
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
          << "Scrieti '0' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
          << "Introduceti tipul: ";
+#endif
+
     cin >> input;
 
     if (_strcasecmp_(input, "0") == 0)
@@ -2403,13 +2413,13 @@ void sortare_tip_depozit(void)
     {
         clear_screen();
 
-        cout << "\n\n";
-        cout << setw(5) << " "
-             << "┌───────────────┐\n";
-        cout << setw(6) << " "
-             << " TABEL-DEPOZIT\n";
-        cout << setw(5) << " "
-             << "└───────────────┘\n\n";
+        cout << "\n\n"
+             << setw(5) << " "
+             << "+---------------+\n"
+             << setw(5) << " "
+             << "| TABEL-DEPOZIT |\n"
+             << setw(5) << " "
+             << "+---------------+\n\n";
 
         cout << setw(5) << " "
              << "ID_Oras"
@@ -2461,13 +2471,13 @@ void sortare_depozit_alfabetic(const int tip_sortare)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌───────────────┐\n";
-    cout << setw(6) << " "
-         << " TABEL-DEPOZIT\n";
-    cout << setw(5) << " "
-         << "└───────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+---------------+\n"
+         << setw(5) << " "
+         << "| TABEL-DEPOZIT |\n"
+         << setw(5) << " "
+         << "+---------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -2538,11 +2548,21 @@ void cautare_oras_ID(void)
     char *I_ID = (char *)malloc(MAXL * sizeof(char) + 1);
     bool gasit = false;
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti 'exit' pentru a iesi\n\n";
+    resetText();
+    cout << setw(5) << " "
+         << "Introduceti ID-ul: ";
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
          << "Scrieti 'exit' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
          << "Introduceti ID-ul: ";
+#endif
+
     cin >> I_ID;
 
     if (_strcasecmp_(I_ID, "exit") == 0)
@@ -2553,13 +2573,13 @@ void cautare_oras_ID(void)
 
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌───────────────┐\n";
-    cout << setw(6) << " "
-         << " TABEL-DEPOZIT\n";
-    cout << setw(5) << " "
-         << "└───────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+---------------+\n"
+         << setw(5) << " "
+         << "| TABEL-DEPOZIT |\n"
+         << setw(5) << " "
+         << "+---------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -2636,16 +2656,25 @@ void cautare_depozit_denumire(void)
     char *I_Denumire = (char *)malloc(MAXL * sizeof(char) + 1);
     bool gasit = false;
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti '0' pentru a iesi\n\n";
+    resetText();
+    cout << setw(5) << " "
+         << "Introduceti tipul: ";
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
-         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "Scrieti '0' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
-         << "Introduceti numele depozitului: ";
+         << "Introduceti tipul: ";
+#endif
 
     cin.get();
     cin.get(I_Denumire, MAXL);
 
-    if (_strcasecmp_(I_Denumire, "exit") == 0)
+    if (_strcasecmp_(I_Denumire, "0") == 0)
     {
         free(I_Denumire);
         return;
@@ -2653,13 +2682,13 @@ void cautare_depozit_denumire(void)
 
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌───────────────┐\n";
-    cout << setw(6) << " "
-         << " TABEL-DEPOZIT\n";
-    cout << setw(5) << " "
-         << "└───────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+---------------+\n"
+         << setw(5) << " "
+         << "| TABEL-DEPOZIT |\n"
+         << setw(5) << " "
+         << "+---------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Oras"
@@ -2696,7 +2725,6 @@ void cautare_depozit_denumire(void)
             cout << "\u00B0\n"
                  << endl;
 #endif
-
             break;
         }
     }
@@ -2735,11 +2763,20 @@ void sortare_categorie_produs(void)
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti '0' pentru a iesi\n\n";
+    resetText();
+    cout << setw(5) << " "
+         << "Introduceti tipul: ";
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
          << "Scrieti '0' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
          << "Introduceti tipul: ";
+#endif
     cin >> input;
 
     if (_strcasecmp_(input, "0") == 0)
@@ -2750,13 +2787,13 @@ void sortare_categorie_produs(void)
 
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌──────────────┐\n";
-    cout << setw(7) << " "
-         << "TABEL-PRODUS\n";
-    cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+--------------+\n"
+         << setw(5) << " "
+         << "| TABEL-PRODUS |\n"
+         << setw(5) << " "
+         << "+--------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"
@@ -2800,13 +2837,13 @@ void sortare_produs_alfabetic(const int tip_sortare)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌──────────────┐\n";
-    cout << setw(7) << " "
-         << "TABEL-PRODUS\n";
-    cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+--------------+\n"
+         << setw(5) << " "
+         << "| TABEL-PRODUS |\n"
+         << setw(5) << " "
+         << "+--------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"
@@ -2868,13 +2905,13 @@ void sortare_produs_pret(const int tip_sortare)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌──────────────┐\n";
-    cout << setw(7) << " "
-         << "TABEL-PRODUS\n";
-    cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+--------------+\n"
+         << setw(5) << " "
+         << "| TABEL-PRODUS |\n"
+         << setw(5) << " "
+         << "+--------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"
@@ -2941,11 +2978,20 @@ void cautare_produs_ID(void)
     char *I_ID = (char *)malloc(MAXL * sizeof(char) + 1);
     bool gasit = false;
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti 'exit' pentru a iesi\n\n";
+    resetText();
+    cout << setw(5) << " "
+         << "Introduceti ID-ul: ";
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
          << "Scrieti 'exit' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
          << "Introduceti ID-ul: ";
+#endif
     cin >> I_ID;
 
     clear_screen();
@@ -2956,13 +3002,13 @@ void cautare_produs_ID(void)
         return;
     }
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌──────────────┐\n";
-    cout << setw(7) << " "
-         << "TABEL-PRODUS\n";
-    cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+--------------+\n"
+         << setw(5) << " "
+         << "| TABEL-PRODUS |\n"
+         << setw(5) << " "
+         << "+--------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"
@@ -3030,11 +3076,20 @@ void cautare_produs_denumire(void)
     char *I_Denumire = (char *)malloc(MAXL * sizeof(char) + 1);
     bool gasit = false;
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti 'exit' pentru a iesi\n\n";
+    resetText();
+    cout << setw(5) << " "
+         << "Introduceti ID-ul: ";
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
          << "Scrieti 'exit' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
-         << "Introduceti numele produsului: ";
+         << "Introduceti ID-ul: ";
+#endif
 
     cin.get();
     cin.get(I_Denumire, MAXL);
@@ -3047,13 +3102,13 @@ void cautare_produs_denumire(void)
 
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌──────────────┐\n";
-    cout << setw(7) << " "
-         << "TABEL-PRODUS\n";
-    cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+--------------+\n"
+         << setw(5) << " "
+         << "| TABEL-PRODUS |\n"
+         << setw(5) << " "
+         << "+--------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"

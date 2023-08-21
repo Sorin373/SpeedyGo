@@ -34,6 +34,11 @@ configure_file(${CMAKE_SOURCE_DIR}/utils/distante_orase.json ${CMAKE_BINARY_DIR}
 
 configure_file(${CMAKE_SOURCE_DIR}/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 
+# Check if the config.json with the API key exists in the source directory
+if(EXISTS ${CMAKE_SOURCE_DIR}/utils/config.json)
+    configure_file(${CMAKE_SOURCE_DIR}/utils/config.json ${CMAKE_BINARY_DIR}/Release/utils/config.json COPYONLY)
+endif()
+
 # Add mysql-connector-cpp Dlls (if you come across errors try to manually renew the DLLs)
 # Add inside src/utils/DLLs the dlls from the msi installation 
 # They are usually located at MySQL/MySQL Connector C++ 8.1/lib64/
