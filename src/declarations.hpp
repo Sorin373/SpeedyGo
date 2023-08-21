@@ -12,20 +12,26 @@
 #include <string.h>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
+#ifdef _WIN32
+#include <windows.h>
+#include <conio.h>
 #include <jdbc/mysql_connection.h>
 #include <jdbc/mysql_driver.h>
 #include <jdbc/mysql_error.h>
 #include <jdbc/cppconn/prepared_statement.h>
 #include <jdbc/cppconn/resultset.h>
 #include <jdbc/cppconn/statement.h>
-#ifdef _WIN32
-#include <windows.h>
-#include <conio.h>
 #define STRCASECMP _stricmp
 #elif __linux__
 #define STRCASECMP strcasecmp
 #include <unistd.h>
 #include <termios.h>
+#include <mysql_connection.h>
+#include <mysql_driver.h>
+#include <mysql_error.h>
+#include <cppconn/prepared_statement.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
 #endif
 #include "cross_platform_compatibility.hpp"
 #pragma endregion
@@ -549,9 +555,11 @@ DETALII_PRODUS produs;
 TRASEU _traseu;
 APROVIZIONARE aprovizionare;
 
+#ifdef _WIN32
 HANDLE hConsole;
 CONSOLE_SCREEN_BUFFER_INFO csbi;
 WORD originalAttributes;
+#endif
 
 std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0})); // matricea de adiacenta ce contine distantele dintre noduri
 std::vector<bool> depozite_centralizate(N, false);                                                    // stocare ID depozite centralizate

@@ -455,7 +455,7 @@ void legaturi_graf(void)
     {
         cerr << setw(5) << " "
              << "Failed to open file!";
-        getch();
+        _getch();
         return;
     }
 
@@ -491,7 +491,7 @@ void legaturi_graf(void)
     if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
     {
         cerr << setw(5) << " " << "Failed to update matrix!\n";
-        getch();
+        _getch();
         return; 
     }
 
@@ -507,7 +507,7 @@ bool SQL_Data_Update(const int input)
         {
             cerr << setw(5) << " "
                  << "SQL: Failed to add row!\n";
-            getch();
+            _getch();
         }
         else
         {
@@ -534,7 +534,7 @@ bool SQL_Data_Update(const int input)
         {
             cerr << setw(5) << " "
                  << "SQL: Failed to delete row!\n";
-            getch();
+            _getch();
         }
         else
         {
@@ -548,7 +548,7 @@ bool SQL_Data_Update(const int input)
             if (!fisier.is_open())
             {
                 cerr << setw(5) << " " << "Failed to open file!\n";
-                getch();
+                _getch();
                 return EXIT_FAILURE;
             }
 
