@@ -1381,16 +1381,16 @@ void TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
-                 << " Durata traseu: " << durata_minima_TSP << endl
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
+                 << " Durata traseu: " << durata_minima_TSP << "min" << endl
                  << setw(5) << " ";
 
             resetText();
 #elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
-                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
+                 << "Durata traseu: " << durata_minima_TSP << "min\n"
                  << setw(5) << " "
                  << "\033[0m";
 #endif
@@ -1428,16 +1428,16 @@ void TSP(void)
                 changeText(FOREGROUND_INTENSITY);
 
                 cout << setw(5) << " "
-                     << "Lungime traseu: " << cost_minim_TSP << "km"
-                     << " Durata traseu: " << durata_minima_TSP << endl
+                     << "Lungime traseu: " << cost_minim_TSP << "km | "
+                     << " Durata traseu: " << durata_minima_TSP << "min" << endl
                      << setw(5) << " ";
 
                 resetText();
 #elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
-                     << "Lungime traseu: " << cost_minim_TSP << "km"
-                     << "Durata traseu: " << durata_minima_TSP << "\n"
+                     << "Lungime traseu: " << cost_minim_TSP << "km | "
+                     << "Durata traseu: " << durata_minima_TSP << "min\n"
                      << setw(5) << " "
                      << "\033[0m";
 #endif
@@ -1475,16 +1475,16 @@ void TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
-                 << " Durata traseu: " << durata_minima_TSP << endl
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
+                 << " Durata traseu: " << durata_minima_TSP << "min" << endl
                  << setw(5) << " ";
 
             resetText();
 #elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
-                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
+                 << "Durata traseu: " << durata_minima_TSP << "min\n"
                  << setw(5) << " "
                  << "\033[0m";
 #endif
@@ -2124,7 +2124,7 @@ void parcurgere_traseu_TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
                  << " Durata traseu: " << durata_minima_TSP << endl
                  << setw(5) << " ";
 
@@ -2132,7 +2132,7 @@ void parcurgere_traseu_TSP(void)
 #elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km"
+                 << "Lungime traseu: " << cost_minim_TSP << "km | "
                  << "Durata traseu: " << durata_minima_TSP << "\n"
                  << setw(5) << " "
                  << "\033[0m";
