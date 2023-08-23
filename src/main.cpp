@@ -1,8 +1,8 @@
-#include "declarations.hpp"
-#include "logic.hpp"
-#include "database.hpp"
-#include "GoogleMatrixAPI.hpp"
-#include "haversine.hpp"
+#include "include/declarations.hpp"
+#include "include/logic.hpp"
+#include "include/database.hpp"
+#include "include/GoogleMatrixAPI.hpp"
+#include "include/haversine.hpp"
 
 using std::cin;
 using std::cout;
