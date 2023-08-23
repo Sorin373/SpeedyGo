@@ -1,10 +1,12 @@
 #include "declarations.hpp"
 #include "logic.hpp"
 #include "database.hpp"
-#include "Maps_Client.hpp"
-#include "geo_utils.hpp"
+#include "GoogleMatrixAPI.hpp"
+#include "haversine.hpp"
 
-using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 bool start(void)
 {
@@ -44,6 +46,7 @@ void free_memory(void)
     traseu_minim_TSP.clear();
     free(denumire_depozit_nou);
     AUTENTIFICARE::cleanup();
+    delete con;
 }
 
 int main(int argc, char **argv)

@@ -5,19 +5,20 @@
 #include "declarations.hpp"
 #include "logic.hpp"
 
-using namespace sql;
-using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::ifstream;
+using std::ofstream;
 
 bool accesareDate(void)
 {
     try
     {
-        Driver *driver = nullptr;
-        Connection *con = nullptr;
-        Statement *stmt = nullptr;
-        ResultSet *res = nullptr;
+        sql::Statement *stmt = nullptr;
+        sql::ResultSet *res = nullptr;
 
-        driver = mysql::get_mysql_driver_instance();
+        driver = sql::mysql::get_mysql_driver_instance();
 
         con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
                           string(AUTENTIFICARE::get_nod()->username),
@@ -27,7 +28,6 @@ bool accesareDate(void)
         {
             delete res;
             delete stmt;
-            delete con;
             return EXIT_FAILURE;
         }
 
@@ -39,7 +39,7 @@ bool accesareDate(void)
         while (res->next())
         {
             string str;
-            SQLString sqlstr;
+            sql::SQLString sqlstr;
 
             int idProdus = res->getInt("ID_Produs");
             str = to_string(idProdus);
@@ -69,7 +69,7 @@ bool accesareDate(void)
 
         while (res->next())
         {
-            SQLString sqlstr;
+            sql::SQLString sqlstr;
             string str;
 
             int idProdus = res->getInt("ID_Produs");
@@ -106,7 +106,7 @@ bool accesareDate(void)
 
         while (res->next())
         {
-            SQLString sqlstr;
+            sql::SQLString sqlstr;
             string str;
 
             int idOras = res->getInt("ID_Oras");
@@ -141,9 +141,8 @@ bool accesareDate(void)
 
         delete res;
         delete stmt;
-        delete con;
     }
-    catch (SQLException &e)
+    catch (sql::SQLException &e)
     {
         cerr << "\n"
              << setw(5) << " "
@@ -163,28 +162,13 @@ bool update_database(void)
 {
     try
     {
-        Driver *driver = nullptr;
-        Connection *con = nullptr;
-
-        driver = mysql::get_mysql_driver_instance();
-        con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
-                          string(AUTENTIFICARE::get_nod()->username),
-                          string(AUTENTIFICARE::get_nod()->parola));
-        con->setSchema(AUTENTIFICARE::get_nod()->DB);
-
-        if (con == nullptr)
-        {
-            delete con;
-            return EXIT_FAILURE;
-        }
-
         string deleteQuery = "DELETE FROM depozit";
-        Statement *stmt = con->createStatement();
+        sql::Statement *stmt = con->createStatement();
         stmt->executeUpdate(deleteQuery);
         delete stmt;
 
         string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
-        PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
+        sql::PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
 
         for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
         {
@@ -199,12 +183,11 @@ bool update_database(void)
             prepStmt->executeUpdate();
         }
 
-        delete con;
         delete prepStmt;
 
         return EXIT_SUCCESS;
     }
-    catch (SQLException &e)
+    catch (sql::SQLException &e)
     {
         cerr << "\n"
              << setw(5) << " "
@@ -295,23 +278,7 @@ bool adaugare_depozit(void)
                  << "Start...\n";
             sleepcp(1000);
 
-            Driver *driver = nullptr;
-            Connection *con = nullptr;
-            Statement *stmt = nullptr;
-
-            driver = get_driver_instance();
-            con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
-                          string(AUTENTIFICARE::get_nod()->username),
-                          string(AUTENTIFICARE::get_nod()->parola));
-
-            if (con == nullptr)
-            {
-                delete stmt;
-                delete con;
-                return EXIT_FAILURE;
-            }
-
-            con->setSchema(AUTENTIFICARE::get_nod()->DB);
+            sql::Statement *stmt = nullptr;
 
             string table_name = "oras";
             string query = "INSERT INTO " + table_name + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + to_string(contor_noduri_graf) + ", '" + Denumire_Depozit + "', " + to_string(lat) + ", " + to_string(lon) + ", '" + Tip_Depozit + "')";
@@ -320,7 +287,6 @@ bool adaugare_depozit(void)
             stmt->close();
 
             delete stmt;
-            delete con;
 
             cout << setw(5) << " "
                  << "Success...\n";
@@ -328,7 +294,7 @@ bool adaugare_depozit(void)
 
             return EXIT_SUCCESS;
         }
-        catch (SQLException &e)
+        catch (sql::SQLException &e)
         {
             cerr << "\n"
                  << setw(5) << " "
@@ -374,23 +340,7 @@ bool stergere_depozit(void)
              << "Start...\n";
         sleepcp(1000);
 
-        Driver *driver = nullptr;
-        Connection *con = nullptr;
-        Statement *stmt = nullptr;
-
-        driver = get_driver_instance();
-        con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
-                          string(AUTENTIFICARE::get_nod()->username),
-                          string(AUTENTIFICARE::get_nod()->parola));
-
-        if (con == nullptr)
-        {
-            delete stmt;
-            delete con;
-            return EXIT_FAILURE;
-        }
-
-        con->setSchema(AUTENTIFICARE::get_nod()->DB);
+        sql::Statement *stmt = nullptr;
 
         string table_name = "oras";
         string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + ID;
@@ -399,7 +349,6 @@ bool stergere_depozit(void)
         stmt->close();
 
         delete stmt;
-        delete con;
 
         cout << setw(5) << " "
              << "Success...\n";
@@ -407,7 +356,7 @@ bool stergere_depozit(void)
 
         return EXIT_SUCCESS;
     }
-    catch (SQLException &e)
+    catch (sql::SQLException &e)
     {
         cerr << "\n"
              << setw(5) << " "
@@ -450,7 +399,7 @@ void legaturi_graf(void)
         }
 
     ofstream fisier;
-    fisier.open("utils/legaturi.txt", ios::out | ios::app);
+    fisier.open("utils/legaturi.txt", std::ios::out | std::ios::app);
     if (!fisier.is_open())
     {
         cerr << setw(5) << " "

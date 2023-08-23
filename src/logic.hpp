@@ -4,8 +4,21 @@
 
 #include "declarations.hpp"
 
-using namespace std;
-using namespace sql;
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::ifstream;
+using std::ofstream;
+using std::string;
+using std::vector;
+using std::numeric_limits;
+using std::stoi;
+using std::setw;
+using std::setprecision;
+using std::to_string;
+using std::fixed;
+using std::swap;
+using std::endl;
 
 #pragma region UTILS
 int _strcasecmp_(const char *str1, const char *str2)
@@ -38,6 +51,49 @@ void resetText()
     SetConsoleTextAttribute(hConsole, originalAttributes);
 }
 #endif
+
+#ifdef __linux__
+char _getch(void)
+{
+    char buf = 0;
+    struct termios old = {0};
+    fflush(stdout);
+    if (tcgetattr(0, &old) < 0)
+        perror("tcsetattr()");
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if (tcsetattr(0, TCSANOW, &old) < 0)
+        perror("tcsetattr ICANON");
+    if (read(0, &buf, 1) < 0)
+        perror("read()");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if (tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
+    printf("%c\n", buf);
+    return buf;
+}
+#endif
+
+void clear_screen(void)
+{
+#ifdef _WIN32
+    system("CLS");
+#elif __linux__
+    system("clear");
+#endif
+}
+
+void sleepcp(const int ms)
+{
+#ifdef _WIN32
+    Sleep(ms);
+#elif __linux__
+    usleep(ms * 1000);
+#endif
+}
 #pragma endregion
 
 bool autentificare_cont(int contor_greseli)
@@ -220,12 +276,12 @@ void afisare_date_tabel_oras(void)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "+---------------+\n";
-    cout << setw(6) << " "
-         << " TABEL-DEPOZIT\n";
-    cout << setw(5) << " "
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+---------------+\n"
+         << setw(6) << " "
+         << " TABEL-DEPOZIT\n"
+         << setw(5) << " "
          << "+---------------+\n\n";
 
     cout << setw(5) << " "
@@ -282,13 +338,13 @@ void afisare_date_tabel_produs(void)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌──────────────┐\n";
-    cout << setw(7) << " "
-         << "TABEL-PRODUS\n";
-    cout << setw(5) << " "
-         << "└──────────────┘\n\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+--------------+\n"
+         << setw(5) << " "
+         << "| TABEL-PRODUS |\n"
+         << setw(5) << " "
+         << "+--------------+\n\n";
 
     cout << setw(5) << " "
          << "ID_Produs"
@@ -1694,7 +1750,7 @@ void pagina_finala_TSP(void)
         accesareDate();
 
     ofstream log_out;
-    log_out.open("logs/TSP_log.txt", ios::app);
+    log_out.open("logs/TSP_log.txt", std::ios::app);
 
     if (!log_out.is_open())
     {
@@ -2226,7 +2282,7 @@ void parcurgere_traseu_TSP(void)
 }
 #pragma endregion
 
-void afisare_detalii_SpeedyGo(Connection *con)
+void afisare_detalii_SpeedyGo(void)
 {
     cout << "\n";
     underline(100, true);
@@ -2238,13 +2294,13 @@ void afisare_detalii_SpeedyGo(Connection *con)
 
     underline(100, true);
 
-    Statement *stmt = con->createStatement();
-    ResultSet *res = stmt->executeQuery("SHOW TABLES");
+    sql::Statement *stmt = con->createStatement();
+    sql::ResultSet *res = stmt->executeQuery("SHOW TABLES");
 
     cout << setw(5) << " "
          << "+" << string(22, '-') << "+" << endl;
     cout << setw(5) << " "
-         << "| " << left << setw(20) << "SpeedyGo - Tabele"
+         << "| " << std::left << setw(20) << "SpeedyGo - Tabele"
          << " |" << endl;
     cout << setw(5) << " "
          << "|" << string(22, '-') << "|" << endl;
@@ -2252,10 +2308,10 @@ void afisare_detalii_SpeedyGo(Connection *con)
     while (res->next())
     {
         cout << setw(5) << " "
-             << "| " << setw(20) << left << res->getString(1) << " |" << endl;
+             << "| " << setw(20) <<std:: left << res->getString(1) << " |" << endl;
     }
 
-    cout << right;
+    cout << std::right;
 
     cout << setw(5) << " "
          << "+" << string(22, '-') << "+" << endl;
@@ -2276,16 +2332,7 @@ void consola_mysql(void)
         cin.ignore(9999, '\n');
     }
 
-    Driver *driver = nullptr;
-    Connection *con = nullptr;
-
-    driver = mysql::get_mysql_driver_instance();
-    con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
-                          string(AUTENTIFICARE::get_nod()->username),
-                          string(AUTENTIFICARE::get_nod()->parola));
-    con->setSchema(AUTENTIFICARE::get_nod()->DB);
-
-    afisare_detalii_SpeedyGo(con);
+    afisare_detalii_SpeedyGo();
 
     string interogare;
 
@@ -2305,14 +2352,14 @@ void consola_mysql(void)
         else if (interogare == "clear")
         {
             clear_screen();
-            afisare_detalii_SpeedyGo(con);
+            afisare_detalii_SpeedyGo();
         }
         else
         {
             try
             {
-                Statement *stmt = con->createStatement();
-                ResultSet *res = stmt->executeQuery(interogare);
+                sql::Statement *stmt = con->createStatement();
+                sql::ResultSet *res = stmt->executeQuery(interogare);
 
                 int cnt_coloane = res->getMetaData()->getColumnCount();
                 vector<int> coloane(cnt_coloane, 0);
@@ -2364,7 +2411,7 @@ void consola_mysql(void)
                 delete stmt;
                 delete res;
             }
-            catch (SQLException &e)
+            catch (sql::SQLException &e)
             {
                 cout << setw(5) << " "
                      << "Error code: " << e.getErrorCode() << "\n";
@@ -2377,7 +2424,6 @@ void consola_mysql(void)
     }
 
     interogare.clear();
-    delete con;
 }
 
 void sortare_tip_depozit(void)

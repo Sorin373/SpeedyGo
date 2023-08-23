@@ -1,10 +1,8 @@
 #pragma once
-#ifndef GEO
-#define GEO
+#ifndef HAVERSINE
+#define HAVERSINE
 
 #include "declarations.hpp"
-
-using namespace std;
 
 double toRadians(const double degrees)
 {
@@ -24,7 +22,7 @@ double calculare_distante(const double lat_1, const double long_1, const double 
 bool load_data(const char *path)
 {
     cout << path;
-    ifstream fisier(path);
+    std::ifstream fisier(path);
 
     cout << "success3\n";
     if (!fisier.is_open())

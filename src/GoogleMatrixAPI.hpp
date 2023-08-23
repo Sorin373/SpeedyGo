@@ -1,6 +1,6 @@
 #pragma once
-#ifndef GPS
-#define GPS
+#ifndef GOOGLE_MATRIX_API
+#define GOOGLE_MATRIX_API
 
 #include "declarations.hpp"
 

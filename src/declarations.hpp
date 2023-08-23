@@ -33,7 +33,6 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 #endif
-#include "cross_platform_compatibility.hpp"
 #pragma endregion
 
 #define M_PI 3.14159265358979323846
@@ -42,6 +41,12 @@
 #define VAL_STOC_MINIM 5
 #define VAL_STOC_MAXIM 50
 #define EARTH_RADIUS_KM 6371.0
+
+using std::string;
+using std::vector;
+
+sql::Driver *driver = nullptr;
+sql::Connection *con = nullptr;
 
 constexpr int N = 1001;
 
@@ -415,11 +420,11 @@ public:
     {
         int start = 0, destinatie = 0;
         double distanta = 0.0;
-        std::vector<int> traseu;
+        vector<int> traseu;
         NOD_TRASEU *prev = nullptr;
         NOD_TRASEU *next = nullptr;
 
-        NOD_TRASEU(int vStart, int vDestinatie, double vDistanta, std::vector<int> &traseu)
+        NOD_TRASEU(int vStart, int vDestinatie, double vDistanta, vector<int> &traseu)
         {
             this->start = vStart;
             this->destinatie = vDestinatie;
@@ -447,7 +452,7 @@ public:
         return tail_traseu;
     }
 
-    void inserareDateTraseu(int vStart, int vDestinatie, double vDistanta, std::vector<int> &traseu)
+    void inserareDateTraseu(int vStart, int vDestinatie, double vDistanta, vector<int> &traseu)
     {
         NOD_TRASEU *newnod = new NOD_TRASEU(vStart, vDestinatie, vDistanta, traseu);
 
@@ -561,13 +566,13 @@ CONSOLE_SCREEN_BUFFER_INFO csbi;
 WORD originalAttributes;
 #endif
 
-std::vector<std::vector<GRAF_NEORIENTAT>> matrice_drum(N, std::vector<GRAF_NEORIENTAT>(N, {0.0, 0})); // matricea de adiacenta ce contine distantele dintre noduri
-std::vector<bool> depozite_centralizate(N, false);                                                    // stocare ID depozite centralizate
-std::vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                                     // stocare ID depozite cu stoc limitat
-std::vector<bool> orase_izolate(matrice_drum.size(), false);                                          // stocare ID depozite izolate
-std::vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                                  // stocare ID depozite o conexiune unica cu graful
-std::vector<int> stiva(matrice_drum.size() * matrice_drum.size());                                    // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
-std::vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);               // stocarea traseului optim TSP (travel salesman problem)
+vector<vector<GRAF_NEORIENTAT>> matrice_drum(N, vector<GRAF_NEORIENTAT>(N, {0.0, 0})); // matricea de adiacenta ce contine distantele dintre noduri
+vector<bool> depozite_centralizate(N, false);                                          // stocare ID depozite centralizate
+vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                           // stocare ID depozite cu stoc limitat
+vector<bool> orase_izolate(matrice_drum.size(), false);                                // stocare ID depozite izolate
+vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                        // stocare ID depozite o conexiune unica cu graful
+vector<int> stiva(matrice_drum.size() * matrice_drum.size());                          // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
+vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);     // stocarea traseului optim TSP (travel salesman problem)
 
 long long unsigned int contor_log;
 int contor_noduri_graf;
@@ -584,8 +589,6 @@ int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pre
 
 char *denumire_depozit_nou = (char *)malloc(MAXL * sizeof(char) + 1);
 
-#pragma region FUNCTIONS_INITIALISATION
-
 #pragma region utils
 #ifdef __linux__
 char _getch(void);
@@ -595,7 +598,7 @@ void changeText(WORD attributes);
 void resetText();
 #endif
 
-int _strcasecmp_(const char* str1, const char* str2);
+int _strcasecmp_(const char *str1, const char *str2);
 
 void clear_screen(void);
 
@@ -653,9 +656,9 @@ void afisare_date_tabel_oras(void);
 void vizualizare_status_stoc(void);
 
 #pragma region DIJKSTRA
-void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee);
+void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee);
 
-void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
+void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima);
 
 void sistem_aprovizionare_independent(void);
 
@@ -734,7 +737,7 @@ void pagina_finala_TSP(void);
 void parcurgere_traseu_TSP(void);
 #pragma endregion
 
-void afisare_detalii_SpeedyGo(sql::Connection *con);
+void afisare_detalii_SpeedyGo(void);
 
 void consola_mysql(void);
 
@@ -755,7 +758,5 @@ void cautare_produs_denumire(void);
 void free_memory(void);
 
 void legaturi_graf(void);
-
-#pragma endregion
 
 #endif
