@@ -92,11 +92,11 @@ bool _GPS_UPDATE_DATA_(void)
             cerr << setw(5) << " "
                  << "-> API key not found.\n\n"
                  << setw(5) << " "
-                 << "Check 'config.json' or the file path to be in 'src/utils' and to contain a valid key.\n"
+                 << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
                  << setw(5) << " "
                  << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n"
                  << setw(5) << " "
-                 << "Rebuild application after solving the issues or the API key will not be used...";
+                 << "Rebuild the application after solving the issues or the API functionalies will not be used...";
             _getch();
             return EXIT_FAILURE;
         }

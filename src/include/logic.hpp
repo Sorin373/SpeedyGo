@@ -1841,8 +1841,6 @@ void pagina_stanga_TSP(void)
                         cout << date_oras->denumire_oras;
 
                         resetText();
-
-                        cout << " --> ";
 #elif __linux__
                         cout << "\033[4m"
                              << "\033[1m" << date_oras->denumire_oras << "\033[0m"
@@ -1998,8 +1996,6 @@ void pagina_dreapta_TSP(void)
                         cout << date_oras->denumire_oras;
 
                         resetText();
-
-                        cout << " --> ";
 #elif __linux__
                         cout << "\033[4m"
                              << "\033[1m" << date_oras->denumire_oras << "\033[0m"
@@ -2273,7 +2269,6 @@ void parcurgere_traseu_TSP(void)
                 break;
 
             default:
-                pagina_finala_TSP();
                 break;
             }
         } while (MENIU != 0 && traseu_completat == false);

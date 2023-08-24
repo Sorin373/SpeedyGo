@@ -24,6 +24,7 @@
 #define STRCASECMP _stricmp
 #elif __linux__
 #define STRCASECMP strcasecmp
+#include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
 #include <mysql_connection.h>
