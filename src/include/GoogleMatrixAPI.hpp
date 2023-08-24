@@ -4,13 +4,14 @@
 
 #include "declarations.hpp"
 
-using namespace std;
-using namespace nlohmann;
+using std::cout;
+using std::cin;
+using std::string;
 
 #pragma region GOOGLE_DISTANCE_MATRIX_API
 string _GET_API_KEY_(const string &config_file_path)
 {
-    ifstream config_file(config_file_path);
+    std::ifstream config_file(config_file_path);
     if (!config_file.is_open())
     {
         cerr << "-> Eroare: " << config_file_path << "\n";
@@ -21,7 +22,7 @@ string _GET_API_KEY_(const string &config_file_path)
              << setw(5) << " "
              << "-> File found!\n";
 
-    json config_data;
+    nlohmann::json config_data;
     config_file >> config_data;
 
     string API_KEY = config_data["API_KEY"];
@@ -102,9 +103,9 @@ bool _GPS_UPDATE_DATA_(void)
 
         use_API = true;
 
-        unordered_map<string, double> distante_orase;
+        std::unordered_map<string, double> distante_orase;
 
-        ifstream legaturi("utils/legaturi.txt");
+        std::ifstream legaturi("utils/legaturi.txt");
 
         if (!legaturi.is_open())
         {
@@ -165,7 +166,7 @@ bool _GPS_UPDATE_DATA_(void)
                          << " " << long_oras2 << "\u00B0"
                          << "\n";
 
-                    json json_data = json::parse(response.body);
+                    nlohmann::json json_data = nlohmann::json::parse(response.body);
 
                     string status_str = json_data["status"];
                     char status[20];
@@ -211,17 +212,17 @@ bool _GPS_UPDATE_DATA_(void)
                     return EXIT_FAILURE;
                 }
 
-                json updated_data;
+                nlohmann::json updated_data;
 
-                for (unordered_map<string, double>::const_iterator i = distante_orase.begin(); i != distante_orase.end(); i++)
+                for (std::unordered_map<string, double>::const_iterator i = distante_orase.begin(); i != distante_orase.end(); i++)
                 {
-                    const pair<const string, double> &pair = *i;
+                    const std::pair<const string, double> &pair = *i;
                     const string &key = pair.first;
                     double value = pair.second;
                     updated_data[key] = value;
                 }
 
-                ofstream fout("utils/distante_orase.json");
+                std::ofstream fout("utils/distante_orase.json");
 
                 string json_string = updated_data.dump(4);
                 fout << json_string;
@@ -230,7 +231,7 @@ bool _GPS_UPDATE_DATA_(void)
 #ifdef _WIN32
                 changeText(FOREGROUND_GREEN);
                 cout << setw(5) << " "
-                     << "DONE!" << endl;
+                     << "DONE!\n";
                 resetText();
 #elif __linux__
                 cout << setw(5) << " "
