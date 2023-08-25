@@ -13,7 +13,12 @@ endif()
 find_package(CURL CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME} main.cpp)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    enable_language("RC")
+    set(WIN32_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assets/resource.rc)
+endif()
+
+add_executable(${PROJECT_NAME} main.cpp ${WIN32_RESOURCES})
 
 # Change the directory according to your preferences
 target_include_directories(${PROJECT_NAME} PRIVATE "C:/Program Files/MySQL/MySQL Connector C++ 8.1/include")
@@ -57,22 +62,61 @@ configure_file(${CMAKE_SOURCE_DIR}/utils/DLLs/libcrypto-3-x64.dll ${CMAKE_BINARY
 configure_file(${CMAKE_SOURCE_DIR}/utils/DLLs/libssl-3-x64.dll ${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/utils/DLLs/mysqlcppconn-9-vs14.dll ${CMAKE_BINARY_DIR}/Release/mysqlcppconn-9-vs14.dll COPYONLY)
 
+# Cpack installer configuration
 file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/Release/*.dll")
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include FILES_MATCHING PATTERN "*.hpp")
-install(FILES ${DLL_FILES} DESTINATION bin)
-install(FILES
-    "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll"
-    "${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll"
-    "${CMAKE_BINARY_DIR}/Release/mysqlcppconn-9-vs14.dll"
-    DESTINATION bin
-)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/utils/ DESTINATION bin/utils FILES_MATCHING PATTERN "*")
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/logs/ DESTINATION bin/logs FILES_MATCHING PATTERN "*")
+install(FILES ${CMAKE_SOURCE_DIR}/utils/contor_TSP_log.txt DESTINATION bin/utils)
+install(FILES ${CMAKE_SOURCE_DIR}/utils/distante_orase.json DESTINATION bin/utils)
+install(FILES ${CMAKE_SOURCE_DIR}/utils/legaturi.txt DESTINATION bin/utils)
+install(FILES ${DLL_FILES} DESTINATION bin)
+
+if(EXISTS "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll" AND
+   EXISTS "${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll" AND
+   EXISTS "${CMAKE_BINARY_DIR}/Release/mysqlcppconn-9-vs14.dll")
+   
+    install(FILES
+        "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll"
+        "${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll"
+        "${CMAKE_BINARY_DIR}/Release/mysqlcppconn-9-vs14.dll"
+        DESTINATION bin
+    )
+else()
+    message(FATAL_ERROR "One or more required DLL files are missing.")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/assets)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION bin/assets FILES_MATCHING PATTERN "*")
+else()
+    message(SEND_ERROR "Logo icon not found.")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/utils/config.json)
+    install(FILES ${CMAKE_SOURCE_DIR}/utils/config.json DESTINATION bin/utils)
+endif()
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE)
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(CPACK_GENERATOR "DEB;RPM;TGZ")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    # Using Nsis for Windows (https://sourceforge.net/projects/nsis/files/latest/download)
+    set(CPACK_GENERATOR "NSIS")
+    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+    set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
+    set(CPACK_NSIS_MUI_UNIICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
+    set(CPACK_NSIS_MUI_HEADERICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
+    set(CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
+    set(CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
+    set(CPACK_NSIS_MUI_FINISHPAGE_RUN "SpeedyGo.exe")
+    set(CPACK_NSIS_HELP_LINK "https://github.com/sorin373/SpeedyGo/blob/main/README.md")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/sorin373/SpeedyGo/tree/main")
+    set(CPACK_NSIS_CONTACT "sorin.andrei.tudose@gmail.com")
+endif()
+
 include(CPack)
