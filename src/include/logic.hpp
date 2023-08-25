@@ -4,21 +4,21 @@
 
 #include "declarations.hpp"
 
+using std::cerr;
 using std::cin;
 using std::cout;
-using std::cerr;
+using std::endl;
+using std::fixed;
+using std::setprecision;
+using std::setw;
+using std::stoi;
+using std::swap;
+using std::to_string;
 using std::ifstream;
+using std::numeric_limits;
 using std::ofstream;
 using std::string;
 using std::vector;
-using std::numeric_limits;
-using std::stoi;
-using std::setw;
-using std::setprecision;
-using std::to_string;
-using std::fixed;
-using std::swap;
-using std::endl;
 
 #pragma region UTILS
 int _strcasecmp_(const char *str1, const char *str2)
@@ -219,10 +219,6 @@ bool _init_(void)
 
 void nr_max_caractere_den(void)
 {
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-        if (strlen(date_produs->Denumire_Produs) > cmax_denumire_produse)
-            cmax_denumire_produse = strlen(date_produs->Denumire_Produs);
-
     for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
         if (strlen(date_oras->denumire_oras) > cmax_denumire_orase)
@@ -237,19 +233,13 @@ void nr_max_caractere_den(void)
 
         if (strlen(temp) > cmax_lat_oras)
             cmax_lat_oras = strlen(temp);
-    }
-
-    cmax_lat_oras += 3;
-
-    int temp = contor_noduri_graf;
-    while (temp)
-    {
-        temp /= 10;
-        cmax_ID_Oras++;
-    }
+    }    
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
+        if (strlen(date_produs->Denumire_Produs) > cmax_denumire_produse)
+            cmax_denumire_produse = strlen(date_produs->Denumire_Produs);
+
         if (strlen(date_produs->Categorie_Produs) > cmax_categorie_produse)
             cmax_categorie_produse = strlen(date_produs->Categorie_Produs);
 
@@ -269,6 +259,27 @@ void nr_max_caractere_den(void)
         free(pret);
     }
 
+    for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+    {
+        int cantitiate_temp = date_depozit->Cantitate_Produs, contor_cifre = 0;
+
+        while (cantitiate_temp > 0)
+        {
+            cantitiate_temp /= 10;
+            contor_cifre++;
+        }
+        if (contor_cifre > cmax_cantitate_produs)
+            cmax_cantitate_produs = contor_cifre;
+    }
+
+    int temp = contor_noduri_graf;
+    while (temp)
+    {
+        temp /= 10;
+        cmax_ID_Oras++;
+    }
+
+    cmax_lat_oras += 3;
     cmax_pret_produse += 3;
 }
 
@@ -517,9 +528,9 @@ void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
 
     cout << "\n\n"
          << setw(5) << " "
-         << "ID_Produs" << setw(5) << " "
+         << "ID_Produs" << setw(4) << " "
          << "Denumire_Produs" << setw(8) << " "
-         << "Nr.Produse\n";
+         << "Nr.Buc\n";
     underline(55, true);
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
@@ -531,25 +542,23 @@ void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
             if (ID_PRODUS_DEPOZIT == ID_PRODUS && ID_DEPOZIT == ID_Depozit)
             {
                 if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
-                    cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(11) << " " << date_produs->Denumire_Produs
-                         << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 3) << " " << date_depozit->Cantitate_Produs << " buc.\n";
+                    cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
+                         << " " << date_produs->Denumire_Produs
+                         << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 3) << " " << date_depozit->Cantitate_Produs 
+                         << setw(cmax_cantitate_produs - to_string(round(date_produs->pret_produs)).length() + 5) << " " << "buc.\n";
             }
         }
     }
 
     underline(55, true);
 
-    cout << "\n\n"
-         << setw(5) << " "
+    cout << setw(5) << " "
          << "Apasa 'ENTER' pentru a te intoarce...";
 }
 
 void depozite_conectate(int ID_Depozit)
 {
-    clear_screen();
-
-    cout << "\n\n";
-    underline(70, true);
+    cout << "\n";
 
     vector<bool> temp_depozite(contor_noduri_graf, false);
     ORAS::NOD_ORAS *date_oras = oras.getHead();
@@ -585,9 +594,7 @@ void depozite_conectate(int ID_Depozit)
             }
         }
 
-    underline(70, true);
-
-    cout << setw(5) << " "
+    cout << "\n" << setw(5) << " "
          << "Apasa 'ENTER' pentru a te intoarce...";
 
     free(t_denumire);
@@ -648,13 +655,13 @@ void vizualizare_status_stoc(void)
 {
     clear_screen();
 
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "┌───────────────────────┐\n";
-    cout << setw(6) << " "
-         << "Orase cu stocuri reduse\n";
-    cout << setw(5) << " "
-         << "└───────────────────────┘\n";
+    cout << "\n\n"
+         << setw(5) << " "
+         << "+-----------------------+\n"
+         << setw(6) << " "
+         << "Orase cu stocuri reduse\n"
+         << setw(5) << " "
+         << "+-----------------------+\n";
 
     underline(80, true);
 
@@ -683,10 +690,17 @@ void vizualizare_status_stoc(void)
     cout << "\n";
     underline(80, true);
 
+#ifdef _WIN32
+    changeText(FOREGROUND_INTENSITY);
+    cout << setw(5) << " "
+         << "Scrieti 'exit' pentru a iesi\n\n";
+    resetText();
+#elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
          << "Scrieti 'exit' pentru a iesi\n\n"
          << "\033[0m";
+#endif
 
     char *t_ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
     cout << setw(5) << " "
@@ -700,9 +714,10 @@ void vizualizare_status_stoc(void)
     }
     else
     {
-        int _ID_Oras = stoi(t_ID_Oras);
         free(t_ID_Oras);
+        int _ID_Oras = stoi(t_ID_Oras);
         date_oras = oras.getHead();
+
         while (date_oras != nullptr)
         {
             int t_ID = stoi(date_oras->ID_Oras);
@@ -714,12 +729,12 @@ void vizualizare_status_stoc(void)
                 {
                     clear_screen();
 
-                    cout << "\n\n";
-                    cout << setw(5) << " "
-                         << "┌────────────────────────────────────────────┐\n";
-                    cout << setw(7) << " " << date_oras->denumire_oras << " | Tip depozit: " << date_oras->tip_depozit << "\n";
-                    cout << setw(5) << " "
-                         << "└────────────────────────────────────────────┘\n";
+                    cout << "\n\n"
+                         << setw(5) << " "
+                         << "+--------------------------------------------+\n"
+                         << setw(7) << " " << date_oras->denumire_oras << " | Tip depozit: " << date_oras->tip_depozit << "\n"
+                         << setw(5) << " "
+                         << "+--------------------------------------------+\n";
 
                     underline(50, true);
 
@@ -1982,6 +1997,7 @@ void pagina_dreapta_TSP(void)
                  << "Lungime traseu: " << cost_minim_TSP << "km | "
                  << "Durata traseu: " << durata_minima_TSP << "min\n"
                  << setw(5) << " ";
+
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
                 for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -2303,7 +2319,7 @@ void afisare_detalii_SpeedyGo(void)
     while (res->next())
     {
         cout << setw(5) << " "
-             << "| " << setw(20) <<std:: left << res->getString(1) << " |" << endl;
+             << "| " << setw(20) << std::left << res->getString(1) << " |" << endl;
     }
 
     cout << std::right;

@@ -77,12 +77,12 @@ public:
         NOD_TRASEE_GPS *prev = nullptr;
         NOD_TRASEE_GPS *next = nullptr;
 
-        NOD_TRASEE_GPS(double vDistanta, int vDurata, char *vStart, char *vDestinatie)
+        NOD_TRASEE_GPS(double distanta, int durata, char *start, char *destinatie)
         {
-            this->distanta = vDistanta;
-            this->durata = vDurata;
-            this->start = strdup(vStart);
-            this->destinatie = strdup(vDestinatie);
+            this->distanta = distanta;
+            this->durata = durata;
+            this->start = strdup(start);
+            this->destinatie = strdup(destinatie);
             prev = nullptr;
             next = nullptr;
         }
@@ -108,9 +108,9 @@ public:
         return tail_gps;
     }
 
-    void introducere_date_trasee_gps(double vDistanta, int vDurata, char *vStart, char *vDestinatie)
+    void introducere_date_trasee_gps(double distanta, int durata, char *start, char *destinatie)
     {
-        NOD_TRASEE_GPS *newnod = new NOD_TRASEE_GPS(vDistanta, vDurata, vStart, vDestinatie);
+        NOD_TRASEE_GPS *newnod = new NOD_TRASEE_GPS(distanta, durata, start, destinatie);
 
         if (head_gps == nullptr)
         {
@@ -204,11 +204,11 @@ public:
         NOD_DEPOZIT *prev = nullptr;
         NOD_DEPOZIT *next = nullptr;
 
-        NOD_DEPOZIT(char *vID_Produs, char *vID_Oras, double vCantitate_Produs)
+        NOD_DEPOZIT(char *ID_Produs, char *ID_Oras, double Cantitate_Produs)
         {
-            this->ID_Produs = strdup(vID_Produs);
-            this->ID_Oras = strdup(vID_Oras);
-            this->Cantitate_Produs = vCantitate_Produs;
+            this->ID_Produs = strdup(ID_Produs);
+            this->ID_Oras = strdup(ID_Oras);
+            this->Cantitate_Produs = Cantitate_Produs;
             prev = nullptr;
             next = nullptr;
         }
@@ -234,9 +234,9 @@ public:
         return tail_depozit;
     }
 
-    void inserareDateDepozit(char *vID_Produs, char *vID_Oras, double vCantitate_Produs)
+    void inserareDateDepozit(char *ID_Produs, char *ID_Oras, double Cantitate_Produs)
     {
-        NOD_DEPOZIT *newnod = new NOD_DEPOZIT(vID_Produs, vID_Oras, vCantitate_Produs);
+        NOD_DEPOZIT *newnod = new NOD_DEPOZIT(ID_Produs, ID_Oras, Cantitate_Produs);
 
         if (head_depozit == nullptr)
         {
@@ -276,12 +276,12 @@ public:
         NOD_DETALII_PRODUS *next = nullptr;
         NOD_DETALII_PRODUS *prev = nullptr;
 
-        NOD_DETALII_PRODUS(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs)
+        NOD_DETALII_PRODUS(char *ID_Produs, char *Denumire_Produs, char *Categorie_Produs, double Pret_Produs)
         {
-            this->ID_Produs = strdup(vID_Produs);
-            this->Denumire_Produs = strdup(vDenumire_Produs);
-            this->Categorie_Produs = strdup(vCategorie_Produs);
-            this->pret_produs = vPret_Produs;
+            this->ID_Produs = strdup(ID_Produs);
+            this->Denumire_Produs = strdup(Denumire_Produs);
+            this->Categorie_Produs = strdup(Categorie_Produs);
+            this->pret_produs = Pret_Produs;
             next = nullptr;
             prev = nullptr;
         }
@@ -308,9 +308,9 @@ public:
         return tail_produs;
     }
 
-    void inserareDateProdus(char *vID_Produs, char *vDenumire_Produs, char *vCategorie_Produs, double vPret_Produs)
+    void inserareDateProdus(char *ID_Produs, char *Denumire_Produs, char *Categorie_Produs, double Pret_Produs)
     {
-        NOD_DETALII_PRODUS *newnod = new NOD_DETALII_PRODUS(vID_Produs, vDenumire_Produs, vCategorie_Produs, vPret_Produs);
+        NOD_DETALII_PRODUS *newnod = new NOD_DETALII_PRODUS(ID_Produs, Denumire_Produs, Categorie_Produs, Pret_Produs);
 
         if (head_produs == nullptr)
         {
@@ -351,13 +351,13 @@ public:
         NOD_ORAS *prev = nullptr;
         NOD_ORAS *next = nullptr;
 
-        NOD_ORAS(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine)
+        NOD_ORAS(char *ID_Oras, char *Denumire_Oras, char *Tip_Depozit, double Latitudine, double Longitudine)
         {
-            this->ID_Oras = strdup(vID_Oras);
-            this->denumire_oras = strdup(vDenumire_Oras);
-            this->tip_depozit = strdup(vTip_Depozit);
-            this->latitudine = vLatitudine;
-            this->longitudine = vLongitudine;
+            this->ID_Oras = strdup(ID_Oras);
+            this->denumire_oras = strdup(Denumire_Oras);
+            this->tip_depozit = strdup(Tip_Depozit);
+            this->latitudine = Latitudine;
+            this->longitudine = Longitudine;
             next = nullptr;
             prev = nullptr;
         }
@@ -384,9 +384,9 @@ public:
         return tail_oras;
     }
 
-    void insearareDateOrase(char *vID_Oras, char *vDenumire_Oras, char *vTip_Depozit, double vLatitudine, double vLongitudine)
+    void insearareDateOrase(char *ID_Oras, char *Denumire_Oras, char *Tip_Depozit, double Latitudine, double Longitudine)
     {
-        NOD_ORAS *newnod = new NOD_ORAS(vID_Oras, vDenumire_Oras, vTip_Depozit, vLatitudine, vLongitudine);
+        NOD_ORAS *newnod = new NOD_ORAS(ID_Oras, Denumire_Oras, Tip_Depozit, Latitudine, Longitudine);
 
         if (head_oras == nullptr)
         {
@@ -425,11 +425,11 @@ public:
         NOD_TRASEU *prev = nullptr;
         NOD_TRASEU *next = nullptr;
 
-        NOD_TRASEU(int vStart, int vDestinatie, double vDistanta, vector<int> &traseu)
+        NOD_TRASEU(int start, int destinatie, double distanta, vector<int> &traseu)
         {
-            this->start = vStart;
-            this->destinatie = vDestinatie;
-            this->distanta = vDistanta;
+            this->start = start;
+            this->destinatie = destinatie;
+            this->distanta = distanta;
             this->traseu.assign(traseu.begin(), traseu.end());
         }
 
@@ -453,9 +453,9 @@ public:
         return tail_traseu;
     }
 
-    void inserareDateTraseu(int vStart, int vDestinatie, double vDistanta, vector<int> &traseu)
+    void inserareDateTraseu(int start, int destinatie, double distanta, vector<int> &traseu)
     {
-        NOD_TRASEU *newnod = new NOD_TRASEU(vStart, vDestinatie, vDistanta, traseu);
+        NOD_TRASEU *newnod = new NOD_TRASEU(start, destinatie, distanta, traseu);
 
         if (head_traseu == nullptr)
         {
@@ -493,10 +493,10 @@ public:
         NOD_APROVIZIONARE *next = nullptr;
         NOD_APROVIZIONARE *prev = nullptr;
 
-        NOD_APROVIZIONARE(char *vID_Produs, int vCantitate_totala_necesara)
+        NOD_APROVIZIONARE(char *ID_Produs, int Cantitate_totala_necesara)
         {
-            this->ID_Produs = strdup(vID_Produs);
-            this->cantitate_totala_necesara = vCantitate_totala_necesara;
+            this->ID_Produs = strdup(ID_Produs);
+            this->cantitate_totala_necesara = Cantitate_totala_necesara;
             this->next = nullptr;
             this->prev = nullptr;
         }
@@ -521,9 +521,9 @@ public:
         return tail_aprovizionare;
     }
 
-    void inserareDateAprovizionare(char *vID_Produs, int vCantitate_totala_necesara)
+    void inserareDateAprovizionare(char *ID_Produs, int Cantitate_totala_necesara)
     {
-        NOD_APROVIZIONARE *newnod = new NOD_APROVIZIONARE(vID_Produs, vCantitate_totala_necesara);
+        NOD_APROVIZIONARE *newnod = new NOD_APROVIZIONARE(ID_Produs, Cantitate_totala_necesara);
 
         if (head_aprovizionare == nullptr)
         {
@@ -586,7 +586,7 @@ double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa,
        cost_aprovizionare_total, cantitate_totala_aprovizionata;
 
 int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse, cmax_ID_Oras, cmax_lat_oras,
-    cmax_ID_produs;
+    cmax_ID_produs, cmax_cantitate_produs;
 
 char *denumire_depozit_nou = (char *)malloc(MAXL * sizeof(char) + 1);
 

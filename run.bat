@@ -2,6 +2,6 @@
 
 echo Running SpeedyGo
 cd build/Release
-start "" main.exe
+start "" SpeedyGo.exe
 
 cd C:\Users\Sorin\Documents\GitHub\SpeedyGo\

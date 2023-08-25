@@ -17,10 +17,16 @@ bool start(void)
 #endif
 
     if (autentificare_cont(0) == EXIT_FAILURE)
+    {
+        cerr << "\n" << setw(5) << " " << "-- Authentication process did not complete!\n";
         return EXIT_FAILURE;
+    }
     else if (_init_() == EXIT_FAILURE)
+    {
+        cerr << setw(5) << " " << "-- Application initialisation process did not complete!\n";
         return EXIT_FAILURE;
-
+    }
+        
     sortare_date_depozit();
     sortare_date_oras(1);
     sortare_date_produs(1);
@@ -53,6 +59,7 @@ int main(int argc, char **argv)
 {
     if (start() == EXIT_FAILURE)
     {
+        cerr << setw(5) << "-- Can not start the application!\n";
         free_memory();
         return EXIT_FAILURE;
     }
