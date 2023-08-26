@@ -191,11 +191,11 @@ bool update_database(void)
     {
         cerr << "\n"
              << setw(5) << " "
-             << "Error code: " << e.getErrorCode() << endl;
+             << "-- Error code: " << e.getErrorCode() << endl;
         cerr << setw(5) << " "
-             << "Error message: " << e.what() << endl;
+             << "-- Error message: " << e.what() << endl;
         cerr << setw(5) << " "
-             << "SQLState: " << e.getSQLState() << endl;
+             << "-- SQLState: " << e.getSQLState() << endl;
 
         return EXIT_FAILURE;
     }

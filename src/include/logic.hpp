@@ -9,15 +9,15 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::fixed;
-using std::setprecision;
-using std::setw;
-using std::stoi;
-using std::swap;
-using std::to_string;
 using std::ifstream;
 using std::numeric_limits;
 using std::ofstream;
+using std::setprecision;
+using std::setw;
+using std::stoi;
 using std::string;
+using std::swap;
+using std::to_string;
 using std::vector;
 
 #pragma region UTILS
@@ -96,7 +96,7 @@ void sleepcp(const int ms)
 }
 #pragma endregion
 
-bool autentificare_cont(int contor_greseli)
+bool autentificare_cont()
 {
     clear_screen();
 
@@ -105,41 +105,23 @@ bool autentificare_cont(int contor_greseli)
          *_DB = (char *)malloc(MAXL * sizeof(char) + 1),
          *_P = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    if (contor_greseli == 3)
-    {
-        AUTENTIFICARE::cleanup();
-        contor_greseli = 0;
-    }
-    else if (contor_greseli != 0)
-    {
-        strcpy(_HN, AUTENTIFICARE::get_nod()->host_name);
-        strcpy(_UN, AUTENTIFICARE::get_nod()->username);
-        AUTENTIFICARE::cleanup();
-    }
-
     cout << "\n\n"
          << setw(10) << " "
-         << "CONEXIUNE LA BAZA DE DATE   -" << contor_greseli << "-\n"
+         << "CONEXIUNE LA BAZA DE DATE\n"
          << setw(4) << " "
          << "======================================\n"
          << setw(5) << " "
          << "Hostname: ";
-
-    if (contor_greseli == 0)
-        cin >> _HN;
-    else
-        cout << _HN << "\n";
+    cin >> _HN;
 
     cout << setw(5) << " "
          << "Username: ";
+    cin >> _UN;
 
-    if (contor_greseli == 0)
-        cin >> _UN;
-    else
-        cout << _UN << "\n";
     cout << setw(5) << " "
          << "Password: ";
     cin >> _P;
+
     cout << setw(5) << " "
          << "Database name: ";
     cin >> _DB;
@@ -159,7 +141,7 @@ bool autentificare_cont(int contor_greseli)
         free(_UN);
         free(_P);
         free(_DB);
-        return autentificare_cont(contor_greseli + 1);
+        return autentificare_cont();
     }
 
     free(_HN);
@@ -167,15 +149,25 @@ bool autentificare_cont(int contor_greseli)
     free(_P);
     free(_DB);
 
-    if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
-        if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
-            return EXIT_FAILURE;
-
     return EXIT_SUCCESS;
 }
 
 bool _init_(void)
 {
+    if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
+    {
+        cout << "\n" << setw(5) << " " << "-- Initialization of the Google API service could not be completed!\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        
+        if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
+        {
+            cout << setw(5) << " " << "-- Manual calculation using the Haversine formula was unsuccessful during initialization!\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            return EXIT_FAILURE;
+        }
+    }
+
     for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
     {
         char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
@@ -233,7 +225,7 @@ void nr_max_caractere_den(void)
 
         if (strlen(temp) > cmax_lat_oras)
             cmax_lat_oras = strlen(temp);
-    }    
+    }
 
     for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
@@ -544,8 +536,9 @@ void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
                 if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
                     cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
                          << " " << date_produs->Denumire_Produs
-                         << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 3) << " " << date_depozit->Cantitate_Produs 
-                         << setw(cmax_cantitate_produs - to_string(round(date_produs->pret_produs)).length() + 5) << " " << "buc.\n";
+                         << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 3) << " " << date_depozit->Cantitate_Produs
+                         << setw(cmax_cantitate_produs - to_string(round(date_produs->pret_produs)).length() + 5) << " "
+                         << "buc.\n";
             }
         }
     }
@@ -594,7 +587,8 @@ void depozite_conectate(int ID_Depozit)
             }
         }
 
-    cout << "\n" << setw(5) << " "
+    cout << "\n"
+         << setw(5) << " "
          << "Apasa 'ENTER' pentru a te intoarce...";
 
     free(t_denumire);

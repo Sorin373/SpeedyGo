@@ -4,6 +4,7 @@
 #include "include/GoogleMatrixAPI.hpp"
 #include "include/haversine.hpp"
 
+using std::cerr;
 using std::cin;
 using std::cout;
 using std::endl;
@@ -16,27 +17,75 @@ bool start(void)
     originalAttributes = csbi.wAttributes;
 #endif
 
-    if (autentificare_cont(0) == EXIT_FAILURE)
+    if (autentificare_cont() == EXIT_FAILURE)
     {
-        cerr << "\n" << setw(5) << " " << "-- Authentication process did not complete!\n";
+        cerr << "\n"
+             << setw(5) << " "
+             << "-- Authentication process did not complete!\n";
         return EXIT_FAILURE;
     }
-    else if (_init_() == EXIT_FAILURE)
+    else
     {
-        cerr << setw(5) << " " << "-- Application initialisation process did not complete!\n";
+        cout << setw(5) << " "
+             << "-- Authentication successful!\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+
+    if (_init_() == EXIT_FAILURE)
+    {
+        cerr << setw(5) << " "
+             << "-- Application initialisation process did not complete!\n";
         return EXIT_FAILURE;
     }
-        
+    else
+    {
+        cout << setw(5) << " "
+             << "-- All the necessary files were initialized without encountering any errors!\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+
+    cout << "\n"
+         << setw(5) << " "
+         << "-- Starting application configuration...\n\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     sortare_date_depozit();
+    cout << setw(6) << " "
+         << "--> Data sort complete (1)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     sortare_date_oras(1);
+    cout << setw(6) << " "
+         << "--> Data sort comeplete (2)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     sortare_date_produs(1);
+    cout << setw(6) << " "
+         << "--> Data sort complete (3)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     determinare_tip_depozit();
+    cout << setw(6) << " "
+         << "--> Data configuration complete (1)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     cautare_orase_stoc_limitat();
+    cout << setw(6) << " "
+         << "--> Data configuration complete (2)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     cautare_orase_izolate();
+    cout << setw(6) << " "
+         << "--> Data configuration complete (3)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     produse_transport_TSP();
+    cout << setw(6) << " "
+         << "--> Data configuration complete (4)\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     nr_max_caractere_den();
+    cout << setw(6) << " "
+         << "--> Data configuration complete (5)\n";
 
     traseu_minim_TSP[1] = -1;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    cout << "\n"
+         << setw(5) << " "
+         << "-- Application configuration completed without encountering any errors!\n";
 
     return EXIT_SUCCESS;
 }
@@ -62,6 +111,14 @@ int main(int argc, char **argv)
         cerr << setw(5) << "-- Can not start the application!\n";
         free_memory();
         return EXIT_FAILURE;
+    }
+    else
+    {
+        cout << setw(5) << " "
+             << "-- Application configuration completed with no errors!\n\n"
+             << setw(5) << " "
+             << "Press 'ENTER' to continue...";
+        _getch();
     }
 
     unsigned int MENIU;

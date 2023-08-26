@@ -12,6 +12,8 @@
 #include <string.h>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
+#include <thread>
+#include <chrono>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
@@ -165,7 +167,7 @@ private:
         }
     };
 
-    static NOD_AUTENTIFICARE *data;
+    static  NOD_AUTENTIFICARE *data;
 
 public:
     static void introducere_date(char *vHost_name, char *vUsername, char *vParola, char *vDB)

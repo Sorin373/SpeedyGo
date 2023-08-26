@@ -18,7 +18,17 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(WIN32_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assets/resource.rc)
 endif()
 
-add_executable(${PROJECT_NAME} main.cpp ${WIN32_RESOURCES})
+include_directories(include)
+
+add_executable(${PROJECT_NAME} 
+    main.cpp 
+    ${WIN32_RESOURCES}
+    "include/database.hpp"
+    "include/declarations.hpp"
+    "include/GoogleMatrixAPI.hpp"
+    "include/haversine.hpp"
+    "include/logic.hpp"
+)
 
 # Change the directory according to your preferences
 target_include_directories(${PROJECT_NAME} PRIVATE "C:/Program Files/MySQL/MySQL Connector C++ 8.1/include")
