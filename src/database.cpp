@@ -1,15 +1,31 @@
-#pragma once
-#ifndef DATABASE
-#define DATABASE
-
-#include "declarations.hpp"
-#include "logic.hpp"
+#include "../include/database.hpp"
+#include "../include/declarations.hpp"
+#include "../include/logic.hpp"
+#include "../include/haversine.hpp"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <iomanip>
+#include <jdbc/mysql_connection.h>
+#include <jdbc/mysql_driver.h>
+#include <jdbc/mysql_error.h>
+#include <jdbc/cppconn/prepared_statement.h>
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
 
 using std::cout;
 using std::cin;
+using std::cerr;
 using std::endl;
+using std::setw;
+using std::to_string;
+using std::stoi;
 using std::ifstream;
 using std::ofstream;
+using std::string;
+
+sql::Driver *driver;
+sql::Connection *con;
 
 bool accesareDate(void)
 {
@@ -276,7 +292,6 @@ bool adaugare_depozit(void)
             cout << "\n"
                  << setw(5) << " "
                  << "Start...\n";
-            sleepcp(1000);
 
             sql::Statement *stmt = nullptr;
 
@@ -290,7 +305,6 @@ bool adaugare_depozit(void)
 
             cout << setw(5) << " "
                  << "Success...\n";
-            sleepcp(1000);
 
             return EXIT_SUCCESS;
         }
@@ -338,7 +352,6 @@ bool stergere_depozit(void)
         cout << "\n"
              << setw(5) << " "
              << "Start...\n";
-        sleepcp(1000);
 
         sql::Statement *stmt = nullptr;
 
@@ -352,7 +365,7 @@ bool stergere_depozit(void)
 
         cout << setw(5) << " "
              << "Success...\n";
-        sleepcp(1000);
+
 
         return EXIT_SUCCESS;
     }
@@ -529,5 +542,3 @@ bool SQL_Data_Update(const int input)
     return EXIT_SUCCESS;
 }
 #pragma endregion
-
-#endif

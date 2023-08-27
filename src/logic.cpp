@@ -1,102 +1,41 @@
-#pragma once
-#ifndef LOGIC
-#define LOGIC
-
-#include "declarations.hpp"
+#include "../include/logic.hpp"
+#include "../include/declarations.hpp"
+#include "../include/database.hpp"
+#include "../include/GoogleMatrixAPI.hpp"
+#include "../include/haversine.hpp"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <thread>
+#include <chrono>
+#include <iomanip>
+#include <vector>
+#include <windows.h>
+#include <conio.h>
+#include <jdbc/mysql_connection.h>
+#include <jdbc/mysql_driver.h>
+#include <jdbc/mysql_error.h>
+#include <jdbc/cppconn/prepared_statement.h>
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
 
 using std::cerr;
 using std::cin;
 using std::cout;
 using std::endl;
 using std::fixed;
-using std::ifstream;
-using std::numeric_limits;
-using std::ofstream;
 using std::setprecision;
 using std::setw;
 using std::stoi;
-using std::string;
 using std::swap;
 using std::to_string;
+using std::ifstream;
+using std::numeric_limits;
+using std::ofstream;
+using std::string;
 using std::vector;
 
-#pragma region UTILS
-int _strcasecmp_(const char *str1, const char *str2)
-{
-    return STRCASECMP(str1, str2);
-}
-
-void underline(const unsigned int vWidth, const bool bSetw)
-{
-    if (bSetw)
-        cout << setw(5 - 2) << " ";
-    char fillLine;
-    fillLine = cout.fill('_');
-    cout.width(vWidth);
-    cout << '_' << "\n";
-    cout.fill(fillLine);
-    cout << "\n";
-}
-
-#ifdef _WIN32
-void changeText(WORD attributes)
-{
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    GetConsoleScreenBufferInfo(hConsole, &csbi);
-    SetConsoleTextAttribute(hConsole, attributes);
-}
-
-void resetText()
-{
-    SetConsoleTextAttribute(hConsole, originalAttributes);
-}
-#endif
-
-#ifdef __linux__
-char _getch(void)
-{
-    char buf = 0;
-    struct termios old = {0};
-    fflush(stdout);
-    if (tcgetattr(0, &old) < 0)
-        perror("tcsetattr()");
-    old.c_lflag &= ~ICANON;
-    old.c_lflag &= ~ECHO;
-    old.c_cc[VMIN] = 1;
-    old.c_cc[VTIME] = 0;
-    if (tcsetattr(0, TCSANOW, &old) < 0)
-        perror("tcsetattr ICANON");
-    if (read(0, &buf, 1) < 0)
-        perror("read()");
-    old.c_lflag |= ICANON;
-    old.c_lflag |= ECHO;
-    if (tcsetattr(0, TCSADRAIN, &old) < 0)
-        perror("tcsetattr ~ICANON");
-    printf("%c\n", buf);
-    return buf;
-}
-#endif
-
-void clear_screen(void)
-{
-#ifdef _WIN32
-    system("CLS");
-#elif __linux__
-    system("clear");
-#endif
-}
-
-void sleepcp(const int ms)
-{
-#ifdef _WIN32
-    Sleep(ms);
-#elif __linux__
-    usleep(ms * 1000);
-#endif
-}
-#pragma endregion
-
-bool autentificare_cont()
+bool autentificare_cont(void)
 {
     clear_screen();
 
@@ -3219,5 +3158,3 @@ void cautare_produs_denumire(void)
         cautare_produs_denumire();
     }
 }
-
-#endif

@@ -3,7 +3,7 @@
         "-DCMAKE_TOOLCHAIN_FILE=C:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
         "-DVCPKG_TARGET_TRIPLET=x64-windows"
     ],
-    "cmake.sourceDirectory": "C:/Users/Sorin/Documents/GitHub/SpeedyGo/src",
+    "cmake.sourceDirectory": "C:/Users/Sorin/Documents/GitHub/SpeedyGo",
     "files.associations": {
         "*.json": "jsonc",
         "iomanip": "cpp",

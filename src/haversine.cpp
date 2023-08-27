@@ -1,8 +1,9 @@
-#pragma once
-#ifndef HAVERSINE
-#define HAVERSINE
+#include "../include/haversine.hpp"
+#include "../include/declarations.hpp"
+#include <fstream>
+#include <string>
 
-#include "declarations.hpp"
+using std::stoi;
 
 double toRadians(const double degrees)
 {
@@ -66,5 +67,3 @@ bool load_data(const char *path)
 
     return EXIT_SUCCESS;
 }
-
-#endif

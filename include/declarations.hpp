@@ -2,41 +2,20 @@
 #ifndef DECLARATIONS
 #define DECLARATIONS
 
-#pragma region libraries
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <vector>
-#include <unordered_map>
 #include <limits.h>
-#include <string.h>
-#include <nlohmann/json.hpp>
-#include <curl/curl.h>
+#include <vector>
 #include <thread>
 #include <chrono>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
-#include <jdbc/mysql_connection.h>
-#include <jdbc/mysql_driver.h>
-#include <jdbc/mysql_error.h>
-#include <jdbc/cppconn/prepared_statement.h>
-#include <jdbc/cppconn/resultset.h>
-#include <jdbc/cppconn/statement.h>
 #define STRCASECMP _stricmp
 #elif __linux__
 #define STRCASECMP strcasecmp
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
-#include <mysql_connection.h>
-#include <mysql_driver.h>
-#include <mysql_error.h>
-#include <cppconn/prepared_statement.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
 #endif
-#pragma endregion
 
 #define M_PI 3.14159265358979323846
 #define MAX_SIZE 32
@@ -45,25 +24,17 @@
 #define VAL_STOC_MAXIM 50
 #define EARTH_RADIUS_KM 6371.0
 
-using std::string;
 using std::vector;
-
-sql::Driver *driver = nullptr;
-sql::Connection *con = nullptr;
 
 constexpr int N = 1001;
 
-struct HTTP_RESPONSE
-{
-    string body;
-    long status_cod;
-};
-
-typedef struct GRAF
+struct GRAF
 {
     double distanta;
     int durata;
-} GRAF_NEORIENTAT;
+};
+
+using GRAF_NEORIENTAT = GRAF;
 
 #pragma region classes
 
@@ -167,7 +138,7 @@ private:
         }
     };
 
-    static  NOD_AUTENTIFICARE *data;
+    static NOD_AUTENTIFICARE *data;
 
 public:
     static void introducere_date(char *vHost_name, char *vUsername, char *vParola, char *vDB)
@@ -554,212 +525,51 @@ public:
 };
 #pragma endregion
 
-AUTENTIFICARE::NOD_AUTENTIFICARE *AUTENTIFICARE::data = nullptr;
-
-TRASEE_GPS trasee_gps;
-DEPOZIT depozit;
-ORAS oras;
-DETALII_PRODUS produs;
-TRASEU _traseu;
-APROVIZIONARE aprovizionare;
+extern TRASEE_GPS trasee_gps;
+extern DEPOZIT depozit;
+extern ORAS oras;
+extern DETALII_PRODUS produs;
+extern TRASEU _traseu;
+extern APROVIZIONARE aprovizionare;
 
 #ifdef _WIN32
-HANDLE hConsole;
-CONSOLE_SCREEN_BUFFER_INFO csbi;
-WORD originalAttributes;
+extern HANDLE hConsole;
+extern CONSOLE_SCREEN_BUFFER_INFO csbi;
+extern WORD originalAttributes;
 #endif
 
-vector<vector<GRAF_NEORIENTAT>> matrice_drum(N, vector<GRAF_NEORIENTAT>(N, {0.0, 0})); // matricea de adiacenta ce contine distantele dintre noduri
-vector<bool> depozite_centralizate(N, false);                                          // stocare ID depozite centralizate
-vector<bool> orase_stoc_limitat(matrice_drum.size(), false);                           // stocare ID depozite cu stoc limitat
-vector<bool> orase_izolate(matrice_drum.size(), false);                                // stocare ID depozite izolate
-vector<bool> orase_conexiune_unica(matrice_drum.size(), false);                        // stocare ID depozite o conexiune unica cu graful
-vector<int> stiva(matrice_drum.size() * matrice_drum.size());                          // stiva utilizata in algoritmii de backtracking pt. det. traseului optim
-vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);     // stocarea traseului optim TSP (travel salesman problem)
+extern vector<vector<GRAF_NEORIENTAT>> matrice_drum;
+extern vector<bool> depozite_centralizate;
+extern vector<bool> orase_stoc_limitat;
+extern vector<bool> orase_izolate;
+extern vector<bool> orase_conexiune_unica;
+extern vector<int> stiva;
+extern vector<int> traseu_minim_TSP;
 
-long long unsigned int contor_log;
-int contor_noduri_graf;
+extern long long unsigned int contor_log;
 
-int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat,
-                                                 contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase;
+extern int contor_noduri_graf, nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse, contor_orase_stoc_limitat,
+    contor_stiva, contor_traseu_TSP, pagina, contor_orase;
 
-bool trasee = false, traseu_completat = false, buffer = true, use_API = false;
-double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa,
-       cost_aprovizionare_total, cantitate_totala_aprovizionata;
+extern bool trasee, traseu_completat, buffer, use_API;
 
-int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse, cmax_ID_Oras, cmax_lat_oras,
+extern double cost_minim_TSP, durata_minima_TSP, distanta_parcursa, durata_parcursa,
+    cost_aprovizionare_total, cantitate_totala_aprovizionata;
+
+extern int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse, cmax_ID_Oras, cmax_lat_oras,
     cmax_ID_produs, cmax_cantitate_produs;
 
-char *denumire_depozit_nou = (char *)malloc(MAXL * sizeof(char) + 1);
+extern char *denumire_depozit_nou;
 
-#pragma region utils
-#ifdef __linux__
-char _getch(void);
-#elif _WIN32
+extern int _strcasecmp_(const char *str1, const char *str2);
+extern void underline(const unsigned int vWidth, const bool bSetw);
+#ifdef _WIN32
 void changeText(WORD attributes);
-
-void resetText();
+extern void resetText();
 #endif
-
-int _strcasecmp_(const char *str1, const char *str2);
-
-void clear_screen(void);
-
-void sleepcp(const int ms);
-
-void underline(const unsigned int vWidth, const bool bSetw);
-#pragma endregion
-
-#pragma region GOOGLE_DISTANCE_MATRIX_API
-string _GET_API_KEY_(const string &config_file_path);
-
-size_t _response_data_(void *content, size_t element_size, size_t elements, string *buffer);
-
-HTTP_RESPONSE _http_request_(const string &url);
-
-bool _GPS_UPDATE_DATA_(void);
-#pragma endregion
-
-#pragma region Haversine_Formula
-bool load_data(const char *path);
-
-double calculare_distante(const double lat_1, const double long_1, const double lat_2, const double long_2);
-
-double toRadians(const double degrees);
-#pragma endregion
-
-#pragma region INIT
-bool start(void);
-
-bool autentificare_cont(int contor_greseli);
-
-bool _init_(void);
-#pragma endregion
-
-#pragma region SQL
-bool accesareDate(void);
-
-bool update_database(void);
-
-bool adaugare_depozit(void);
-
-bool stergere_depozit(void);
-
-bool SQL_Data_Update(const int input);
-#pragma endregion
-
-#pragma region Afisare_Date
-void afisare_date_tabel_depozit(void);
-
-void afisare_date_tabel_produs(void);
-
-void afisare_date_tabel_oras(void);
-#pragma endregion
-
-void vizualizare_status_stoc(void);
-
-#pragma region DIJKSTRA
-void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee);
-
-void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima);
-
-void sistem_aprovizionare_independent(void);
-
-void afisare_trasee_optime(const int _ID, const int vStart);
-
-void afisare_optiuni_trasee_optime(const int vStart);
-
-void afisare_depozite_centralizare(void);
-#pragma endregion
-
-#pragma region SORT
-void sortare_date_depozit(void);
-
-void sortare_date_produs(const int tip_sortare);
-
-void sortare_date_oras(const int tip_sortare);
-#pragma endregion
-
-void nr_max_caractere_den(void);
-
-bool verificare_orase_stoc_limitat(void);
-
-void cautare_produse_ID_stoc_limitat(const int ID_Depozit);
-
-void depozite_conectate(const int ID_Depozit);
-
-void determinare_tip_depozit(void);
-
-void cautare_orase_stoc_limitat(void);
-
-void cautare_orase_izolate(void);
-
-void afisare_depozite_izolate(void);
-
-void afisare_depozite_unic_drum(void);
-
-#pragma region Backtracking
-void init_stiva_hc(void);
-
-bool succesor_hc(void);
-
-bool solutie_hc(void);
-
-bool valid_hc(void);
-
-void determinare_ciclu_hc_minim(void);
-
-void back_hc(void);
-
-void init_stiva_ac(void);
-
-bool succesor_ac(void);
-
-bool solutie_ac(void);
-
-bool valid_ac(void);
-
-void determinare_traseu_minim(void);
-
-void back_ac(void);
-#pragma endregion
-
-#pragma region TSP
-void TSP(void);
-
-void produse_transport_TSP(void);
-
-void pagina_principala_TSP(void);
-
-void pagina_stanga_TSP(void);
-
-void pagina_dreapta_TSP(void);
-
-void pagina_finala_TSP(void);
-
-void parcurgere_traseu_TSP(void);
-#pragma endregion
-
-void afisare_detalii_SpeedyGo(void);
-
-void consola_mysql(void);
-
-void sortare_tip_depozit(void);
-
-void sortare_depozit_alfabetic(const int tip_sortare);
-
-void cautare_oras_ID(void);
-
-void sortare_categorie_produs(void);
-
-void sortare_produs_alfabetic(const int tip_sortare);
-
-void cautare_produs_ID(void);
-
-void cautare_produs_denumire(void);
-
-void free_memory(void);
-
-void legaturi_graf(void);
+#ifdef __linux__
+extern char _getch(void);
+#endif
+extern void clear_screen(void);
 
 #endif

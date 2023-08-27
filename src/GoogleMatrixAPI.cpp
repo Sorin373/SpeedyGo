@@ -1,11 +1,21 @@
-#pragma once
-#ifndef GOOGLE_MATRIX_API
-#define GOOGLE_MATRIX_API
-
-#include "declarations.hpp"
+#include "../include/GoogleMatrixAPI.hpp"
+#include "../include/declarations.hpp"
+#include <iostream>
+#include <string.h>
+#include <fstream>
+#include <iomanip>
+#include <unordered_map>
+#include <nlohmann/json.hpp>
+#include <curl/curl.h>
 
 using std::cout;
 using std::cin;
+using std::cerr;
+using std::setw;
+using std::to_string;
+using std::stoi;
+using std::ifstream;
+using std::ofstream;
 using std::string;
 
 #pragma region GOOGLE_DISTANCE_MATRIX_API
@@ -30,7 +40,7 @@ string _GET_API_KEY_(const string &config_file_path)
     return API_KEY;
 }
 
-size_t _response_data_(void *content, size_t element_size, size_t elements, string *buffer)
+size_t _response_data_(void *content, size_t element_size, size_t elements, std::string *buffer)
 {
     size_t total_size = element_size * elements;
     buffer->append(static_cast<char *>(content), total_size);
@@ -250,5 +260,3 @@ bool _GPS_UPDATE_DATA_(void)
     }
     return EXIT_SUCCESS;
 }
-
-#endif
