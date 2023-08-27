@@ -27,7 +27,14 @@ endif()
 
 include_directories(include)
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
+    "src/classes/aprovizionare.cpp"
+    "src/classes/autentificare.cpp"
+    "src/classes/depozit.cpp"
+    "src/classes/detalii_produs.cpp"
+    "src/classes/oras.cpp"
+    "src/classes/trasee_gps.cpp"
+    "src/classes/traseu.cpp"
     "src/main.cpp" 
     "src/declarations.cpp"
     "src/logic.cpp"
@@ -82,11 +89,10 @@ configure_file(${CMAKE_SOURCE_DIR}/src/utils/DLLs/mysqlcppconn-9-vs14.dll ${CMAK
 # Cpack installer configuration
 file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/Release/*.dll")
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-# install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/logs/ DESTINATION bin/logs FILES_MATCHING PATTERN "*")
-install(FILES ${CMAKE_SOURCE_DIR}/utils/contor_TSP_log.txt DESTINATION bin/utils)
-install(FILES ${CMAKE_SOURCE_DIR}/utils/distante_orase.json DESTINATION bin/utils)
-install(FILES ${CMAKE_SOURCE_DIR}/utils/legaturi.txt DESTINATION bin/utils)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/logs/ DESTINATION bin/logs FILES_MATCHING PATTERN "*")
+install(FILES ${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt DESTINATION bin/utils)
+install(FILES ${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json DESTINATION bin/utils)
+install(FILES ${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt DESTINATION bin/utils)
 install(FILES ${DLL_FILES} DESTINATION bin)
 
 if(EXISTS "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll" AND
@@ -109,8 +115,8 @@ else()
     message(SEND_ERROR "Logo icon not found.")
 endif()
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/utils/config.json)
-    install(FILES ${CMAKE_SOURCE_DIR}/utils/config.json DESTINATION bin/utils)
+if(EXISTS ${CMAKE_SOURCE_DIR}/src/utils/config.json)
+    install(FILES ${CMAKE_SOURCE_DIR}/src/utils/config.json DESTINATION bin/utils)
 endif()
 
 include(InstallRequiredSystemLibraries)

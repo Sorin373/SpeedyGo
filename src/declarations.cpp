@@ -6,8 +6,6 @@
 using std::cout;
 using std::setw;
 
-struct AUTENTIFICARE::NOD_AUTENTIFICARE* AUTENTIFICARE::data = nullptr;
-
 TRASEE_GPS trasee_gps;
 DEPOZIT depozit;
 ORAS oras;

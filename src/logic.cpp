@@ -549,6 +549,7 @@ void determinare_tip_depozit(void)
 
 void cautare_orase_stoc_limitat(void)
 {
+    contor_orase_stoc_limitat = 0;
     ORAS::NOD_ORAS *date_oras = oras.getHead();
     while (date_oras != nullptr)
     {
@@ -586,6 +587,15 @@ void cautare_orase_izolate(void)
 
 void vizualizare_status_stoc(void)
 {
+    cautare_orase_stoc_limitat();
+
+    if (contor_orase_stoc_limitat == 0)
+    {
+        cout << "\n" << setw(5) << " " << "Nu sunt depozite care necesita aprovizionare...";
+        _getch();
+        return;
+    }
+
     clear_screen();
 
     cout << "\n\n"
