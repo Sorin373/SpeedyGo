@@ -131,15 +131,20 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # Using Nsis for Windows (https://sourceforge.net/projects/nsis/files/latest/download)
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+    set(CPACK_NSIS_CREATE_ICONS_EXTRA
+        "CreateShortCut \\\"$DESKTOP\\\\SpeedyGo.lnk\\\" \\\"$INSTDIR\\\\bin\\\\SpeedyGo.exe\\\"\n"
+        "CreateShortCut \\\"$SMPROGRAMS\\\\$StartMenuFolder\\\\SpeedyGo.lnk\\\" \\\"$INSTDIR\\\\bin\\\\SpeedyGo.exe\\\"\n"
+    )
+    set(CPACK_NSIS_DELETE_ICONS_EXTRA
+        "Delete \\\"$DESKTOP\\\\SpeedyGo.lnk\\\"\n"
+        "Delete \\\"$SMPROGRAMS\\\\$StartMenuFolder\\\\SpeedyGo.lnk\\\"\n"
+    )
     set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
     set(CPACK_NSIS_MUI_UNIICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
     set(CPACK_NSIS_MUI_HEADERICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
     set(CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
     set(CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
     set(CPACK_NSIS_MUI_FINISHPAGE_RUN "SpeedyGo.exe")
-    set(CPACK_NSIS_HELP_LINK "https://github.com/sorin373/SpeedyGo/blob/main/README.md")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/sorin373/SpeedyGo/tree/main")
-    set(CPACK_NSIS_CONTACT "sorin.andrei.tudose@gmail.com")
 endif()
 
 include(CPack)
