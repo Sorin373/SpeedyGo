@@ -1,5 +1,5 @@
 Working on README :D
-<!-->
+<!--
 <p align="center">
   <img src="Others/LOGO.png" alt="Project Logo or Banner" width="200" height="200">
 </p>
@@ -354,7 +354,7 @@ double calculare_distante(const double lat_1, const double long_1, const double 
 ```
 
 # Distances
-Not only is the application able to generate the most efficient path between two points (eg. **Bucharest --> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
+Not only is the application able to generate the most efficient path between two points (eg. **Bucharest -> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
 
 ## Dijkstra's alghorithm
 1. This function takes a start node and two vectors (distanta and distanta_minima) as input. The distanta vector represents the distances from the start node to each node in the graph, while the distanta_minima vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the distanta vector and the shortest paths (previous nodes) in the distanta_minima vector.
