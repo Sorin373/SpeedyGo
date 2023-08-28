@@ -11,8 +11,14 @@ For my final project in computer science for grade 11, I was required to develop
     - [Debian](#debian)
 - [Features](#features)
     - [Graph](#graph)
+        - [Google Matrix API](#google-matrix-api)
+        - [The Haversine Formula](#the-haversine-formula)
     - [Distances](#distances)
+        - [Dijkstra's alghorithm](#dijkstras-alghorithm)
+        - [Backtracking](#backtracking)
 - [MySql](#mysql-service)
+    - [Database initialisation](#database-initialisation)
+    - [Create the required tables](#create-the-required-tables)
 - [Contact](#contact)
 
 # Installation
@@ -223,7 +229,7 @@ When I analyzed how to build this part of the program, 2 posible different situa
 
 In order to use the application you first need to create a local MySql database witch will house the necessary data (you can use either commands or the [MySql Workbench](https://dev.mysql.com/downloads/workbench/)).
 
-1. Database initialisation
+## Database initialisation
 
 - If you have recently installed MySQL, you can execute other MySQL commands using the default user, "root." Access the MySQL command line by entering:
 
@@ -257,7 +263,7 @@ mysql> GRANT ALL PRIVILEGES ON my_schema.* TO 'new_user'@'localhost';
 mysql> FLUSH PRIVILEGES;
 ```
 
-Login as the new user:
+- Login as the new user:
 
 ```sql
 $ mysql -u new_user -p
@@ -286,7 +292,7 @@ mysql> SELECT user, host FROM mysql.user;
 mysql> DROP USER 'my_user'@'localhost';
 ```
 
-2. Create the required tables
+## Create the required tables
 
 The tables have fixed structures and require specific predefined columns. However, you have the freedom to select the name of the table.
 
