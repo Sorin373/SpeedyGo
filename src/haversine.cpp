@@ -2,6 +2,8 @@
 #include "../include/declarations.hpp"
 #include <fstream>
 #include <string>
+#include <cmath>
+#include <cstring>
 
 using std::stoi;
 

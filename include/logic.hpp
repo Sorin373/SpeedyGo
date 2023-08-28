@@ -2,19 +2,8 @@
 #ifndef LOGIC
 #define LOGIC
 
-#include <windows.h>
 #include <vector>
 
-int _strcasecmp_(const char *str1, const char *str2);
-void underline(const unsigned int vWidth, const bool bSetw);
-#ifdef _WIN32
-void changeText(WORD attributes);
-void resetText();
-#endif
-#ifdef __linux__
-char _getch(void);
-#endif
-void clear_screen(void);
 extern bool autentificare_cont(void);
 extern bool _init_(void);
 extern void nr_max_caractere_den(void);

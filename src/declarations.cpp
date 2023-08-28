@@ -103,6 +103,6 @@ void clear_screen(void)
 #ifdef _WIN32
     system("CLS");
 #elif __linux__
-    system("clear");
+    if(system("clear")){};
 #endif
 }

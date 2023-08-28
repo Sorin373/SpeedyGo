@@ -13,6 +13,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <cstring>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
