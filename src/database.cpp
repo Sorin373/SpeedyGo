@@ -6,12 +6,6 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
-#include <jdbc/mysql_connection.h>
-#include <jdbc/mysql_driver.h>
-#include <jdbc/mysql_error.h>
-#include <jdbc/cppconn/prepared_statement.h>
-#include <jdbc/cppconn/resultset.h>
-#include <jdbc/cppconn/statement.h>
 
 using std::cout;
 using std::cin;
@@ -280,12 +274,12 @@ bool adaugare_depozit(void)
     underline(60, true);
 
     cout << setw(5) << " "
-         << "Pentru a finaliza tastati '1', iar '0' pentru a anulat: ";
+         << "Doriti sa finalizati? [Y]/[N] ";
     cin >> input;
 
-    if (_strcasecmp_(input, "0") == 0)
+    if (_strcasecmp_(input, "N") == 0)
         return EXIT_FAILURE;
-    else if (_strcasecmp_(input, "1") == 0)
+    else if (_strcasecmp_(input, "Y") == 0)
     {
         try
         {

@@ -8,34 +8,56 @@
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 
-using std::cout;
-using std::cin;
 using std::cerr;
-using std::setw;
-using std::to_string;
-using std::stoi;
+using std::cin;
+using std::cout;
 using std::ifstream;
 using std::ofstream;
+using std::setw;
+using std::stoi;
 using std::string;
+using std::to_string;
 
 #pragma region GOOGLE_DISTANCE_MATRIX_API
 string _GET_API_KEY_(const string &config_file_path)
 {
-    std::ifstream config_file(config_file_path);
+    ifstream config_file(config_file_path);
+    string API_KEY;
+
     if (!config_file.is_open())
     {
-        cerr << "-> Eroare: " << config_file_path << "\n";
-        return nullptr;
+        cerr << setw(6) << " "
+             << "--> Error: " << config_file_path << "\n"
+             << setw(5) << " "
+             << "Enter the API key ('N' to cancel): ";
+        cin.ignore(MAXL, '\n');
+        getline(cin, API_KEY);
+        cout << "\n";
+        if (API_KEY == "N")
+            return "";
+        else
+            return API_KEY;
     }
     else
-        cout << "\n"
-             << setw(5) << " "
-             << "-> File found!\n";
+        cout << setw(5) << " "
+             << "--> File found!\n";
 
     nlohmann::json config_data;
     config_file >> config_data;
 
-    string API_KEY = config_data["API_KEY"];
+    API_KEY = config_data["API_KEY"];
+    if (API_KEY.empty())
+    {
+        cerr << setw(5) << " "
+             << "--> API key not found.\n\n"
+             << setw(5) << " "
+             << "Enter the API key ('N' to cancel): ";
+        cin.ignore(MAXL, '\n');
+        getline(cin, API_KEY);
+        cout << "\n";
+        if (API_KEY == "N")
+            return "";
+    }
 
     return API_KEY;
 }
@@ -87,6 +109,7 @@ bool _GPS_UPDATE_DATA_(void)
              << "-- Doriti sa folositi serviciile Google pentru a calcula distantele intre orase? [Y]/[N]: ";
 
     cin >> input;
+    cout << "\n";
 
     if (_strcasecmp_(input, "N") == 0)
     {
@@ -99,14 +122,12 @@ bool _GPS_UPDATE_DATA_(void)
 
         if (API_KEY.empty())
         {
-            cerr << setw(5) << " "
-                 << "-> API key not found.\n\n"
+            cerr << setw(6) << " "
+                 << "--> API key not found.\n\n"
                  << setw(5) << " "
                  << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
                  << setw(5) << " "
-                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n"
-                 << setw(5) << " "
-                 << "Rebuild the application after solving the issues or the API functionalies will not be used...";
+                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.";
             _getch();
             return EXIT_FAILURE;
         }
@@ -168,14 +189,6 @@ bool _GPS_UPDATE_DATA_(void)
 
                 if (response.status_cod == 200)
                 {
-                    cout << setw(5) << " " << oras1 << " --> " << oras2 << "\n"
-                         << setw(5) << " " << lat_oras1 << "\u00B0"
-                         << " " << long_oras1 << "\u00B0"
-                         << " "
-                         << lat_oras2 << "\u00B0"
-                         << " " << long_oras2 << "\u00B0"
-                         << "\n";
-
                     nlohmann::json json_data = nlohmann::json::parse(response.body);
 
                     string status_str = json_data["status"];
@@ -186,6 +199,14 @@ bool _GPS_UPDATE_DATA_(void)
 
                     if (_strcasecmp_(status, "REQUEST_DENIED") != 0)
                     {
+                        cout << setw(5) << " " << oras1 << " --> " << oras2 << "\n"
+                             << setw(5) << " " << lat_oras1 << "\u00B0"
+                             << " " << long_oras1 << "\u00B0"
+                             << " "
+                             << lat_oras2 << "\u00B0"
+                             << " " << long_oras2 << "\u00B0"
+                             << "\n";
+
                         double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
                         int durata = json_data["rows"][0]["elements"][0]["duration"]["value"];
 
@@ -208,6 +229,14 @@ bool _GPS_UPDATE_DATA_(void)
                     }
                     else
                     {
+                        cerr << setw(6) << " "
+                             << "--> API key not found.\n\n"
+                             << setw(5) << " "
+                             << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
+                             << setw(5) << " "
+                             << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.";
+                        _getch();
+
                         use_API = false;
                         free(oras1);
                         free(oras2);
@@ -241,15 +270,15 @@ bool _GPS_UPDATE_DATA_(void)
 #ifdef _WIN32
                 changeText(FOREGROUND_GREEN);
                 cout << setw(5) << " "
-                     << "DONE!\n";
+                     << "Successful!\n";
                 resetText();
 #elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
-                     << "DONE!\n"
+                     << "Successful!\n"
                      << "\033[0m";
 #endif
-                underline(100, true);
+                underline(50, true);
 
                 free(oras1);
                 free(oras2);

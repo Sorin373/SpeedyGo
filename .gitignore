@@ -14,7 +14,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-#*.dll
+*.dll
 
 # Fortran module files
 *.mod
@@ -28,11 +28,11 @@
 
 # IDE/Editor specific files
 .idea/
-#.vscode/
+.vscode/
 .vs/
 
 # Ignore config.json
-config.json
+# config.json
 
 # CMake
 build/

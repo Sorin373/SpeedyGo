@@ -25,6 +25,7 @@ bool start(void)
         cerr << "\n"
              << setw(5) << " "
              << "-- Authentication process did not complete!\n";
+        ERROR_CNT++;
         return EXIT_FAILURE;
     }
     else
@@ -38,12 +39,19 @@ bool start(void)
     {
         cerr << setw(5) << " "
              << "-- Application initialisation process did not complete!\n";
+        ERROR_CNT++;
         return EXIT_FAILURE;
+    }
+    else if (ERROR_CNT == 1)
+    {
+        cout << setw(5) << " "
+             << "-- All the necessary files were initialized with " << ERROR_CNT << " error!\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     else
     {
         cout << setw(5) << " "
-             << "-- All the necessary files were initialized without encountering any errors!\n";
+             << "-- All the necessary files were initialized with " << ERROR_CNT << " errors!\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
@@ -57,7 +65,7 @@ bool start(void)
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     sortare_date_oras(1);
     cout << setw(6) << " "
-         << "--> Data sort comeplete (2)\n";
+         << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     sortare_date_produs(1);
     cout << setw(6) << " "
@@ -86,9 +94,6 @@ bool start(void)
     traseu_minim_TSP[1] = -1;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    cout << "\n"
-         << setw(5) << " "
-         << "-- Application configuration completed without encountering any errors!\n";
 
     return EXIT_SUCCESS;
 }
@@ -115,14 +120,25 @@ int main(int argc, char **argv)
         free_memory();
         return EXIT_FAILURE;
     }
-    else
+    else if (ERROR_CNT == 1)
     {
-        cout << setw(5) << " "
-             << "-- Application configuration completed with no errors!\n\n"
+        cout << "\n"
+             << setw(5) << " "
+             << "-- Application configuration completed with " << ERROR_CNT << " error!\n\n"
              << setw(5) << " "
              << "Press 'ENTER' to continue...";
         _getch();
     }
+    else
+    {
+        cout << "\n"
+             << setw(5) << " "
+             << "-- Application configuration completed with " << ERROR_CNT << " errors!\n\n"
+             << setw(5) << " "
+             << "Press 'ENTER' to continue...";
+        _getch();
+    }
+
 
     unsigned int MENIU;
 

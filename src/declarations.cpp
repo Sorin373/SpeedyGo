@@ -28,10 +28,9 @@ vector<int> stiva(matrice_drum.size() * matrice_drum.size());                   
 vector<int> traseu_minim_TSP(matrice_drum.size() * (matrice_drum.size() - 1) / 2);     // stocarea traseului optim TSP (travel salesman problem)
 
 long long unsigned int contor_log;
-int contor_noduri_graf;
 
-int nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat,
-                                                 contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase;
+int contor_noduri_graf, nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse = -1, contor_orase_stoc_limitat, 
+        contor_stiva, contor_traseu_TSP, pagina = 1, contor_orase, ERROR_CNT;
 
 bool trasee = false, traseu_completat = false, buffer = true, use_API = false;
 double cost_minim_TSP = INT_MAX, durata_minima_TSP = INT_MAX, distanta_parcursa, durata_parcursa,
@@ -103,6 +102,8 @@ void clear_screen(void)
 #ifdef _WIN32
     system("CLS");
 #elif __linux__
-    if(system("clear")){};
+    if (system("clear"))
+    {
+    };
 #endif
 }

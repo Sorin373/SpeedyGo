@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 project(SpeedyGo
     VERSION 1.0.0
 )
@@ -17,16 +17,26 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
     )
 endif()
 
-find_package(CURL CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
+if (WIN32)
+    find_package(CURL CONFIG REQUIRED)
+    find_package(nlohmann_json CONFIG REQUIRED)
+elseif(UNIX)
+    set(FULL_PATH_TO_MYSQL_CONNECTOR_CPP_DIR /usr)
+    include_directories(${FULL_PATH_TO_MYSQL_CONNECTOR_CPP_DIR}/include)
+    link_directories(${FULL_PATH_TO_MYSQL_CONNECTOR_CPP_DIR}/lib)
+    
+    find_package(CURL REQUIRED)
+    find_package(nlohmann_json CONFIG REQUIRED)
+endif()
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if (WIN32)
     enable_language("RC")
     set(WIN32_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assets/resource.rc)
 endif()
 
 include_directories(include)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
 add_executable(${PROJECT_NAME}
     "src/classes/aprovizionare.cpp"
     "src/classes/autentificare.cpp"
@@ -48,11 +58,20 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE "C:/Program Files/MySQL/MySQL Connector C++ 8.1/include")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    # Change the directory according to your preferences
-    "C:/Program Files/MySQL/MySQL Connector C++ 8.1/lib64/vs14/mysqlcppconn.lib"
     CURL::libcurl
     nlohmann_json::nlohmann_json
 )
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+         # Change the directory according to your preferences
+        "C:/Program Files/MySQL/MySQL Connector C++ 8.1/lib64/vs14/mysqlcppconn.lib"
+    )
+elseif(UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        mysqlcppconn
+    )
+endif()
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
@@ -67,7 +86,6 @@ add_custom_command(
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt ${CMAKE_BINARY_DIR}/Release/utils/legaturi.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt ${CMAKE_BINARY_DIR}/Release/utils/contor_TSP_log.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json ${CMAKE_BINARY_DIR}/Release/utils/ldistante_orase.json COPYONLY)
-
 configure_file(${CMAKE_SOURCE_DIR}/src/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 
 # Check if the config.json with the API key exists in the source directory
@@ -93,6 +111,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/logs/ DESTINATION bin/logs FILES_MATCH
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt DESTINATION bin/utils)
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json DESTINATION bin/utils)
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt DESTINATION bin/utils)
+install(FILES ${CMAKE_SOURCE_DIR}/src/utils/config.json DESTINATION bin/utils)
 install(FILES ${DLL_FILES} DESTINATION bin)
 
 if(EXISTS "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll" AND
@@ -115,9 +134,7 @@ else()
     message(SEND_ERROR "Logo icon not found.")
 endif()
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/src/utils/config.json)
-    install(FILES ${CMAKE_SOURCE_DIR}/src/utils/config.json DESTINATION bin/utils)
-endif()
+
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE)
@@ -125,9 +142,11 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if (UNIX)
     set(CPACK_GENERATOR "DEB;RPM;TGZ")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(CPACK_PACKAGE_CONTACT "sorin.andrei.tudose@gmail.com")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Sorin <sorin.andrei.tudose@gmail.com")
+elseif(WIN32)
     # Using Nsis for Windows (https://sourceforge.net/projects/nsis/files/latest/download)
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)

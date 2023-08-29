@@ -10,14 +10,7 @@
 #include <chrono>
 #include <iomanip>
 #include <vector>
-#include <windows.h>
-#include <conio.h>
-#include <jdbc/mysql_connection.h>
-#include <jdbc/mysql_driver.h>
-#include <jdbc/mysql_error.h>
-#include <jdbc/cppconn/prepared_statement.h>
-#include <jdbc/cppconn/resultset.h>
-#include <jdbc/cppconn/statement.h>
+#include <cmath>
 
 using std::cerr;
 using std::cin;
@@ -95,13 +88,15 @@ bool _init_(void)
 {
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
     {
-        cout << "\n" << setw(5) << " " << "-- Initialization of the Google API service could not be completed!\n";
+        cout << setw(5) << " " << "-- Initialization of the Google API service could not be completed!\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        ERROR_CNT++;
         
         if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
         {
             cout << setw(5) << " " << "-- Manual calculation using the Haversine formula was unsuccessful during initialization!\n";
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            ERROR_CNT++;
 
             return EXIT_FAILURE;
         }
@@ -221,8 +216,8 @@ void afisare_date_tabel_oras(void)
     cout << "\n\n"
          << setw(5) << " "
          << "+---------------+\n"
-         << setw(6) << " "
-         << " TABEL-DEPOZIT\n"
+         << setw(5) << " "
+         << "| TABEL-DEPOZIT |\n"
          << setw(5) << " "
          << "+---------------+\n\n";
 
@@ -254,8 +249,7 @@ void afisare_date_tabel_oras(void)
 #ifdef _WIN32
         cout << "\370" << endl;
 #elif __linux__
-        cout << "\u00B0\n"
-             << endl;
+        cout << "\u00B0\n";
 #endif
     }
 
@@ -606,10 +600,10 @@ void vizualizare_status_stoc(void)
          << setw(5) << " "
          << "+-----------------------+\n";
 
-    underline(80, true);
+    underline(40, true);
 
     ORAS::NOD_ORAS *date_oras = oras.getHead();
-    int cmax = 0, contor_linii = 0;
+    int cmax = 0;
 
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (orase_stoc_limitat[i])
@@ -619,19 +613,14 @@ void vizualizare_status_stoc(void)
             {
                 int _ID = stoi(date_oras->ID_Oras);
                 if (_ID == i)
-                {
                     cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
                          << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5) << " ";
-                    contor_linii++;
-                    if (contor_linii % 3 == 0)
-                        cout << "\n";
-                }
                 date_oras = date_oras->next;
             }
+            cout << "\n";
         }
-
-    cout << "\n";
-    underline(80, true);
+        
+    underline(40, true);
 
 #ifdef _WIN32
     changeText(FOREGROUND_INTENSITY);
@@ -657,8 +646,8 @@ void vizualizare_status_stoc(void)
     }
     else
     {
-        free(t_ID_Oras);
         int _ID_Oras = stoi(t_ID_Oras);
+        free(t_ID_Oras);
         date_oras = oras.getHead();
 
         while (date_oras != nullptr)
@@ -1047,8 +1036,7 @@ void afisare_depozite_izolate(void)
 #ifdef _WIN32
                     cout << "\370" << endl;
 #elif __linux__
-                    cout << "\u00B0\n"
-                         << endl;
+                    cout << "\u00B0\n";
 #endif
                     break;
                 }
@@ -1060,9 +1048,11 @@ void afisare_depozite_izolate(void)
     if (!gasit)
     {
         cout << setw(5) << " "
-             << "Nu exista depozite izolate!";
+             << "Nu exista depozite izolate...";
         return;
     }
+    else
+        cout << "\n" << setw(5) << " " << " Apasati 'ENTER' pentru a iesi...";
 }
 
 void afisare_depozite_unic_drum(void)
@@ -1140,8 +1130,7 @@ void afisare_depozite_unic_drum(void)
 #ifdef _WIN32
                         cout << "\370" << endl;
 #elif __linux__
-                        cout << "\u00B0\n"
-                             << endl;
+                        cout << "\u00B0\n";
 #endif
                         break;
                     }
@@ -1149,11 +1138,13 @@ void afisare_depozite_unic_drum(void)
             }
         }
         underline(75, true);
+
+        cout << "\n" << setw(5) << " " << " Apasati 'ENTER' pentru a iesi...";
     }
     else
     {
         cout << setw(5) << " "
-             << "Nu exista depozite cu o unica conexiune!";
+             << "Nu exista depozite cu o unica conexiune...";
         return;
     }
 }
@@ -2451,8 +2442,7 @@ void sortare_tip_depozit(void)
 #ifdef _WIN32
                 cout << "\370" << endl;
 #elif __linux__
-                cout << "\u00B0\n"
-                     << endl;
+                cout << "\u00B0\n";
 #endif
             }
 
@@ -2614,8 +2604,7 @@ void cautare_oras_ID(void)
 #ifdef _WIN32
             cout << "\370" << endl;
 #elif __linux__
-            cout << "\u00B0\n"
-                 << endl;
+            cout << "\u00B0\n";
 #endif
 
             break;
@@ -2723,8 +2712,7 @@ void cautare_depozit_denumire(void)
 #ifdef _WIN32
             cout << "\370" << endl;
 #elif __linux__
-            cout << "\u00B0\n"
-                 << endl;
+            cout << "\u00B0\n";
 #endif
             break;
         }
@@ -3080,22 +3068,22 @@ void cautare_produs_denumire(void)
 #ifdef _WIN32
     changeText(FOREGROUND_INTENSITY);
     cout << setw(5) << " "
-         << "Scrieti 'exit' pentru a iesi\n\n";
+         << "Scrieti '0' pentru a iesi\n\n";
     resetText();
     cout << setw(5) << " "
-         << "Introduceti ID-ul: ";
+         << "Introduceti numele: ";
 #elif __linux__
     cout << setw(5) << " "
          << "\033[3m"
-         << "Scrieti 'exit' pentru a iesi\n\n"
+         << "Scrieti '0' pentru a iesi\n\n"
          << "\033[0m" << setw(5) << " "
-         << "Introduceti ID-ul: ";
+         << "Introduceti numele: ";
 #endif
 
     cin.get();
     cin.get(I_Denumire, MAXL);
 
-    if (_strcasecmp_(I_Denumire, "exit") == 0)
+    if (_strcasecmp_(I_Denumire, "0") == 0)
     {
         free(I_Denumire);
         return;

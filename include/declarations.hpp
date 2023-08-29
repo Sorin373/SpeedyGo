@@ -17,12 +17,24 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
+#include <jdbc/mysql_connection.h>
+#include <jdbc/mysql_driver.h>
+#include <jdbc/mysql_error.h>
+#include <jdbc/cppconn/prepared_statement.h>
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
 #define STRCASECMP _stricmp
 #elif __linux__
 #define STRCASECMP strcasecmp
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
+#include <mysql_connection.h>
+#include <mysql_driver.h>
+#include <mysql_error.h>
+#include <cppconn/prepared_statement.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
 #endif
 
 #define M_PI 3.14159265358979323846
@@ -68,7 +80,7 @@ extern vector<int> traseu_minim_TSP;
 extern long long unsigned int contor_log;
 
 extern int contor_noduri_graf, nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse, contor_orase_stoc_limitat,
-    contor_stiva, contor_traseu_TSP, pagina, contor_orase;
+    contor_stiva, contor_traseu_TSP, pagina, contor_orase, ERROR_CNT;
 
 extern bool trasee, traseu_completat, buffer, use_API;
 
@@ -83,7 +95,7 @@ extern char *denumire_depozit_nou;
 extern int _strcasecmp_(const char *str1, const char *str2);
 extern void underline(const unsigned int vWidth, const bool bSetw);
 #ifdef _WIN32
-void changeText(WORD attributes);
+extern void changeText(WORD attributes);
 extern void resetText();
 #endif
 #ifdef __linux__
