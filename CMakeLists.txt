@@ -36,7 +36,7 @@ endif()
 
 include_directories(include)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(${PROJECT_NAME}
     "src/classes/aprovizionare.cpp"
     "src/classes/autentificare.cpp"
@@ -89,8 +89,8 @@ configure_file(${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json ${CMAKE_BINARY_
 configure_file(${CMAKE_SOURCE_DIR}/src/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 
 # Check if the config.json with the API key exists in the source directory
-if(EXISTS ${CMAKE_SOURCE_DIR}/utils/config.json)
-    configure_file(${CMAKE_SOURCE_DIR}/utils/config.json ${CMAKE_BINARY_DIR}/Release/utils/config.json COPYONLY)
+if(EXISTS ${CMAKE_SOURCE_DIR}/src/utils/config.json)
+    configure_file(${CMAKE_SOURCE_DIR}/src/utils/config.json ${CMAKE_BINARY_DIR}/Release/utils/config.json COPYONLY)
 endif()
 
 # Add mysql-connector-cpp Dlls (if you come across errors try to manually renew the DLLs)
@@ -111,8 +111,11 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/logs/ DESTINATION bin/logs FILES_MATCH
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt DESTINATION bin/utils)
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json DESTINATION bin/utils)
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt DESTINATION bin/utils)
-install(FILES ${CMAKE_SOURCE_DIR}/src/utils/config.json DESTINATION bin/utils)
 install(FILES ${DLL_FILES} DESTINATION bin)
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/src/utils/config.json)
+    install(FILES ${CMAKE_SOURCE_DIR}/src/utils/config.json DESTINATION bin/utils)
+endif()
 
 if(EXISTS "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll" AND
    EXISTS "${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll" AND

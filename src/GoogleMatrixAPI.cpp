@@ -122,12 +122,12 @@ bool _GPS_UPDATE_DATA_(void)
 
         if (API_KEY.empty())
         {
-            cerr << setw(6) << " "
+            cerr << setw(5) << " "
                  << "--> API key not found.\n\n"
                  << setw(5) << " "
                  << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
                  << setw(5) << " "
-                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.";
+                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n\n";
             _getch();
             return EXIT_FAILURE;
         }
@@ -229,12 +229,12 @@ bool _GPS_UPDATE_DATA_(void)
                     }
                     else
                     {
-                        cerr << setw(6) << " "
-                             << "--> API key not found.\n\n"
+                        cerr << setw(5) << " "
+                             << "--> API key not valid.\n\n"
                              << setw(5) << " "
                              << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
                              << setw(5) << " "
-                             << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.";
+                             << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n\n";
                         _getch();
 
                         use_API = false;
