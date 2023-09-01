@@ -6,8 +6,13 @@ For my final project in computer science for grade 11, I was required to develop
 
 # Table of Contents
 
-- [Building the executable binaries](#building-the-executable-binaries)
+- [Installation](#installation)
     - [Windows](#windows)
+    - [Unix (Debian)](#unix-debian)
+    - [Unix (RPM-based)](#unix-rpm-based)
+    - [Configuring Google API Services](#configuring-google-api-services)
+- [Building the executable binaries](#building-the-executable-binaries)
+    - [Windows](#windows-1)
     - [Debian](#debian)
 - [Features](#features)
     - [Graph](#graph)
@@ -20,6 +25,64 @@ For my final project in computer science for grade 11, I was required to develop
     - [Database initialisation](#database-initialisation)
     - [Create the required tables](#create-the-required-tables)
 - [Contact](#contact)
+
+# Installation
+
+## Windows
+
+1. Download the Windows installer for SpeedyGo from the [GitHub Releases](https://github.com/sorin373/SpeedyGo/releases/tag/v1.0.0) page.
+
+2. Run the installer by double-clicking the downloaded file (`speedygo-setup.exe`).
+
+3. Follow the on-screen instructions to complete the installation.
+
+4. Once installed, navigate to the installation folder (usually `C:\Program Files\SpeedyGo`) and find the `speedygo.exe` file.
+
+5. Double-click `speedygo.exe` to launch the application.
+
+## Unix (Debian)
+
+1. Download the Debian package (`.deb` file) for SpeedyGo from the [GitHub Releases](https://github.com/sorin373/SpeedyGo/releases/tag/v1.0.0) page.
+2. Install the package using the software installer
+3. By default, SpeedyGo will be installed in the `/usr/bin` directory. To run the application, open your terminal here and execute:
+```bash
+$ ./SpeedyGo
+```
+
+## Unix (RPM-based)
+
+1. Download the RPM package (`.rpm` file) for SpeedyGo from the [GitHub Releases](https://github.com/sorin373/SpeedyGo/releases/tag/v1.0.0) page.
+2. Install the package using the rpm command:
+```bash
+$ sudo rpm -i SpeedyGo-1.0.0-Linux.rpm
+```
+3. By default, SpeedyGo will be installed in the `/usr/bin` directory. To run the application, open your terminal here and execute:
+```bash
+$ ./SpeedyGo
+```
+
+## Configuring Google API Services
+
+To enable Google API services in SpeedyGo, follow these steps:
+
+1. **Create a `config.json` file**: You can obtain the API key by visiting the [Google Developer Console](https://console.developers.google.com/).
+
+```json
+{
+    "API_KEY": "your_api_key"
+}
+```
+
+2. **Place `config.json` in the `utils` folder**:
+    - **Windows**: If you are using Windows, locate the `utils` folder within the installation directory where you installed SpeedyGo. Place the `config.json` file in this folder.
+
+    - **Unix (Debian/Ubuntu)**: On Debian/Ubuntu systems, the `utils` folder is typically located in `/usr/bin`. Place the `config.json` file in this directory.
+
+    - **Unix (RPM-based)**: On RPM-based systems, like CentOS or Fedora, the `utils` folder is typically located in `/usr/local/bin`. Place the `config.json` file in this directory.
+
+3. **Manual Configuration (Optional)**: If you prefer not to use a `config.json` file, you can manually configure the Google API credentials within the SpeedyGo application.
+
+With these configurations in place, you're now ready to make use of SpeedyGo with Google API services! Enjoy the enhanced functionality.
 
 # Building the executable binaries
 
