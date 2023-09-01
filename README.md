@@ -6,7 +6,7 @@ For my final project in computer science for grade 11, I was required to develop
 
 # Table of Contents
 
-- [Installation](#Installation)
+- [Building the executable binaries](#building-the-executable-binaries)
     - [Windows](#windows)
     - [Debian](#debian)
 - [Features](#features)
@@ -21,9 +21,9 @@ For my final project in computer science for grade 11, I was required to develop
     - [Create the required tables](#create-the-required-tables)
 - [Contact](#contact)
 
-# Installation
+# Building the executable binaries
 
-In order to successfully set up and run the app, this section will walk you through all the necessary steps.
+In order to successfully set up and build the app, this section will walk you through all the necessary steps.
 
 - First and foremost, we need to ensure that you have correctly installed the following dependencies: **MySql-Connector-CPP** for managing the database, **Nlohmann-json** for working with Json files, and **Curl** for transferring data using different network protocols.
 
@@ -37,29 +37,25 @@ In order to successfully set up and run the app, this section will walk you thro
 $ sudo apt-get update && sudo apt-get upgrade
 ```
 
-1. **MySql-Connector-CPP**
+1. **Install** [CMake](https://cmake.org/download/)
 
+```bash
+$ sudo snap install cmake --classic
+```
+2. **MySql-Connector-CPP**
 ```bash
 $ sudo apt-get install libmysqlcppconn-dev
 ```
-
-2. **Nlohmann-json**
-
+3. **Nlohmann-json**
 ```bash
 $ sudo apt-get install nlohmann-json3-dev
 ```
-
-3. **Curl**
-
+4. **Curl**
 ```bash
 $ sudo apt-get install curl
 ```
 
-- After acquiring the zip file containing the project files, the subsequent action involves extracting them from the compressed archive. To proceed, navigate through the terminal to the directory where you have stored the file. Then, execute the provided command to run the bash script found within the file named "run.sh":
-
-```bash
-$ ./run.sh
-```
+- After acquiring the zip file containing the project files, open the folder in Visual Studio code and use the CMake commands to build the application (or install the [CMake](https://marketplace.visualstudio.com/items?itemName=twxs.cmake) and [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extensions)
 
 # Features
 Not only does the application use Dijkstra's algorithm to generate the most efficient routes between two fixed vertices, but also offers the most optimal supply path to reach all required deposits in a single route. In addition, the following features are available within the app:
@@ -442,4 +438,4 @@ mysql> Select * from produs;
 mysql> SHOW VARIABLES LIKE 'port';
 ```
 # Contact
-I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal Email: sorin.andrei.tudose@gmail.com.<br><br>Have a deightful day :D
+I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal Email: sorin.andrei.tudose@gmail.com.<br><br>Have a delightful day :D
