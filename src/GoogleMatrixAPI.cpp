@@ -18,7 +18,6 @@ using std::stoi;
 using std::string;
 using std::to_string;
 
-#pragma region GOOGLE_DISTANCE_MATRIX_API
 string _GET_API_KEY_(const string &config_file_path)
 {
     ifstream config_file(config_file_path);
@@ -96,7 +95,6 @@ HTTP_RESPONSE _http_request_(const string &url)
     curl_easy_cleanup(curl);
     return HTTP_RESPONSE{response_body, response_code};
 }
-#pragma endregion
 
 bool _GPS_UPDATE_DATA_(void)
 {
@@ -127,8 +125,11 @@ bool _GPS_UPDATE_DATA_(void)
                  << setw(5) << " "
                  << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
                  << setw(5) << " "
-                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n\n";
+                 << "The app will still run correctly but the distances will not be calculated using the Google Matrix API\n"
+                 << setw(5) << " "
+                 << "Press 'ENTER' to continue...";
             _getch();
+            cout << "\n\n";
             return EXIT_FAILURE;
         }
 
@@ -234,8 +235,11 @@ bool _GPS_UPDATE_DATA_(void)
                              << setw(5) << " "
                              << "Check 'config.json' (do not change the name of the file) or the file path to be 'src/utils' and to contain a valid key.\n"
                              << setw(5) << " "
-                             << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n\n";
+                             << "The app will still run correctly but the distances will not be calculated using the Google Matrix API.\n"
+                             << setw(5) << " "
+                             << "Press 'ENTER' to continue...";
                         _getch();
+                        cout << "\n\n";
 
                         use_API = false;
                         free(oras1);

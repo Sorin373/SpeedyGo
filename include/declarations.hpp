@@ -9,11 +9,7 @@
 #include "classes/oras.hpp"
 #include "classes/trasee_gps.hpp"
 #include "classes/traseu.hpp"
-#include <limits.h>
 #include <vector>
-#include <thread>
-#include <chrono>
-#include <cstring>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
