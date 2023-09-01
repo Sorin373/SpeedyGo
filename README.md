@@ -31,14 +31,22 @@ In order to successfully set up and build the app, this section will walk you th
 
 - On Windows, you'll need to set up and initialize [Vcpkg](https://vcpkg.io/en/getting-started) and [CMake](https://cmake.org/download/)
 
+- Add the following lines of code in the file **settings.json** (replace **path_to** with the correct path):
+```json
+"cmake.configureArgs": [
+        "-DCMAKE_TOOLCHAIN_FILE=path_to\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+        "-DVCPKG_TARGET_TRIPLET=x64-windows"
+    ]
+```
+
+- [MSVC](https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options?view=msvc-170) compiler is needed to build this application. You can download the [workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170) in the [Visual Studio Installer](https://visualstudio.microsoft.com/vs/features/cplusplus/).
+
 ## Debian
 
 ```bash
 $ sudo apt-get update && sudo apt-get upgrade
 ```
-
 1. **Install** [CMake](https://cmake.org/download/)
-
 ```bash
 $ sudo snap install cmake --classic
 ```
@@ -55,7 +63,7 @@ $ sudo apt-get install nlohmann-json3-dev
 $ sudo apt-get install curl
 ```
 
-- After acquiring the zip file containing the project files, open the folder in Visual Studio code and use the CMake commands to build the application (or install the [CMake](https://marketplace.visualstudio.com/items?itemName=twxs.cmake) and [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extensions)
+- After acquiring the zip file containing the project files, open the folder in Visual Studio Code and use the CMake commands to build the application (or install the [CMake](https://marketplace.visualstudio.com/items?itemName=twxs.cmake) and [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extensions).
 
 # Features
 Not only does the application use Dijkstra's algorithm to generate the most efficient routes between two fixed vertices, but also offers the most optimal supply path to reach all required deposits in a single route. In addition, the following features are available within the app:
