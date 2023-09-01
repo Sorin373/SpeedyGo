@@ -10,6 +10,8 @@
 #include "classes/trasee_gps.hpp"
 #include "classes/traseu.hpp"
 #include <vector>
+#include <cstring>
+#include <limits.h>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
