@@ -201,13 +201,33 @@ bool _GPS_UPDATE_DATA_(void)
                     if (_strcasecmp_(status, "REQUEST_DENIED") != 0)
                     {
                         cout << setw(5) << " " << oras1 << " --> " << oras2 << "\n"
-                             << setw(5) << " " << lat_oras1 << "\u00B0"
-                             << " " << long_oras1 << "\u00B0"
-                             << " "
-                             << lat_oras2 << "\u00B0"
-                             << " " << long_oras2 << "\u00B0"
+                             << setw(5) << " " << lat_oras1;
+#ifdef _WIN32
+                        cout << "\370";
+#elif __linux__
+                        cout << "\u00B0";
+#endif
+                        cout << long_oras1;
+#ifdef _WIN32
+                        cout << "\370" << " ";
+#elif __linux__
+                        cout << "\u00B0"
+                             << " ";
+#endif
+                        cout << lat_oras2;
+#ifdef _WIN32
+                        cout << "\370";
+#elif __linux__
+                        cout << "\u00B0"
+                             << " ";
+#endif
+                        cout << long_oras2;
+#ifdef _WIN32
+                        cout << "\370" << "\n";
+#elif __linux__
+                        cout << "\u00B0"
                              << "\n";
-
+#endif
                         double result = json_data["rows"][0]["elements"][0]["distance"]["value"];
                         int durata = json_data["rows"][0]["elements"][0]["duration"]["value"];
 
@@ -274,12 +294,12 @@ bool _GPS_UPDATE_DATA_(void)
 #ifdef _WIN32
                 changeText(FOREGROUND_GREEN);
                 cout << setw(5) << " "
-                     << "Successful!\n";
+                     << "Successful...\n";
                 resetText();
 #elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
-                     << "Successful!\n"
+                     << "Successful...\n"
                      << "\033[0m";
 #endif
                 underline(50, true);

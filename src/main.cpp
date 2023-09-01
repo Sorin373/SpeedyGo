@@ -118,7 +118,8 @@ int main(int argc, char **argv)
 {
     if (start() == EXIT_FAILURE)
     {
-        cerr << setw(5) << "-- Can not start the application!\n";
+        cerr << setw(5) << " " << "-- Can not start the application!\n";
+        _getch();
         free_memory();
         return EXIT_FAILURE;
     }

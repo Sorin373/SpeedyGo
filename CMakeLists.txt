@@ -113,10 +113,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json DESTINATION bin/
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt DESTINATION bin/utils)
 install(FILES ${DLL_FILES} DESTINATION bin)
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/src/utils/config.json)
-    install(FILES ${CMAKE_SOURCE_DIR}/src/utils/config.json DESTINATION bin/utils)
-endif()
-
 if(EXISTS "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll" AND
    EXISTS "${CMAKE_BINARY_DIR}/Release/libssl-3-x64.dll" AND
    EXISTS "${CMAKE_BINARY_DIR}/Release/mysqlcppconn-9-vs14.dll")
@@ -151,20 +147,11 @@ elseif(WIN32)
     # Using Nsis for Windows (https://sourceforge.net/projects/nsis/files/latest/download)
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    set(CPACK_NSIS_CREATE_ICONS_EXTRA
-        "CreateShortCut \\\"$DESKTOP\\\\SpeedyGo.lnk\\\" \\\"$INSTDIR\\\\bin\\\\SpeedyGo.exe\\\"\n"
-        "CreateShortCut \\\"$SMPROGRAMS\\\\$StartMenuFolder\\\\SpeedyGo.lnk\\\" \\\"$INSTDIR\\\\bin\\\\SpeedyGo.exe\\\"\n"
-    )
-    set(CPACK_NSIS_DELETE_ICONS_EXTRA
-        "Delete \\\"$DESKTOP\\\\SpeedyGo.lnk\\\"\n"
-        "Delete \\\"$SMPROGRAMS\\\\$StartMenuFolder\\\\SpeedyGo.lnk\\\"\n"
-    )
     set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
     set(CPACK_NSIS_MUI_UNIICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
     set(CPACK_NSIS_MUI_HEADERICON ${CMAKE_SOURCE_DIR}/assets/LOGO.ico)
     set(CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
     set(CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
-    set(CPACK_NSIS_MUI_FINISHPAGE_RUN "SpeedyGo.exe")
 endif()
 
 include(CPack)
