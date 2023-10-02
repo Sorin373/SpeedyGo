@@ -61,7 +61,7 @@ bool start(void)
          << setw(5) << " "
          << "-- Starting application configuration...\n\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    sortare_date_depozit();
+    depot.sortData();
     cout << setw(6) << " "
          << "--> Data sort complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -69,7 +69,7 @@ bool start(void)
     cout << setw(6) << " "
          << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    sortare_date_produs(1);
+    product.sortData(1);
     cout << setw(6) << " "
          << "--> Data sort complete (3)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -110,7 +110,7 @@ void free_memory(void)
     stiva.clear();
     traseu_minim_TSP.clear();
     free(denumire_depozit_nou);
-    AUTENTIFICARE::cleanup();
+    AUTHENTICATION::cleanup();
     delete con;
 }
 
@@ -412,7 +412,7 @@ int main(int argc, char **argv)
                             sortare_produs_alfabetic(2);
                             break;
                         case 4:
-                            sortare_date_produs(2);
+                            product.sortData(2);
                             break;
                         case 5:
                             sortare_produs_pret(1);
@@ -421,7 +421,7 @@ int main(int argc, char **argv)
                             sortare_produs_pret(2);
                             break;
                         case 7:
-                            sortare_date_produs(1);
+                            product.sortData(1);
                             break;
                         case 8:
                             unsigned int MENIU_3_2_8;

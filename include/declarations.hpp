@@ -2,10 +2,11 @@
 #ifndef DECLARATIONS
 #define DECLARATIONS
 
-#include "classes/aprovizionare.hpp"
-#include "classes/autentificare.hpp"
-#include "classes/depozit.hpp"
-#include "classes/detalii_produs.hpp"
+#include "classes/supply.hpp"
+#include "classes/authentification.hpp"
+#include "classes/depot.hpp"
+#include "classes/product.hpp"
+
 #include "classes/oras.hpp"
 #include "classes/trasee_gps.hpp"
 #include "classes/traseu.hpp"
@@ -55,11 +56,11 @@ struct GRAF
 using GRAF_NEORIENTAT = GRAF;
 
 extern TRASEE_GPS trasee_gps;
-extern DEPOZIT depozit;
+extern DEPOT depot;
 extern ORAS oras;
-extern DETALII_PRODUS produs;
+extern PRODUCT product;
 extern TRASEU _traseu;
-extern APROVIZIONARE aprovizionare;
+extern SUPPLY supply;
 
 #ifdef _WIN32
 extern HANDLE hConsole;

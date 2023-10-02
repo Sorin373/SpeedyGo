@@ -1,0 +1,28 @@
+#pragma once
+#ifndef AUTHENTICATION_HPP
+#define AUTHENTICATION_HPP
+
+class AUTHENTICATION
+{
+private:
+    struct AUTHENTICATION_NODE
+    {
+        char *host_name = nullptr;
+        char *username = nullptr;
+        char *password = nullptr;
+        char *database = nullptr;
+
+        AUTHENTICATION_NODE(const char *host_name, const char *username, const char *password, const char *database);
+        ~AUTHENTICATION_NODE();
+    };
+
+    static AUTHENTICATION_NODE *data;
+
+public:
+    static void getData(const char *host_name, const char *username, const char *password, const char *database);
+    static AUTHENTICATION_NODE *getNode(void);
+    static void cleanup(void);
+    ~AUTHENTICATION() = default;
+};
+
+#endif

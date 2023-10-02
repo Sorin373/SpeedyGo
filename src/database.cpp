@@ -31,9 +31,9 @@ bool accesareDate(void)
 
         driver = sql::mysql::get_mysql_driver_instance();
 
-        con = driver->connect("tcp://" + string(AUTENTIFICARE::get_nod()->host_name),
-                          string(AUTENTIFICARE::get_nod()->username),
-                          string(AUTENTIFICARE::get_nod()->parola));
+        con = driver->connect("tcp://" + string(AUTHENTICATION::getNode()->host_name),
+                          string(AUTHENTICATION::getNode()->username),
+                          string(AUTHENTICATION::getNode()->password));
 
         if (con == nullptr)
         {
@@ -42,7 +42,7 @@ bool accesareDate(void)
             return EXIT_FAILURE;
         }
 
-        con->setSchema(AUTENTIFICARE::get_nod()->DB);
+        con->setSchema(AUTHENTICATION::getNode()->database);
 
         stmt = con->createStatement();
         res = stmt->executeQuery("SELECT * FROM depozit");
@@ -64,7 +64,7 @@ bool accesareDate(void)
 
             double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
 
-            depozit.inserareDateDepozit(tempIdProdus, tempIdOras, tempCantitate_Produs);
+            depot.getData(tempIdProdus, tempIdOras, tempCantitate_Produs);
 
             free(tempIdProdus);
             free(tempIdOras);
@@ -100,7 +100,7 @@ bool accesareDate(void)
 
             double pret_produs = res->getDouble("Pret_Produs");
 
-            produs.inserareDateProdus(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
+            product.getData(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
 
             free(tempIdProdus);
             free(tempNumeProdus);
@@ -181,11 +181,11 @@ bool update_database(void)
         string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
         sql::PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
 
-        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
         {
-            int ID_Produs = stoi(date_depozit->ID_Produs);
-            int ID_Oras = stoi(date_depozit->ID_Oras);
-            int Cantitate_Produs = date_depozit->Cantitate_Produs;
+            int ID_Produs = stoi(date_depozit->getProductID());
+            int ID_Oras = stoi(date_depozit->getCityID());
+            int Cantitate_Produs = date_depozit->getProductQuantity();
 
             prepStmt->setInt(1, ID_Produs);
             prepStmt->setInt(2, ID_Oras);
@@ -472,13 +472,13 @@ bool SQL_Data_Update(const int input)
             oras.head_oras = nullptr;
             oras.tail_oras = nullptr;
 
-            produs.~DETALII_PRODUS();
-            produs.head_produs = nullptr;
-            produs.tail_produs = nullptr;
+            product.~PRODUCT();
+            product.head_product = nullptr;
+            product.head_product = nullptr;
 
-            depozit.~DEPOZIT();
-            depozit.head_depozit = nullptr;
-            depozit.tail_depozit = nullptr;
+            depot.~DEPOT();
+            depot.head_depot = nullptr;
+            depot.tail_depot = nullptr;
 
             contor_noduri_graf = 0;
             accesareDate();
@@ -520,13 +520,13 @@ bool SQL_Data_Update(const int input)
             oras.head_oras = nullptr;
             oras.tail_oras = nullptr;
 
-            produs.~DETALII_PRODUS();
-            produs.head_produs = nullptr;
-            produs.tail_produs = nullptr;
+            product.~PRODUCT();
+            product.head_product = nullptr;
+            product.tail_product = nullptr;
 
-            depozit.~DEPOZIT();
-            depozit.head_depozit = nullptr;
-            depozit.tail_depozit = nullptr;
+            depot.~DEPOT();
+            depot.head_depot = nullptr;
+            depot.tail_depot = nullptr;
 
             contor_noduri_graf = 0;
             accesareDate();

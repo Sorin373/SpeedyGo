@@ -17,25 +17,25 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::fixed;
-using std::setprecision;
-using std::setw;
-using std::stoi;
-using std::swap;
-using std::to_string;
 using std::ifstream;
 using std::numeric_limits;
 using std::ofstream;
+using std::setprecision;
+using std::setw;
+using std::stoi;
 using std::string;
+using std::swap;
+using std::to_string;
 using std::vector;
 
 bool autentificare_cont(void)
 {
     clear_screen();
 
-    char *_HN = (char *)malloc(MAXL * sizeof(char) + 1),
-         *_UN = (char *)malloc(MAXL * sizeof(char) + 1),
-         *_DB = (char *)malloc(MAXL * sizeof(char) + 1),
-         *_P = (char *)malloc(MAXL * sizeof(char) + 1);
+    char *host_name = (char *)malloc(MAXL * sizeof(char) + 1),
+         *username = (char *)malloc(MAXL * sizeof(char) + 1),
+         *database = (char *)malloc(MAXL * sizeof(char) + 1),
+         *password = (char *)malloc(MAXL * sizeof(char) + 1);
 
     cout << "\n\n"
          << setw(10) << " "
@@ -44,42 +44,42 @@ bool autentificare_cont(void)
          << "======================================\n"
          << setw(5) << " "
          << "Hostname: ";
-    cin >> _HN;
+    cin >> host_name;
 
     cout << setw(5) << " "
          << "Username: ";
-    cin >> _UN;
+    cin >> username;
 
     cout << setw(5) << " "
          << "Password: ";
-    cin >> _P;
+    cin >> password;
 
     cout << setw(5) << " "
          << "Database name: ";
-    cin >> _DB;
+    cin >> database;
 
     cout << setw(4) << " "
          << "======================================\n";
 
-    if (strlen(_HN) > MAX_SIZE || strlen(_UN) > MAX_SIZE || strlen(_P) > MAX_SIZE || strlen(_DB) > MAX_SIZE)
+    if (strlen(host_name) > MAX_SIZE || strlen(username) > MAX_SIZE || strlen(password) > MAX_SIZE || strlen(database) > MAX_SIZE)
         return EXIT_FAILURE;
 
-    AUTENTIFICARE::introducere_date(_HN, _UN, _P, _DB);
+    AUTHENTICATION::getData(host_name, username, password, database);
 
     if (accesareDate() == EXIT_FAILURE)
     {
         _getch();
-        free(_HN);
-        free(_UN);
-        free(_P);
-        free(_DB);
+        free(host_name);
+        free(username);
+        free(password);
+        free(database);
         return autentificare_cont();
     }
 
-    free(_HN);
-    free(_UN);
-    free(_P);
-    free(_DB);
+    free(host_name);
+    free(username);
+    free(password);
+    free(database);
 
     return EXIT_SUCCESS;
 }
@@ -88,13 +88,15 @@ bool _init_(void)
 {
     if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
     {
-        cout << setw(5) << " " << "-- Initialization of the Google API service could not be completed!\n";
+        cout << setw(5) << " "
+             << "-- Initialization of the Google API service could not be completed!\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         ERROR_CNT++;
-        
+
         if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
         {
-            cout << setw(5) << " " << "-- Manual calculation using the Haversine formula was unsuccessful during initialization!\n";
+            cout << setw(5) << " "
+                 << "-- Manual calculation using the Haversine formula was unsuccessful during initialization!\n";
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             ERROR_CNT++;
 
@@ -161,16 +163,16 @@ void nr_max_caractere_den(void)
             cmax_lat_oras = strlen(temp);
     }
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (strlen(date_produs->Denumire_Produs) > cmax_denumire_produse)
-            cmax_denumire_produse = strlen(date_produs->Denumire_Produs);
+        if (strlen(date_produs->getProductName()) > cmax_denumire_produse)
+            cmax_denumire_produse = strlen(date_produs->getProductName());
 
-        if (strlen(date_produs->Categorie_Produs) > cmax_categorie_produse)
-            cmax_categorie_produse = strlen(date_produs->Categorie_Produs);
+        if (strlen(date_produs->getProductCategory()) > cmax_categorie_produse)
+            cmax_categorie_produse = strlen(date_produs->getProductCategory());
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
-        sprintf(pret, "%f", date_produs->pret_produs);
+        sprintf(pret, "%f", date_produs->getProductPrice());
 
         for (unsigned int i = 0; i < strlen(pret); i++)
             if (pret[i] == '.')
@@ -179,15 +181,15 @@ void nr_max_caractere_den(void)
         if (strlen(pret) > cmax_pret_produse)
             cmax_pret_produse = strlen(pret);
 
-        if (strlen(date_produs->ID_Produs) > cmax_ID_produs)
-            cmax_ID_produs = strlen(date_produs->ID_Produs);
+        if (strlen(date_produs->getProductID()) > cmax_ID_produs)
+            cmax_ID_produs = strlen(date_produs->getProductID());
 
         free(pret);
     }
 
-    for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+    for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
     {
-        int cantitiate_temp = date_depozit->Cantitate_Produs, contor_cifre = 0;
+        int cantitiate_temp = date_depozit->getProductQuantity(), contor_cifre = 0;
 
         while (cantitiate_temp > 0)
         {
@@ -217,7 +219,7 @@ void afisare_date_tabel_oras(void)
          << setw(5) << " "
          << "+---------------+\n"
          << setw(5) << " "
-         << "| TABEL-DEPOZIT |\n"
+         << "| TABEL-DEPOT |\n"
          << setw(5) << " "
          << "+---------------+\n\n";
 
@@ -258,13 +260,13 @@ void afisare_date_tabel_oras(void)
 
 void afisare_date_tabel_depozit(void)
 {
-    DEPOZIT::NOD_DEPOZIT *ptr = depozit.getHead();
+    DEPOT::DEPOT_NODE *ptr = depot.getHead();
     while (ptr != nullptr)
     {
 
-        cout << "ID_Produs: " << ptr->ID_Produs << ", ";
-        cout << "Cantitate_Produs: " << ptr->Cantitate_Produs << ", ";
-        cout << "ID_oras: " << ptr->ID_Oras << endl;
+        cout << "ID_Produs: " << ptr->getProductID() << ", "
+             << "Cantitate_Produs: " << ptr->getProductQuantity() << ", "
+             << "ID_oras: " << ptr->getCityID() << endl;
 
         ptr = ptr->next;
     }
@@ -293,17 +295,17 @@ void afisare_date_tabel_produs(void)
 
     underline(80, true);
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
-             << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
-             << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
+        cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
+             << " " << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5)
+             << " " << date_produs->getProductCategory() << setw(cmax_categorie_produse - strlen(date_produs->getProductCategory()) + 10) << " ";
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
-        snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+        snprintf(pret, MAXL, "%g", date_produs->getProductPrice());
 
-        cout << fixed << setprecision(2) << date_produs->pret_produs
-             << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
+        cout << fixed << setprecision(2) << date_produs->getProductPrice()
+             << setw(cmax_pret_produse - to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
 
         free(pret);
     }
@@ -312,23 +314,24 @@ void afisare_date_tabel_produs(void)
 }
 
 #pragma region SORT_DATE_INITIALE
+/*
 void sortare_date_depozit(void)
 {
     bool vsort = true;
 
-    DEPOZIT::NOD_DEPOZIT *ptr;
-    DEPOZIT::NOD_DEPOZIT *l_ptr = nullptr;
+    DEPOT::DEPOT_NODE *ptr;
+    DEPOT::DEPOT_NODE *l_ptr = nullptr;
 
-    if (depozit.getHead() == nullptr)
+    if (depot.getHead() == nullptr)
         return;
     do
     {
         vsort = true;
-        ptr = depozit.getHead();
+        ptr = depot.getHead();
 
         while (ptr->next != l_ptr)
         {
-            int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
+            int _ID1 = stoi(ptr->getProductID()), _ID2 = stoi(ptr->next->getProductID());
             if (_ID1 > _ID2)
             {
                 swap(ptr->ID_Produs, ptr->next->ID_Produs);
@@ -343,19 +346,20 @@ void sortare_date_depozit(void)
     } while (!vsort);
 }
 
+
 void sortare_date_produs(const int tip_sortare)
 {
     bool vsort = true;
 
-    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr;
-    DETALII_PRODUS::NOD_DETALII_PRODUS *l_ptr = nullptr;
+    PRODUCT::PRODUCT_NODE *ptr;
+    PRODUCT::PRODUCT_NODE *l_ptr = nullptr;
 
-    if (produs.getHead() == nullptr)
+    if (product.getHead() == nullptr)
         return;
     do
     {
         vsort = true;
-        ptr = produs.getHead();
+        ptr = product.getHead();
         while (ptr->next != l_ptr)
         {
             int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
@@ -390,6 +394,7 @@ void sortare_date_produs(const int tip_sortare)
         l_ptr = ptr;
     } while (!vsort);
 }
+*/
 
 void sortare_date_oras(const int tip_sortare)
 {
@@ -458,19 +463,19 @@ void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
          << "Nr.Buc\n";
     underline(55, true);
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        int ID_PRODUS = stoi(date_produs->ID_Produs);
-        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        int ID_PRODUS = stoi(date_produs->getProductID());
+        for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
         {
-            int ID_PRODUS_DEPOZIT = stoi(date_depozit->ID_Produs), ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+            int ID_PRODUS_DEPOZIT = stoi(date_depozit->getProductID()), ID_DEPOZIT = stoi(date_depozit->getCityID());
             if (ID_PRODUS_DEPOZIT == ID_PRODUS && ID_DEPOZIT == ID_Depozit)
             {
-                if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
-                    cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
-                         << " " << date_produs->Denumire_Produs
-                         << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 3) << " " << date_depozit->Cantitate_Produs
-                         << setw(cmax_cantitate_produs - to_string(round(date_produs->pret_produs)).length() + 5) << " "
+                if (date_depozit->getProductQuantity() < VAL_STOC_MINIM)
+                    cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
+                         << " " << date_produs->getProductName()
+                         << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 3) << " " << date_depozit->getProductQuantity()
+                         << setw(cmax_cantitate_produs - to_string(round(date_produs->getProductPrice())).length() + 5) << " "
                          << "buc.\n";
             }
         }
@@ -549,12 +554,12 @@ void cautare_orase_stoc_limitat(void)
     {
         int _ID_Oras = stoi(date_oras->ID_Oras);
 
-        DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead();
+        DEPOT::DEPOT_NODE *date_depozit = depot.getHead();
         while (date_depozit != nullptr)
         {
-            int _ID_Depozit = stoi(date_depozit->ID_Oras);
+            int _ID_Depozit = stoi(date_depozit->getCityID());
             if (_ID_Depozit == _ID_Oras && depozite_centralizate[_ID_Depozit] == false)
-                if (date_depozit->Cantitate_Produs < VAL_STOC_MINIM)
+                if (date_depozit->getProductQuantity() < VAL_STOC_MINIM)
                 {
                     orase_stoc_limitat[_ID_Depozit] = true;
                     contor_orase_stoc_limitat++;
@@ -585,7 +590,9 @@ void vizualizare_status_stoc(void)
 
     if (contor_orase_stoc_limitat == 0)
     {
-        cout << "\n" << setw(5) << " " << "Nu sunt depozite care necesita aprovizionare...";
+        cout << "\n"
+             << setw(5) << " "
+             << "Nu sunt depozite care necesita aprovizionare...";
         _getch();
         return;
     }
@@ -619,7 +626,7 @@ void vizualizare_status_stoc(void)
             }
             cout << "\n";
         }
-        
+
     underline(40, true);
 
 #ifdef _WIN32
@@ -664,7 +671,7 @@ void vizualizare_status_stoc(void)
                     cout << "\n\n"
                          << setw(5) << " "
                          << "+--------------------------------------------+\n"
-                         << setw(7) << " " << date_oras->denumire_oras << " | Tip depozit: " << date_oras->tip_depozit << "\n"
+                         << setw(7) << " " << date_oras->denumire_oras << " | Tip depot: " << date_oras->tip_depozit << "\n"
                          << setw(5) << " "
                          << "+--------------------------------------------+\n";
 
@@ -1052,7 +1059,9 @@ void afisare_depozite_izolate(void)
         return;
     }
     else
-        cout << "\n" << setw(5) << " " << " Apasati 'ENTER' pentru a iesi...";
+        cout << "\n"
+             << setw(5) << " "
+             << " Apasati 'ENTER' pentru a iesi...";
 }
 
 void afisare_depozite_unic_drum(void)
@@ -1139,7 +1148,9 @@ void afisare_depozite_unic_drum(void)
         }
         underline(75, true);
 
-        cout << "\n" << setw(5) << " " << " Apasati 'ENTER' pentru a iesi...";
+        cout << "\n"
+             << setw(5) << " "
+             << " Apasati 'ENTER' pentru a iesi...";
     }
     else
     {
@@ -1520,21 +1531,21 @@ void TSP(void)
 
 void produse_transport_TSP(void)
 {
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
         int cantitate = 0;
-        int ID_PRODUS = stoi(date_produs->ID_Produs);
-        for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+        int ID_PRODUS = stoi(date_produs->getProductID());
+        for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
         {
-            int ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+            int ID_DEPOZIT = stoi(date_depozit->getCityID());
             if (orase_stoc_limitat[ID_DEPOZIT] == true && orase_izolate[ID_DEPOZIT] == false && depozite_centralizate[ID_DEPOZIT] == false)
             {
-                int ID_PRODUS_DEPOZIT = stoi(date_depozit->ID_Produs);
+                int ID_PRODUS_DEPOZIT = stoi(date_depozit->getProductID());
                 if (ID_PRODUS == ID_PRODUS_DEPOZIT)
-                    cantitate += VAL_STOC_MAXIM - date_depozit->Cantitate_Produs;
+                    cantitate += VAL_STOC_MAXIM - date_depozit->getProductQuantity();
             }
         }
-        aprovizionare.inserareDateAprovizionare(date_produs->ID_Produs, cantitate);
+        supply.getData(date_produs->getProductID(), cantitate);
     }
 }
 
@@ -1630,20 +1641,20 @@ void pagina_principala_TSP(void)
          << "Cnt.transport_totala\n";
     underline(65, true);
 
-    for (APROVIZIONARE::NOD_APROVIZIONARE *date_aprovizionare = aprovizionare.getHead(); date_aprovizionare != nullptr; date_aprovizionare = date_aprovizionare->next)
+    for (SUPPLY::SUPPLY_NODE *supply_data = supply.getHead(); supply_data != nullptr; supply_data = supply_data->next)
     {
-        int ID_AP = stoi(date_aprovizionare->ID_Produs);
-        cout << setw(5 + 1) << " [" << date_aprovizionare->ID_Produs << "] " << setw(5) << " ";
-        for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+        int ID_AP = stoi(supply_data->getID());
+        cout << setw(5 + 1) << " [" << ID_AP << "] " << setw(5) << " ";
+        for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
         {
-            int ID_P = stoi(date_produs->ID_Produs);
+            int ID_P = stoi(date_produs->getProductID());
             if (ID_P == ID_AP)
             {
-                cout << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5) << " ";
+                cout << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5) << " ";
                 break;
             }
         }
-        cout << date_aprovizionare->cantitate_totala_necesara << " buc.\n";
+        cout << supply_data->getQuantity() << " buc.\n";
     }
     underline(65, true);
 
@@ -2016,34 +2027,35 @@ void pagina_dreapta_TSP(void)
         {
             if (orase_stoc_limitat[traseu_minim_TSP[pagina]])
             {
-                for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+                for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
                 {
-                    int ID_PRODUS = stoi(date_produs->ID_Produs);
+                    int ID_PRODUS = stoi(date_produs->getProductID());
                     double cantitate_necesara = 0.0;
 
-                    for (DEPOZIT::NOD_DEPOZIT *date_depozit = depozit.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+                    for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
                     {
-                        int ID_PRODUS_DEPOZIT = stoi(date_depozit->ID_Produs), ID_DEPOZIT = stoi(date_depozit->ID_Oras);
+                        int ID_PRODUS_DEPOZIT = stoi(date_depozit->getProductID()), ID_DEPOZIT = stoi(date_depozit->getCityID());
                         if (ID_DEPOZIT == traseu_minim_TSP[pagina] && !orase_izolate[ID_DEPOZIT])
                         {
                             if (ID_PRODUS_DEPOZIT == ID_PRODUS)
                             {
-                                cantitate_necesara += date_depozit->Cantitate_Produs;
+                                cantitate_necesara += date_depozit->getProductQuantity();
                                 cantitate_necesara = VAL_STOC_MAXIM - cantitate_necesara;
-                                cost_aprovizionare_total += cantitate_necesara * date_produs->pret_produs;
+                                cost_aprovizionare_total += cantitate_necesara * date_produs->getProductPrice();
                                 cantitate_totala_aprovizionata += cantitate_necesara;
-                                date_depozit->Cantitate_Produs = VAL_STOC_MAXIM;
+                                date_depozit->updateQuantity(VAL_STOC_MAXIM);
 
-                                cout << setw(5 + 1) << " [" << date_depozit->ID_Produs << "] " << setw(8) << " " << date_produs->Denumire_Produs
-                                     << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5) << " " << cantitate_necesara << " buc. /";
+                                cout << setw(5 + 1) << " [" << date_depozit->getProductID() << "] " << setw(8) << " " << date_produs->getProductName()
+                                     << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5) << " " << cantitate_necesara << " buc. /";
 
-                                for (APROVIZIONARE::NOD_APROVIZIONARE *date_aprovizionare = aprovizionare.getHead(); date_aprovizionare != nullptr; date_aprovizionare = date_aprovizionare->next)
+                                for (SUPPLY::SUPPLY_NODE *supply_data = supply.getHead(); supply_data != nullptr; supply_data = supply_data->next)
                                 {
-                                    int ID_PRODUS_APROVIZIONARE = stoi(date_aprovizionare->ID_Produs);
+                                    int ID_PRODUS_APROVIZIONARE = stoi(supply_data->getID());
                                     if (ID_PRODUS_APROVIZIONARE == ID_PRODUS)
                                     {
-                                        cout << date_aprovizionare->cantitate_totala_necesara << " buc.";
-                                        date_aprovizionare->cantitate_totala_necesara -= cantitate_necesara;
+                                        cout << supply_data->getQuantity() << " buc.";
+                                        int currentQuantity = supply_data->getQuantity();
+                                        supply_data->updateQuantity(currentQuantity - cantitate_necesara);
                                         break;
                                     }
                                 }
@@ -2343,13 +2355,13 @@ void consola_mysql(void)
                 oras.head_oras = nullptr;
                 oras.tail_oras = nullptr;
 
-                produs.~DETALII_PRODUS();
-                produs.head_produs = nullptr;
-                produs.tail_produs = nullptr;
+                product.~PRODUCT();
+                product.head_product = nullptr;
+                product.tail_product = nullptr;
 
-                depozit.~DEPOZIT();
-                depozit.head_depozit = nullptr;
-                depozit.tail_depozit = nullptr;
+                depot.~DEPOT();
+                depot.head_depot = nullptr;
+                depot.tail_depot = nullptr;
 
                 accesareDate();
 
@@ -2409,7 +2421,7 @@ void sortare_tip_depozit(void)
              << setw(5) << " "
              << "+---------------+\n"
              << setw(5) << " "
-             << "| TABEL-DEPOZIT |\n"
+             << "| TABEL-DEPOT |\n"
              << setw(5) << " "
              << "+---------------+\n\n";
 
@@ -2466,7 +2478,7 @@ void sortare_depozit_alfabetic(const int tip_sortare)
          << setw(5) << " "
          << "+---------------+\n"
          << setw(5) << " "
-         << "| TABEL-DEPOZIT |\n"
+         << "| TABEL-DEPOT |\n"
          << setw(5) << " "
          << "+---------------+\n\n";
 
@@ -2568,7 +2580,7 @@ void cautare_oras_ID(void)
          << setw(5) << " "
          << "+---------------+\n"
          << setw(5) << " "
-         << "| TABEL-DEPOZIT |\n"
+         << "| TABEL-DEPOT |\n"
          << setw(5) << " "
          << "+---------------+\n\n";
 
@@ -2676,7 +2688,7 @@ void cautare_depozit_denumire(void)
          << setw(5) << " "
          << "+---------------+\n"
          << setw(5) << " "
-         << "| TABEL-DEPOZIT |\n"
+         << "| TABEL-DEPOT |\n"
          << setw(5) << " "
          << "+---------------+\n\n";
 
@@ -2795,18 +2807,18 @@ void sortare_categorie_produs(void)
 
     underline(80, true);
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-        if (_strcasecmp_(date_produs->Categorie_Produs, input) == 0)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+        if (_strcasecmp_(date_produs->getProductCategory(), input) == 0)
         {
-            cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
-                 << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
-                 << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
+            cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
+                 << " " << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5)
+                 << " " << date_produs->getProductCategory() << setw(cmax_categorie_produse - strlen(date_produs->getProductCategory()) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
-            snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+            snprintf(pret, MAXL, "%g", date_produs->getProductPrice());
 
-            cout << fixed << setprecision(2) << date_produs->pret_produs
-                 << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
+            cout << fixed << setprecision(2) << date_produs->getProductPrice()
+                 << setw(cmax_pret_produse - to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
 
             free(pret);
         }
@@ -2847,40 +2859,33 @@ void sortare_produs_alfabetic(const int tip_sortare)
 
     bool sort = true;
 
-    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr;
-    DETALII_PRODUS::NOD_DETALII_PRODUS *l_ptr = nullptr;
+    PRODUCT::PRODUCT_NODE *ptr;
+    PRODUCT::PRODUCT_NODE *l_ptr = nullptr;
 
-    if (produs.getHead() == nullptr)
+    if (product.getHead() == nullptr)
         return;
 
     do
     {
         sort = true;
-        ptr = produs.getHead();
+        ptr = product.getHead();
 
         while (ptr->next != l_ptr)
         {
             if (tip_sortare == 1)
             {
-                if (strcmp(ptr->Denumire_Produs, ptr->next->Denumire_Produs) > 0)
+                if (strcmp(ptr->getProductName(), ptr->next->getProductName()) > 0)
                 {
-                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                    swap(ptr->pret_produs, ptr->next->pret_produs);
-
+                    
+                    ptr->PRODUCT::PRODUCT_NODE::swapData(*(ptr->next));
                     sort = false;
                 }
             }
             else if (tip_sortare == 2)
             {
-                if (strcmp(ptr->Denumire_Produs, ptr->next->Denumire_Produs) < 0)
+                if (strcmp(ptr->getProductName(), ptr->next->getProductName()) < 0)
                 {
-                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                    swap(ptr->pret_produs, ptr->next->pret_produs);
-
+                    ptr->PRODUCT::PRODUCT_NODE::swapData(*(ptr->next));
                     sort = false;
                 }
             }
@@ -2915,40 +2920,32 @@ void sortare_produs_pret(const int tip_sortare)
 
     bool sort = true;
 
-    DETALII_PRODUS::NOD_DETALII_PRODUS *ptr;
-    DETALII_PRODUS::NOD_DETALII_PRODUS *l_ptr = nullptr;
+    PRODUCT::PRODUCT_NODE *ptr;
+    PRODUCT::PRODUCT_NODE *l_ptr = nullptr;
 
-    if (produs.getHead() == nullptr)
+    if (product.getHead() == nullptr)
         return;
 
     do
     {
         sort = true;
-        ptr = produs.getHead();
+        ptr = product.getHead();
 
         while (ptr->next != l_ptr)
         {
             if (tip_sortare == 1)
             {
-                if (ptr->pret_produs > ptr->next->pret_produs)
+                if (ptr->getProductPrice() > ptr->next->getProductPrice())
                 {
-                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                    swap(ptr->pret_produs, ptr->next->pret_produs);
-
+                    ptr->PRODUCT::PRODUCT_NODE::swapData(*(ptr->next));
                     sort = false;
                 }
             }
             else if (tip_sortare == 2)
             {
-                if (ptr->pret_produs < ptr->next->pret_produs)
+                if (ptr->getProductPrice() < ptr->next->getProductPrice())
                 {
-                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                    swap(ptr->pret_produs, ptr->next->pret_produs);
-
+                    ptr->PRODUCT::PRODUCT_NODE::swapData(*(ptr->next));
                     sort = false;
                 }
             }
@@ -3009,21 +3006,21 @@ void cautare_produs_ID(void)
          << "Pret_Produs\n";
     underline(80, true);
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (_strcasecmp_(date_produs->ID_Produs, I_ID) == 0)
+        if (_strcasecmp_(date_produs->getProductID(), I_ID) == 0)
         {
             gasit = true;
 
-            cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
-                 << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
-                 << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
+            cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
+                 << " " << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5)
+                 << " " << date_produs->getProductCategory() << setw(cmax_categorie_produse - strlen(date_produs->getProductCategory()) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
-            snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+            snprintf(pret, MAXL, "%g", date_produs->getProductPrice());
 
-            cout << fixed << setprecision(2) << date_produs->pret_produs
-                 << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
+            cout << fixed << setprecision(2) << date_produs->getProductPrice()
+                 << setw(cmax_pret_produse - to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
 
             free(pret);
             break;
@@ -3110,21 +3107,21 @@ void cautare_produs_denumire(void)
 
     underline(80, true);
 
-    for (DETALII_PRODUS::NOD_DETALII_PRODUS *date_produs = produs.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (_strcasecmp_(date_produs->Denumire_Produs, I_Denumire) == 0)
+        if (_strcasecmp_(date_produs->getProductName(), I_Denumire) == 0)
         {
             gasit = true;
 
-            cout << setw(5 + 1) << " [" << date_produs->ID_Produs << "]" << setw(cmax_ID_produs - strlen(date_produs->ID_Produs) + 9)
-                 << " " << date_produs->Denumire_Produs << setw(cmax_denumire_produse - strlen(date_produs->Denumire_Produs) + 5)
-                 << " " << date_produs->Categorie_Produs << setw(cmax_categorie_produse - strlen(date_produs->Categorie_Produs) + 10) << " ";
+            cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
+                 << " " << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5)
+                 << " " << date_produs->getProductCategory() << setw(cmax_categorie_produse - strlen(date_produs->getProductCategory()) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
-            snprintf(pret, MAXL, "%g", date_produs->pret_produs);
+            snprintf(pret, MAXL, "%g", date_produs->getProductPrice());
 
-            cout << fixed << setprecision(2) << date_produs->pret_produs
-                 << setw(cmax_pret_produse - to_string(round(date_produs->pret_produs)).length() + 10) << "RON\n";
+            cout << fixed << setprecision(2) << date_produs->getProductPrice()
+                 << setw(cmax_pret_produse - to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
 
             free(pret);
             break;

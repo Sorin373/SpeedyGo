@@ -7,11 +7,11 @@ using std::cout;
 using std::setw;
 
 TRASEE_GPS trasee_gps;
-DEPOZIT depozit;
+DEPOT depot;
 ORAS oras;
-DETALII_PRODUS produs;
+PRODUCT product;
 TRASEU _traseu;
-APROVIZIONARE aprovizionare;
+SUPPLY supply;
 
 #ifdef _WIN32
 HANDLE hConsole;

@@ -38,10 +38,11 @@ include_directories(include)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(${PROJECT_NAME}
-    "src/classes/aprovizionare.cpp"
-    "src/classes/autentificare.cpp"
-    "src/classes/depozit.cpp"
-    "src/classes/detalii_produs.cpp"
+    "src/classes/supply.cpp"
+    "src/classes/authentification.cpp"
+    "src/classes/depot.cpp"
+    "src/classes/product.cpp"
+
     "src/classes/oras.cpp"
     "src/classes/trasee_gps.cpp"
     "src/classes/traseu.cpp"
