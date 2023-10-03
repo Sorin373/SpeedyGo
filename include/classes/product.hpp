@@ -1,6 +1,6 @@
 #pragma once
-#ifndef DETALII_PRODUS_HPP
-#define DETALII_PRODUS_HPP
+#ifndef PRODUCT_HPP
+#define PRODUCT_HPP
 
 class PRODUCT
 {

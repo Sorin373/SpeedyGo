@@ -6,10 +6,10 @@
 #include "classes/authentification.hpp"
 #include "classes/depot.hpp"
 #include "classes/product.hpp"
+#include "classes/city.hpp"
+#include "classes/DistanceHandler.hpp"
+#include "classes/route.hpp"
 
-#include "classes/oras.hpp"
-#include "classes/trasee_gps.hpp"
-#include "classes/traseu.hpp"
 #include <vector>
 #include <cstring>
 #include <limits.h>
@@ -55,11 +55,11 @@ struct GRAF
 
 using GRAF_NEORIENTAT = GRAF;
 
-extern TRASEE_GPS trasee_gps;
+extern ADJACENCY_MATRIX_INITIALIZER adjacency_matrix_init;
 extern DEPOT depot;
-extern ORAS oras;
+extern CITY city;
 extern PRODUCT product;
-extern TRASEU _traseu;
+extern ROUTE route;
 extern SUPPLY supply;
 
 #ifdef _WIN32

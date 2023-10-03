@@ -138,7 +138,7 @@ bool accesareDate(void)
             double tempLat = res->getDouble("latitudine");
             double tempLong = res->getDouble("longitudine");
 
-            oras.insearareDateOrase(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
+            city.getData(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
 
             contor_noduri_graf++;
 
@@ -290,7 +290,7 @@ bool adaugare_depozit(void)
 
             sql::Statement *stmt = nullptr;
 
-            string table_name = "oras";
+            string table_name = "city";
             string query = "INSERT INTO " + table_name + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + to_string(contor_noduri_graf) + ", '" + Denumire_Depozit + "', " + to_string(lat) + ", " + to_string(lon) + ", '" + Tip_Depozit + "')";
             stmt = con->createStatement();
             stmt->execute(query);
@@ -350,7 +350,7 @@ bool stergere_depozit(void)
 
         sql::Statement *stmt = nullptr;
 
-        string table_name = "oras";
+        string table_name = "city";
         string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + ID;
         stmt = con->createStatement();
         stmt->execute(query);
@@ -398,11 +398,11 @@ void legaturi_graf(void)
     cin.ignore(9999, '\n');
     cin.get(legatura, MAXL);
 
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-        if (_strcasecmp_(date_oras->denumire_oras, legatura) == 0)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        if (_strcasecmp_(date_oras->getCityName(), legatura) == 0)
         {
             gasit = true;
-            ID_Legatura = stoi(date_oras->ID_Oras);
+            ID_Legatura = stoi(date_oras->getCityID());
             break;
         }
 
@@ -431,11 +431,11 @@ void legaturi_graf(void)
         if (_strcasecmp_(legatura, "0") == 0)
             break;
 
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (_strcasecmp_(date_oras->denumire_oras, legatura) == 0)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            if (_strcasecmp_(date_oras->getCityName(), legatura) == 0)
             {
                 gasit = true;
-                ID_Legatura = stoi(date_oras->ID_Oras);
+                ID_Legatura = stoi(date_oras->getCityID());
                 break;
             }
 
@@ -468,9 +468,9 @@ bool SQL_Data_Update(const int input)
         }
         else
         {
-            oras.~ORAS();
-            oras.head_oras = nullptr;
-            oras.tail_oras = nullptr;
+            city.~CITY();
+            city.head_city = nullptr;
+            city.tail_city = nullptr;
 
             product.~PRODUCT();
             product.head_product = nullptr;
@@ -516,9 +516,9 @@ bool SQL_Data_Update(const int input)
 
             fisier.close();
 
-            oras.~ORAS();
-            oras.head_oras = nullptr;
-            oras.tail_oras = nullptr;
+            city.~CITY();
+            city.head_city = nullptr;
+            city.tail_city = nullptr;
 
             product.~PRODUCT();
             product.head_product = nullptr;

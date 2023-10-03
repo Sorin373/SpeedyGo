@@ -65,7 +65,7 @@ bool start(void)
     cout << setw(6) << " "
          << "--> Data sort complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    sortare_date_oras(1);
+    city.sortData(1);
     cout << setw(6) << " "
          << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -313,10 +313,10 @@ int main(int argc, char **argv)
                             sortare_depozit_alfabetic(2);
                             break;
                         case 4:
-                            sortare_date_oras(2);
+                            city.sortData(2);
                             break;
                         case 5:
-                            sortare_date_oras(1);
+                            city.sortData(1);
                             break;
                         case 6:
                             unsigned int MENIU_3_1_6;

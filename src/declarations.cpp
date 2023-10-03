@@ -6,11 +6,11 @@
 using std::cout;
 using std::setw;
 
-TRASEE_GPS trasee_gps;
+ADJACENCY_MATRIX_INITIALIZER adjacency_matrix_init;
 DEPOT depot;
-ORAS oras;
+CITY city;
 PRODUCT product;
-TRASEU _traseu;
+ROUTE route;
 SUPPLY supply;
 
 #ifdef _WIN32

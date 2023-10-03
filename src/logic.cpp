@@ -104,33 +104,33 @@ bool _init_(void)
         }
     }
 
-    for (TRASEE_GPS::NOD_TRASEE_GPS *date_gps = trasee_gps.getHead(); date_gps != nullptr; date_gps = date_gps->next)
+    for (ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE *date_gps = adjacency_matrix_init.getHead(); date_gps != nullptr; date_gps = date_gps->next)
     {
         char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
         char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
 
         int ID_Oras1 = 0, ID_Oras2 = 0;
 
-        double distanta = date_gps->distanta;
-        int durata = date_gps->durata;
+        double distanta = date_gps->getDistance();
+        int durata = date_gps->getDuration();
 
-        strcpy(oras1, date_gps->start);
-        strcpy(oras2, date_gps->destinatie);
+        strcpy(oras1, date_gps->getStart());
+        strcpy(oras2, date_gps->getDestination());
 
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            if (_strcasecmp_(date_oras->denumire_oras, oras1) == 0)
+            if (_strcasecmp_(date_oras->getCityName(), oras1) == 0)
             {
-                ID_Oras1 = stoi(date_oras->ID_Oras);
+                ID_Oras1 = stoi(date_oras->getCityID());
                 break;
             }
         }
 
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            if (_strcasecmp_(date_oras->denumire_oras, oras2) == 0)
+            if (_strcasecmp_(date_oras->getCityName(), oras2) == 0)
             {
-                ID_Oras2 = stoi(date_oras->ID_Oras);
+                ID_Oras2 = stoi(date_oras->getCityID());
                 break;
             }
         }
@@ -147,13 +147,13 @@ bool _init_(void)
 
 void nr_max_caractere_den(void)
 {
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (strlen(date_oras->denumire_oras) > cmax_denumire_orase)
-            cmax_denumire_orase = strlen(date_oras->denumire_oras);
+        if (strlen(date_oras->getCityName()) > cmax_denumire_orase)
+            cmax_denumire_orase = strlen(date_oras->getCityName());
 
         char temp[MAXL];
-        sprintf(temp, "%f", date_oras->latitudine);
+        sprintf(temp, "%f", date_oras->getLatitude());
 
         for (unsigned int i = 0; i < strlen(temp); i++)
             if (temp[i] == '.')
@@ -235,19 +235,19 @@ void afisare_date_tabel_oras(void)
          << "Longitudine\n";
     underline(80, true);
 
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
-             << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
-             << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-             << " " << fixed << setprecision(2) << date_oras->latitudine;
+        cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
+             << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+             << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
+             << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
         cout << "\370";
 #elif __linux__
         cout << "\u00B0";
 #endif
-        cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-             << " " << date_oras->longitudine;
+        cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+             << " " << date_oras->getLongitude();
 #ifdef _WIN32
         cout << "\370" << endl;
 #elif __linux__
@@ -313,137 +313,6 @@ void afisare_date_tabel_produs(void)
     underline(80, true);
 }
 
-#pragma region SORT_DATE_INITIALE
-/*
-void sortare_date_depozit(void)
-{
-    bool vsort = true;
-
-    DEPOT::DEPOT_NODE *ptr;
-    DEPOT::DEPOT_NODE *l_ptr = nullptr;
-
-    if (depot.getHead() == nullptr)
-        return;
-    do
-    {
-        vsort = true;
-        ptr = depot.getHead();
-
-        while (ptr->next != l_ptr)
-        {
-            int _ID1 = stoi(ptr->getProductID()), _ID2 = stoi(ptr->next->getProductID());
-            if (_ID1 > _ID2)
-            {
-                swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                swap(ptr->ID_Oras, ptr->next->ID_Oras);
-                swap(ptr->Cantitate_Produs, ptr->next->Cantitate_Produs);
-
-                vsort = false;
-            }
-            ptr = ptr->next;
-        }
-        l_ptr = ptr;
-    } while (!vsort);
-}
-
-
-void sortare_date_produs(const int tip_sortare)
-{
-    bool vsort = true;
-
-    PRODUCT::PRODUCT_NODE *ptr;
-    PRODUCT::PRODUCT_NODE *l_ptr = nullptr;
-
-    if (product.getHead() == nullptr)
-        return;
-    do
-    {
-        vsort = true;
-        ptr = product.getHead();
-        while (ptr->next != l_ptr)
-        {
-            int _ID1 = stoi(ptr->ID_Produs), _ID2 = stoi(ptr->next->ID_Produs);
-
-            if (tip_sortare == 1)
-            {
-                if (_ID1 > _ID2)
-                {
-                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                    swap(ptr->pret_produs, ptr->next->pret_produs);
-
-                    vsort = false;
-                }
-            }
-            else if (tip_sortare == 2)
-            {
-                if (_ID1 < _ID2)
-                {
-                    swap(ptr->ID_Produs, ptr->next->ID_Produs);
-                    swap(ptr->Categorie_Produs, ptr->next->Categorie_Produs);
-                    swap(ptr->Denumire_Produs, ptr->next->Denumire_Produs);
-                    swap(ptr->pret_produs, ptr->next->pret_produs);
-
-                    vsort = false;
-                }
-            }
-
-            ptr = ptr->next;
-        }
-        l_ptr = ptr;
-    } while (!vsort);
-}
-*/
-
-void sortare_date_oras(const int tip_sortare)
-{
-    bool vsort = true;
-
-    ORAS::NOD_ORAS *ptr;
-    ORAS::NOD_ORAS *l_ptr = nullptr;
-
-    if (oras.getHead() == nullptr)
-        return;
-    do
-    {
-        vsort = true;
-        ptr = oras.getHead();
-
-        while (ptr->next != l_ptr)
-        {
-            int _ID1 = stoi(ptr->ID_Oras), _ID2 = stoi(ptr->next->ID_Oras);
-
-            if (tip_sortare == 1)
-            {
-                if (_ID1 > _ID2)
-                {
-                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
-                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
-                    swap(ptr->latitudine, ptr->next->latitudine);
-                    swap(ptr->longitudine, ptr->next->longitudine);
-                    vsort = false;
-                }
-            }
-            else if (tip_sortare == 2)
-            {
-                if (_ID1 < _ID2)
-                {
-                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
-                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
-                    swap(ptr->latitudine, ptr->next->latitudine);
-                    swap(ptr->longitudine, ptr->next->longitudine);
-                    vsort = false;
-                }
-            }
-
-            ptr = ptr->next;
-        }
-        l_ptr = ptr;
-    } while (!vsort);
-}
-#pragma endregion
-
 bool verificare_orase_stoc_limitat(void)
 {
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
@@ -492,14 +361,14 @@ void depozite_conectate(int ID_Depozit)
     cout << "\n";
 
     vector<bool> temp_depozite(contor_noduri_graf, false);
-    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    CITY::CITY_NODE *date_oras = city.getHead();
     char *t_denumire = (char *)malloc(MAXL * sizeof(char) + 1);
 
     while (date_oras != nullptr)
     {
-        int _ID = stoi(date_oras->ID_Oras);
+        int _ID = stoi(date_oras->getCityID());
         if (_ID == ID_Depozit)
-            strcpy(t_denumire, date_oras->denumire_oras);
+            strcpy(t_denumire, date_oras->getCityName());
         date_oras = date_oras->next;
     }
 
@@ -511,13 +380,14 @@ void depozite_conectate(int ID_Depozit)
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (temp_depozite[i] == true)
         {
-            date_oras = oras.getHead();
+            date_oras = city.getHead();
             while (date_oras != nullptr)
             {
-                int _ID = stoi(date_oras->ID_Oras);
-                if (_ID == i && _strcasecmp_(t_denumire, date_oras->denumire_oras) != 0)
+                int _ID = stoi(date_oras->getCityID());
+                if (_ID == i && _strcasecmp_(t_denumire, date_oras->getCityName()) != 0)
                 {
-                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5)
+                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->getCityName() 
+                         << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 5)
                          << " (" << matrice_drum[ID_Depozit][i].distanta << "km | " << matrice_drum[ID_Depozit][i].durata << "min)\n";
                     break;
                 }
@@ -534,12 +404,12 @@ void depozite_conectate(int ID_Depozit)
 
 void determinare_tip_depozit(void)
 {
-    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    CITY::CITY_NODE *date_oras = city.getHead();
     while (date_oras != nullptr)
     {
-        if (_strcasecmp_(date_oras->tip_depozit, "centralizat") == 0)
+        if (_strcasecmp_(date_oras->getCityType(), "centralizat") == 0)
         {
-            int ID = stoi(date_oras->ID_Oras);
+            int ID = stoi(date_oras->getCityID());
             depozite_centralizate[ID] = true;
         }
         date_oras = date_oras->next;
@@ -549,10 +419,10 @@ void determinare_tip_depozit(void)
 void cautare_orase_stoc_limitat(void)
 {
     contor_orase_stoc_limitat = 0;
-    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    CITY::CITY_NODE *date_oras = city.getHead();
     while (date_oras != nullptr)
     {
-        int _ID_Oras = stoi(date_oras->ID_Oras);
+        int _ID_Oras = stoi(date_oras->getCityID());
 
         DEPOT::DEPOT_NODE *date_depozit = depot.getHead();
         while (date_depozit != nullptr)
@@ -609,19 +479,19 @@ void vizualizare_status_stoc(void)
 
     underline(40, true);
 
-    ORAS::NOD_ORAS *date_oras = oras.getHead();
+    CITY::CITY_NODE *date_oras = city.getHead();
     int cmax = 0;
 
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
         if (orase_stoc_limitat[i])
         {
-            date_oras = oras.getHead();
+            date_oras = city.getHead();
             while (date_oras != nullptr)
             {
-                int _ID = stoi(date_oras->ID_Oras);
+                int _ID = stoi(date_oras->getCityID());
                 if (_ID == i)
-                    cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras
-                         << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 5) << " ";
+                    cout << setw(5 + 1) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName()
+                         << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 5) << " ";
                 date_oras = date_oras->next;
             }
             cout << "\n";
@@ -655,11 +525,11 @@ void vizualizare_status_stoc(void)
     {
         int _ID_Oras = stoi(t_ID_Oras);
         free(t_ID_Oras);
-        date_oras = oras.getHead();
+        date_oras = city.getHead();
 
         while (date_oras != nullptr)
         {
-            int t_ID = stoi(date_oras->ID_Oras);
+            int t_ID = stoi(date_oras->getCityID());
             if (t_ID == _ID_Oras && orase_stoc_limitat[t_ID] == true)
             {
                 unsigned int sMENIU;
@@ -671,7 +541,7 @@ void vizualizare_status_stoc(void)
                     cout << "\n\n"
                          << setw(5) << " "
                          << "+--------------------------------------------+\n"
-                         << setw(7) << " " << date_oras->denumire_oras << " | Tip depot: " << date_oras->tip_depozit << "\n"
+                         << setw(7) << " " << date_oras->getCityName() << " | Tip depot: " << date_oras->getCityName() << "\n"
                          << setw(5) << " "
                          << "+--------------------------------------------+\n";
 
@@ -738,7 +608,7 @@ void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &d
             reverse(traseu.begin(), traseu.end());
 
             if (creare_trasee)
-                _traseu.inserareDateTraseu(start, i, distanta[i], traseu);
+                route.getData(start, i, distanta[i], traseu);
 
             if (afisare)
                 for (unsigned int j = 0; j < traseu.size(); j++)
@@ -792,12 +662,12 @@ void afisare_depozite_centralizare(void)
     for (unsigned int i = 0; i < contor_noduri_graf; i++)
     {
         if (depozite_centralizate[i])
-            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
-                int ID = stoi(date_oras->ID_Oras);
+                int ID = stoi(date_oras->getCityID());
                 if (ID == i)
                 {
-                    cout << setw(5 + 1) << " [" << ID << "] " << date_oras->denumire_oras << endl;
+                    cout << setw(5 + 1) << " [" << ID << "] " << date_oras->getCityName() << endl;
                     break;
                 }
             }
@@ -818,27 +688,29 @@ void afisare_trasee_optime(const int _ID, const int vStart)
         return;
     }
 
-    for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
+    for (ROUTE::ROUTE_NODE *date_traseu = route.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
     {
-        if (date_traseu->destinatie == _ID && date_traseu->start == vStart)
+        if (date_traseu->getDestination() == _ID && date_traseu->getStart() == vStart)
         {
             gasit = true;
             cout << "\n"
                  << setw(5) << " "
                  << "Distanta: ";
-            cout << date_traseu->distanta << "km\n"
+            cout << date_traseu->getDistance() << "km\n"
                  << setw(5) << " ";
 
-            for (unsigned int i = 0; i < date_traseu->traseu.size(); i++)
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-                {
-                    int ID = stoi(date_oras->ID_Oras);
+            const vector<int>& traseu = date_traseu->getRoute();
 
-                    if (ID == date_traseu->traseu[i])
+            for (unsigned int i = 0; i < traseu.size(); i++)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                {
+                    int ID = stoi(date_oras->getCityID());
+
+                    if (ID == traseu[i])
                     {
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         // corectare afisare '->'
-                        if (i != date_traseu->traseu.size() - 1)
+                        if (i != traseu.size() - 1)
                             cout << " --> ";
                         break;
                     }
@@ -868,27 +740,27 @@ void afisare_optiuni_trasee_optime(const int vStart)
 
     char *oras_start = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        int ID = stoi(date_oras->ID_Oras);
+        int ID = stoi(date_oras->getCityID());
         if (ID == vStart)
         {
-            strcpy(oras_start, date_oras->denumire_oras);
+            strcpy(oras_start, date_oras->getCityName());
             break;
         }
     }
 
-    for (TRASEU::NOD_TRASEU *date_traseu = _traseu.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
+    for (ROUTE::ROUTE_NODE *date_traseu = route.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
     {
-        if (date_traseu->start == vStart)
+        if (date_traseu->getStart() == vStart)
         {
-            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
-                int ID = stoi(date_oras->ID_Oras);
-                if (ID == date_traseu->destinatie)
+                int ID = stoi(date_oras->getCityID());
+                if (ID == date_traseu->getDestination())
                 {
-                    cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "] ";
-                    cout << oras_start << " -> " << date_oras->denumire_oras << endl;
+                    cout << setw(5 + 1) << " [" << date_oras->getCityID() << "] ";
+                    cout << oras_start << " -> " << date_oras->getCityName() << endl;
                     break;
                 }
             }
@@ -1013,10 +885,10 @@ void afisare_depozite_izolate(void)
     underline(75, true);
 
     int cmax = -1;
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (strlen(date_oras->denumire_oras) > cmax)
-            cmax = strlen(date_oras->denumire_oras);
+        if (strlen(date_oras->getCityName()) > cmax)
+            cmax = strlen(date_oras->getCityName());
     }
 
     bool gasit = false;
@@ -1024,22 +896,22 @@ void afisare_depozite_izolate(void)
         if (orase_izolate[i] == true)
         {
             gasit = true;
-            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
-                int ID = stoi(date_oras->ID_Oras);
+                int ID = stoi(date_oras->getCityID());
                 if (ID == i)
                 {
-                    cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
-                         << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
-                         << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                         << " " << fixed << setprecision(2) << date_oras->latitudine;
+                    cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
+                         << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                         << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
+                         << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
                     cout << "\370";
 #elif __linux__
                     cout << "\u00B0";
 #endif
-                    cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                         << " " << date_oras->longitudine;
+                    cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                         << " " << date_oras->getLongitude();
 #ifdef _WIN32
                     cout << "\370" << endl;
 #elif __linux__
@@ -1110,32 +982,32 @@ void afisare_depozite_unic_drum(void)
     if (gasit)
     {
         int cmax = -1;
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            if (strlen(date_oras->denumire_oras) > cmax)
-                cmax = strlen(date_oras->denumire_oras);
+            if (strlen(date_oras->getCityName()) > cmax)
+                cmax = strlen(date_oras->getCityName());
         }
 
         for (unsigned int i = 0; i < orase_conexiune_unica.size(); i++)
         {
             if (orase_conexiune_unica[i])
             {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
-                    int ID = stoi(date_oras->ID_Oras);
+                    int ID = stoi(date_oras->getCityID());
                     if (ID == i)
                     {
-                        cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
-                             << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
-                             << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                             << " " << fixed << setprecision(2) << date_oras->latitudine;
+                        cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
+                             << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                             << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
+                             << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
                         cout << "\370";
 #elif __linux__
                         cout << "\u00B0";
 #endif
-                        cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                             << " " << date_oras->longitudine;
+                        cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                             << " " << date_oras->getLongitude();
 #ifdef _WIN32
                         cout << "\370" << endl;
 #elif __linux__
@@ -1413,12 +1285,12 @@ void TSP(void)
 
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
-                    int ID = stoi(date_oras->ID_Oras);
+                    int ID = stoi(date_oras->getCityID());
                     if (ID == traseu_minim_TSP[i])
                     {
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -1460,12 +1332,12 @@ void TSP(void)
 
                 for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
                 {
-                    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                     {
-                        int ID = stoi(date_oras->ID_Oras);
+                        int ID = stoi(date_oras->getCityID());
                         if (ID == traseu_minim_TSP[i])
                         {
-                            cout << date_oras->denumire_oras;
+                            cout << date_oras->getCityName();
                             if (i < contor_traseu_TSP)
                                 cout << " --> ";
                             break;
@@ -1507,12 +1379,12 @@ void TSP(void)
 
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
-                    int ID = stoi(date_oras->ID_Oras);
+                    int ID = stoi(date_oras->getCityID());
                     if (ID == traseu_minim_TSP[i])
                     {
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -1565,16 +1437,16 @@ void pagina_principala_TSP(void)
              << setw(5) << " ";
         for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
         {
-            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
-                int ID = stoi(date_oras->ID_Oras);
+                int ID = stoi(date_oras->getCityID());
 
                 if (i == 1)
                     if (ID == traseu_minim_TSP[1])
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         resetText();
 
                         cout << " --> ";
@@ -1587,7 +1459,7 @@ void pagina_principala_TSP(void)
 
                 if (ID == traseu_minim_TSP[i] && i != 1)
                 {
-                    cout << date_oras->denumire_oras;
+                    cout << date_oras->getCityName();
                     if (i < contor_traseu_TSP)
                         cout << " --> ";
                     break;
@@ -1599,14 +1471,14 @@ void pagina_principala_TSP(void)
     underline(190, false);
 
     cout << "\n";
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        int ID = stoi(date_oras->ID_Oras);
+        int ID = stoi(date_oras->getCityID());
         if (ID == traseu_minim_TSP[1])
         {
             cout << setw(5) << " "
                  << "+-----------------------+\n"
-                 << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << " - START\n"
+                 << setw(8) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName() << " - START\n"
                  << setw(5) << " "
                  << "+-----------------------+";
             break;
@@ -1725,12 +1597,12 @@ void pagina_finala_TSP(void)
 
         for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
         {
-            for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
-                int ID = stoi(date_oras->ID_Oras);
+                int ID = stoi(date_oras->getCityID());
                 if (ID == traseu_minim_TSP[i])
                 {
-                    log_out << date_oras->denumire_oras;
+                    log_out << date_oras->getCityName();
                     if (i < contor_traseu_TSP)
                         log_out << " --> ";
                     break;
@@ -1789,16 +1661,16 @@ void pagina_stanga_TSP(void)
 
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
-                    int ID = stoi(date_oras->ID_Oras);
+                    int ID = stoi(date_oras->getCityID());
 
                     if (ID == traseu_minim_TSP[pagina] && i == pagina)
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
 
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
 
                         resetText();
 #elif __linux__
@@ -1813,7 +1685,7 @@ void pagina_stanga_TSP(void)
 
                     if (ID == traseu_minim_TSP[i] && i != pagina)
                     {
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -1825,14 +1697,14 @@ void pagina_stanga_TSP(void)
         underline(190, false);
         cout << "\n";
 
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            int ID = stoi(date_oras->ID_Oras);
+            int ID = stoi(date_oras->getCityID());
             if (ID == traseu_minim_TSP[pagina])
             {
                 cout << setw(5) << " "
                      << "+-----------------------+\n"
-                     << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << "\n"
+                     << setw(8) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName() << "\n"
                      << setw(5) << " "
                      << "+-----------------------+";
                 break;
@@ -1945,16 +1817,16 @@ void pagina_dreapta_TSP(void)
 
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
-                    int ID = stoi(date_oras->ID_Oras);
+                    int ID = stoi(date_oras->getCityID());
 
                     if (ID == traseu_minim_TSP[pagina] && i == pagina)
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
 
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
 
                         resetText();
 #elif __linux__
@@ -1969,7 +1841,7 @@ void pagina_dreapta_TSP(void)
 
                     if (ID == traseu_minim_TSP[i] && i != pagina)
                     {
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -1981,14 +1853,14 @@ void pagina_dreapta_TSP(void)
         underline(190, false);
         cout << "\n";
 
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            int ID = stoi(date_oras->ID_Oras);
+            int ID = stoi(date_oras->getCityID());
             if (ID == traseu_minim_TSP[pagina])
             {
                 cout << setw(5) << " "
                      << "+-----------------------+\n"
-                     << setw(8) << " [" << date_oras->ID_Oras << "] " << date_oras->denumire_oras << "\n"
+                     << setw(8) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName() << "\n"
                      << setw(5) << " "
                      << "+-----------------------+";
                 break;
@@ -2153,12 +2025,12 @@ void parcurgere_traseu_TSP(void)
 #endif
             for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
             {
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
-                    int ID = stoi(date_oras->ID_Oras);
+                    int ID = stoi(date_oras->getCityID());
                     if (ID == traseu_minim_TSP[i])
                     {
-                        cout << date_oras->denumire_oras;
+                        cout << date_oras->getCityName();
                         if (i < contor_traseu_TSP)
                             cout << " --> ";
                         break;
@@ -2351,9 +2223,9 @@ void consola_mysql(void)
 
                 underline(100, true);
 
-                oras.~ORAS();
-                oras.head_oras = nullptr;
-                oras.tail_oras = nullptr;
+                city.~CITY();
+                city.head_city = nullptr;
+                city.tail_city = nullptr;
 
                 product.~PRODUCT();
                 product.head_product = nullptr;
@@ -2437,20 +2309,20 @@ void sortare_tip_depozit(void)
              << "Longitudine\n";
         underline(80, true);
 
-        for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (_strcasecmp_(date_oras->tip_depozit, input) == 0)
+        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            if (_strcasecmp_(date_oras->getCityType(), input) == 0)
             {
-                cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
-                     << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
-                     << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                     << " " << fixed << setprecision(2) << date_oras->latitudine;
+                cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
+                     << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                     << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
+                     << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
                 cout << "\370";
 #elif __linux__
                 cout << "\u00B0";
 #endif
-                cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                     << " " << date_oras->longitudine;
+                cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                     << " " << date_oras->getLongitude();
 #ifdef _WIN32
                 cout << "\370" << endl;
 #elif __linux__
@@ -2496,42 +2368,32 @@ void sortare_depozit_alfabetic(const int tip_sortare)
 
     bool sort = true;
 
-    ORAS::NOD_ORAS *ptr;
-    ORAS::NOD_ORAS *l_ptr = nullptr;
+    CITY::CITY_NODE *ptr;
+    CITY::CITY_NODE *l_ptr = nullptr;
 
-    if (oras.getHead() == nullptr)
+    if (city.getHead() == nullptr)
         return;
 
     do
     {
         sort = true;
-        ptr = oras.getHead();
+        ptr = city.getHead();
 
         while (ptr->next != l_ptr)
         {
             if (tip_sortare == 1)
             {
-                if (strcmp(ptr->denumire_oras, ptr->next->denumire_oras) > 0)
+                if (strcmp(ptr->getCityName(), ptr->next->getCityName()) > 0)
                 {
-                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
-                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
-                    swap(ptr->latitudine, ptr->next->latitudine);
-                    swap(ptr->longitudine, ptr->next->longitudine);
-                    swap(ptr->tip_depozit, ptr->next->tip_depozit);
-
+                    ptr->CITY::CITY_NODE::swapData(*(ptr->next));
                     sort = false;
                 }
             }
             else if (tip_sortare == 2)
             {
-                if (strcmp(ptr->denumire_oras, ptr->next->denumire_oras) < 0)
+                if (strcmp(ptr->getCityName(), ptr->next->getCityName()) < 0)
                 {
-                    swap(ptr->ID_Oras, ptr->next->ID_Oras);
-                    swap(ptr->denumire_oras, ptr->next->denumire_oras);
-                    swap(ptr->latitudine, ptr->next->latitudine);
-                    swap(ptr->longitudine, ptr->next->longitudine);
-                    swap(ptr->tip_depozit, ptr->next->tip_depozit);
-
+                    ptr->CITY::CITY_NODE::swapData(*(ptr->next));
                     sort = false;
                 }
             }
@@ -2596,23 +2458,23 @@ void cautare_oras_ID(void)
          << "Longitudine\n";
     underline(80, true);
 
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (_strcasecmp_(date_oras->ID_Oras, I_ID) == 0)
+        if (_strcasecmp_(date_oras->getCityID(), I_ID) == 0)
         {
             gasit = true;
 
-            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
-                 << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
-                 << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                 << " " << fixed << setprecision(2) << date_oras->latitudine;
+            cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
+                 << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                 << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
+                 << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
             cout << "\370";
 #elif __linux__
             cout << "\u00B0";
 #endif
-            cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                 << " " << date_oras->longitudine;
+            cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                 << " " << date_oras->getLongitude();
 #ifdef _WIN32
             cout << "\370" << endl;
 #elif __linux__
@@ -2704,23 +2566,23 @@ void cautare_depozit_denumire(void)
          << "Longitudine\n";
     underline(80, true);
 
-    for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (_strcasecmp_(date_oras->denumire_oras, I_Denumire) == 0)
+        if (_strcasecmp_(date_oras->getCityName(), I_Denumire) == 0)
         {
             gasit = true;
 
-            cout << setw(5 + 1) << " [" << date_oras->ID_Oras << "]" << setw(cmax_ID_Oras - strlen(date_oras->ID_Oras) + 8)
-                 << " " << date_oras->denumire_oras << setw(cmax_denumire_orase - strlen(date_oras->denumire_oras) + 4)
-                 << " " << date_oras->tip_depozit << setw(11 - strlen(date_oras->tip_depozit) + 5)
-                 << " " << fixed << setprecision(2) << date_oras->latitudine;
+            cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
+                 << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                 << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
+                 << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
             cout << "\370";
 #elif __linux__
             cout << "\u00B0";
 #endif
-            cout << setw(cmax_lat_oras - to_string(round(date_oras->latitudine)).length() + 13)
-                 << " " << date_oras->longitudine;
+            cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                 << " " << date_oras->getLongitude();
 #ifdef _WIN32
             cout << "\370" << endl;
 #elif __linux__

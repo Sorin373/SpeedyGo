@@ -160,24 +160,24 @@ bool _GPS_UPDATE_DATA_(void)
                 double lat_oras1 = 0.0, long_oras1 = 0.0;
                 double lat_oras2 = 0.0, long_oras2 = 0.0;
 
-                for (ORAS::NOD_ORAS *date_oras = oras.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
                     if (lat_oras1 != 0.0 && lat_oras2 != 0.0 && long_oras1 != 0.0 && long_oras2 != 0.0)
                         break;
 
-                    unsigned int temp_ID = stoi(date_oras->ID_Oras);
+                    unsigned int temp_ID = stoi(date_oras->getCityID());
 
                     if (temp_ID == ID_1)
                     {
-                        strcpy(oras1, date_oras->denumire_oras);
-                        lat_oras1 = date_oras->latitudine;
-                        long_oras1 = date_oras->longitudine;
+                        strcpy(oras1, date_oras->getCityName());
+                        lat_oras1 = date_oras->getLatitude();
+                        long_oras1 = date_oras->getLongitude();
                     }
                     else if (temp_ID == ID_2)
                     {
-                        strcpy(oras2, date_oras->denumire_oras);
-                        lat_oras2 = date_oras->latitudine;
-                        long_oras2 = date_oras->longitudine;
+                        strcpy(oras2, date_oras->getCityName());
+                        lat_oras2 = date_oras->getLatitude();
+                        long_oras2 = date_oras->getLongitude();
                     }
                 }
 
@@ -246,7 +246,7 @@ bool _GPS_UPDATE_DATA_(void)
                         if (result == 0)
                             durata_finala = 0;
 
-                        trasee_gps.introducere_date_trasee_gps(result, durata_finala, oras1, oras2);
+                        adjacency_matrix_init.getData(result, durata_finala, oras1, oras2);
                     }
                     else
                     {

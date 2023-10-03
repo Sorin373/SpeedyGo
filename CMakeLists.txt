@@ -42,10 +42,10 @@ add_executable(${PROJECT_NAME}
     "src/classes/authentification.cpp"
     "src/classes/depot.cpp"
     "src/classes/product.cpp"
+    "src/classes/city.cpp"
+    "src/classes/DistanceHandler.cpp"
+    "src/classes/route.cpp"
 
-    "src/classes/oras.cpp"
-    "src/classes/trasee_gps.cpp"
-    "src/classes/traseu.cpp"
     "src/main.cpp" 
     "src/declarations.cpp"
     "src/logic.cpp"
