@@ -34,6 +34,7 @@ public:
     DEPOT_NODE *getTail(void);
     void getData(const char *Product_ID, const char *City_ID, const double Product_Quantity);
     void sortData(void);
+    bool refreshData(void);
     ~DEPOT();
 };
 

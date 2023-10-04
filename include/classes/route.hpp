@@ -1,6 +1,6 @@
 #pragma once
-#ifndef ROUTES_HPP
-#define ROUTES_HPP
+#ifndef ROUTE_HPP
+#define ROUTE_HPP
 
 #include <vector>
 

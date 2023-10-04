@@ -31,9 +31,6 @@
 .vscode/
 .vs/
 
-# Ignore config.json
-# config.json
-
 # CMake
 build/
 CMakeFiles/

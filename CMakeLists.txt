@@ -45,7 +45,6 @@ add_executable(${PROJECT_NAME}
     "src/classes/city.cpp"
     "src/classes/DistanceHandler.cpp"
     "src/classes/route.cpp"
-
     "src/main.cpp" 
     "src/declarations.cpp"
     "src/logic.cpp"
@@ -86,7 +85,7 @@ add_custom_command(
 
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt ${CMAKE_BINARY_DIR}/Release/utils/legaturi.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt ${CMAKE_BINARY_DIR}/Release/utils/contor_TSP_log.txt COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json ${CMAKE_BINARY_DIR}/Release/utils/ldistante_orase.json COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json ${CMAKE_BINARY_DIR}/Release/utils/distante_orase.json COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 
 # Check if the config.json with the API key exists in the source directory

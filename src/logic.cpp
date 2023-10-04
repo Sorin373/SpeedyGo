@@ -66,7 +66,7 @@ bool autentificare_cont(void)
 
     AUTHENTICATION::getData(host_name, username, password, database);
 
-    if (accesareDate() == EXIT_FAILURE)
+    if (fetchTables() == EXIT_FAILURE)
     {
         _getch();
         free(host_name);
@@ -386,7 +386,7 @@ void depozite_conectate(int ID_Depozit)
                 int _ID = stoi(date_oras->getCityID());
                 if (_ID == i && _strcasecmp_(t_denumire, date_oras->getCityName()) != 0)
                 {
-                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->getCityName() 
+                    cout << setw(5) << " " << t_denumire << " -> " << date_oras->getCityName()
                          << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 5)
                          << " (" << matrice_drum[ID_Depozit][i].distanta << "km | " << matrice_drum[ID_Depozit][i].durata << "min)\n";
                     break;
@@ -699,7 +699,7 @@ void afisare_trasee_optime(const int _ID, const int vStart)
             cout << date_traseu->getDistance() << "km\n"
                  << setw(5) << " ";
 
-            const vector<int>& traseu = date_traseu->getRoute();
+            const vector<int> &traseu = date_traseu->getRoute();
 
             for (unsigned int i = 0; i < traseu.size(); i++)
                 for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -1575,11 +1575,11 @@ void pagina_finala_TSP(void)
 
     file.close();
 
-    if (!update_database())
+    if (!depot.refreshData())
         cerr << setw(5) << " "
              << "Could not update the database!\n";
-    else
-        accesareDate();
+    else if (fetchTables() == EXIT_FAILURE)
+        _getch();
 
     ofstream log_out;
     log_out.open("logs/TSP_log.txt", std::ios::app);
@@ -2235,7 +2235,8 @@ void consola_mysql(void)
                 depot.head_depot = nullptr;
                 depot.tail_depot = nullptr;
 
-                accesareDate();
+                if (fetchTables() == EXIT_FAILURE)
+                    _getch();
 
                 delete stmt;
                 delete res;
@@ -2738,7 +2739,7 @@ void sortare_produs_alfabetic(const int tip_sortare)
             {
                 if (strcmp(ptr->getProductName(), ptr->next->getProductName()) > 0)
                 {
-                    
+
                     ptr->PRODUCT::PRODUCT_NODE::swapData(*(ptr->next));
                     sort = false;
                 }

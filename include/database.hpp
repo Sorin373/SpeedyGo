@@ -13,11 +13,8 @@
 extern sql::Driver *driver;
 extern sql::Connection *con;
 
-extern bool accesareDate(void);
-extern bool update_database(void);
-extern bool adaugare_depozit(void);
-extern bool stergere_depozit(void);
-extern void legaturi_graf(void);
+bool addGraphEdge(void);
+extern bool fetchTables(void);
 extern bool SQL_Data_Update(const int input);
 
 #endif

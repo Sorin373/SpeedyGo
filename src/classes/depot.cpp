@@ -1,7 +1,11 @@
 #include "../../include/classes/depot.hpp"
+#include "../../include/declarations.hpp"
+#include "../../include/database.hpp"
+
 #include <cstring>
 #include <string>
 #include <iostream>
+#include <iomanip>
 
 DEPOT::DEPOT_NODE::DEPOT_NODE(const char *Product_ID, const char *City_ID, const double Product_Quantity)
 {
@@ -102,6 +106,50 @@ void DEPOT::sortData(void)
 void DEPOT::DEPOT_NODE::updateQuantity(const double newQuantity)
 {
     Product_Quantity = newQuantity;
+}
+
+bool DEPOT::refreshData(void)
+{
+    try
+    {
+        std::string deleteQuery = "DELETE FROM depozit";
+        sql::Statement *stmt = con->createStatement();
+
+        stmt->executeUpdate(deleteQuery);
+        delete stmt;
+
+        std::string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
+        sql::PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
+
+        for (DEPOT::DEPOT_NODE *date_depozit = head_depot; date_depozit != nullptr; date_depozit = date_depozit->next)
+        {
+            int Product_ID = std::stoi(date_depozit->getProductID()),
+                City_ID = std::stoi(date_depozit->getCityID()),
+                Product_Quantity = date_depozit->getProductQuantity();
+
+            prepStmt->setInt(1, Product_ID);
+            prepStmt->setInt(2, City_ID);
+            prepStmt->setInt(3, Product_Quantity);
+
+            prepStmt->executeUpdate();
+        }
+
+        delete prepStmt;
+    }
+    catch (sql::SQLException &e)
+    {
+        std::cerr << "\n"
+                  << std::setw(5) << " "
+                  << "-- Error code: " << e.getErrorCode() << "\n"
+                  << std::setw(5) << " "
+                  << "-- Error message: " << e.what() << "\n"
+                  << std::setw(5) << " "
+                  << "-- SQLState: " << e.getSQLState() << "\n";
+
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
 
 DEPOT::~DEPOT()

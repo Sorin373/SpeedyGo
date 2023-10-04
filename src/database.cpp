@@ -1,28 +1,21 @@
 #include "../include/database.hpp"
 #include "../include/declarations.hpp"
-#include "../include/logic.hpp"
 #include "../include/haversine.hpp"
-#include <iostream>
-#include <string>
+#include "../include/logic.hpp"
+
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include <iomanip>
+#include <string>
 
-using std::cout;
-using std::cin;
-using std::cerr;
-using std::endl;
-using std::setw;
-using std::to_string;
-using std::stoi;
-using std::ifstream;
-using std::ofstream;
-using std::string;
+using std::cout, std::cin, std::cerr, std::endl, std::setw, std::to_string, std::stoi,
+      std::ifstream, std::ofstream, std::string;
 
 sql::Driver *driver;
 sql::Connection *con;
 
-bool accesareDate(void)
+bool fetchTables(void)
 {
     try
     {
@@ -49,25 +42,20 @@ bool accesareDate(void)
 
         while (res->next())
         {
-            string str;
-            sql::SQLString sqlstr;
+            int iProduct_ID = res->getInt("ID_Produs");
+            char *cProduct_ID = (char *)malloc(to_string(iProduct_ID).length() + 1);
+            strcpy(cProduct_ID, to_string(iProduct_ID).c_str());
 
-            int idProdus = res->getInt("ID_Produs");
-            str = to_string(idProdus);
-            char *tempIdProdus = (char *)malloc(str.length() + 1);
-            strcpy(tempIdProdus, str.c_str());
+            int iCity_ID = res->getInt("ID_Oras");
+            char *cCity_ID = (char *)malloc(to_string(iCity_ID).length() + 1);
+            strcpy(cCity_ID, to_string(iCity_ID).c_str());
 
-            int idOras = res->getInt("ID_Oras");
-            str = to_string(idOras);
-            char *tempIdOras = (char *)malloc(str.length() + 1);
-            strcpy(tempIdOras, str.c_str());
+            double Prdouct_Quantity = res->getDouble("Cantitate_Produs");
 
-            double tempCantitate_Produs = res->getDouble("Cantitate_Produs");
+            depot.getData(cProduct_ID, cCity_ID, Prdouct_Quantity);
 
-            depot.getData(tempIdProdus, tempIdOras, tempCantitate_Produs);
-
-            free(tempIdProdus);
-            free(tempIdOras);
+            free(cProduct_ID);
+            free(cCity_ID);
         }
 
         res->close();
@@ -81,30 +69,26 @@ bool accesareDate(void)
         while (res->next())
         {
             sql::SQLString sqlstr;
-            string str;
 
-            int idProdus = res->getInt("ID_Produs");
-            str = to_string(idProdus);
-            char *tempIdProdus = (char *)malloc(str.length() + 1);
-            strcpy(tempIdProdus, str.c_str());
+            int iProduct_ID = res->getInt("ID_Produs");
+            char *cProduct_ID = (char *)malloc(to_string(iProduct_ID).length() + 1);
+            strcpy(cProduct_ID, to_string(iProduct_ID).c_str());
 
             sqlstr = res->getString("Denumire_Produs");
-            str = sqlstr.asStdString();
-            char *tempNumeProdus = (char *)malloc(str.length() + 1);
-            strcpy(tempNumeProdus, str.c_str());
+            char *Product_Name = (char *)malloc(sqlstr.asStdString().length() + 1);
+            strcpy(Product_Name, sqlstr.asStdString().c_str());
 
             sqlstr = res->getString("Categorie_Produs");
-            str = sqlstr.asStdString();
-            char *tempCantegorieProdus = (char *)malloc(str.length() + 1);
-            strcpy(tempCantegorieProdus, str.c_str());
+            char *Product_Category = (char *)malloc(sqlstr.asStdString().length() + 1);
+            strcpy(Product_Category, sqlstr.asStdString().c_str());
 
-            double pret_produs = res->getDouble("Pret_Produs");
+            double Product_Price = res->getDouble("Pret_Produs");
 
-            product.getData(tempIdProdus, tempNumeProdus, tempCantegorieProdus, pret_produs);
+            product.getData(cProduct_ID, Product_Name, Product_Category, Product_Price);
 
-            free(tempIdProdus);
-            free(tempNumeProdus);
-            free(tempCantegorieProdus);
+            free(cProduct_ID);
+            free(Product_Name);
+            free(Product_Category);
         }
 
         res->close();
@@ -118,33 +102,29 @@ bool accesareDate(void)
         while (res->next())
         {
             sql::SQLString sqlstr;
-            string str;
 
-            int idOras = res->getInt("ID_Oras");
-            str = to_string(idOras);
-            char *tempIdOras = (char *)malloc(str.length() + 1);
-            strcpy(tempIdOras, str.c_str());
+            int iCity_ID = res->getInt("ID_Oras");
+            char *cCity_ID = (char *)malloc(to_string(iCity_ID).length() + 1);
+            strcpy(cCity_ID, to_string(iCity_ID).c_str());
 
             sqlstr = res->getString("Denumire_Oras");
-            str = sqlstr.asStdString();
-            char *tempDenumireOras = (char *)malloc(str.length() + 1);
-            strcpy(tempDenumireOras, str.c_str());
+            char *City_Name = (char *)malloc(sqlstr.asStdString().length() + 1);
+            strcpy(City_Name, sqlstr.asStdString().c_str());
 
             sqlstr = res->getString("Tip_Depozit");
-            str = sqlstr.asStdString();
-            char *tempTipDepozit = (char *)malloc(str.length() + 1);
-            strcpy(tempTipDepozit, str.c_str());
+            char *City_Type = (char *)malloc(sqlstr.asStdString().length() + 1);    // City_Type = the type of depot (local / central)
+            strcpy(City_Type, sqlstr.asStdString().c_str());
 
-            double tempLat = res->getDouble("latitudine");
-            double tempLong = res->getDouble("longitudine");
+            double latitude = res->getDouble("latitudine");
+            double longitude = res->getDouble("longitudine");
 
-            city.getData(tempIdOras, tempDenumireOras, tempTipDepozit, tempLat, tempLong);
+            city.getData(cCity_ID, City_Name, City_Type, latitude, longitude);
 
             contor_noduri_graf++;
 
-            free(tempIdOras);
-            free(tempDenumireOras);
-            free(tempTipDepozit);
+            free(cCity_ID);
+            free(City_Name);
+            free(City_Type);
         }
 
         res->close();
@@ -157,228 +137,19 @@ bool accesareDate(void)
     {
         cerr << "\n"
              << setw(5) << " "
-             << "Error code: " << e.getErrorCode() << endl;
-        cerr << setw(5) << " "
-             << "Error message: " << e.what() << endl;
-        cerr << setw(5) << " "
-             << "SQLState: " << e.getSQLState() << endl;
-        return EXIT_FAILURE;
-
-    }
-    return EXIT_SUCCESS;
-}
-
-#pragma region Database_Update
-bool update_database(void)
-{
-    try
-    {
-        string deleteQuery = "DELETE FROM depozit";
-        sql::Statement *stmt = con->createStatement();
-        stmt->executeUpdate(deleteQuery);
-        delete stmt;
-
-        string insertQuery = "INSERT INTO depozit (ID_Produs, ID_Oras, Cantitate_Produs) VALUES (?, ?, ?)";
-        sql::PreparedStatement *prepStmt = con->prepareStatement(insertQuery);
-
-        for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
-        {
-            int ID_Produs = stoi(date_depozit->getProductID());
-            int ID_Oras = stoi(date_depozit->getCityID());
-            int Cantitate_Produs = date_depozit->getProductQuantity();
-
-            prepStmt->setInt(1, ID_Produs);
-            prepStmt->setInt(2, ID_Oras);
-            prepStmt->setInt(3, Cantitate_Produs);
-
-            prepStmt->executeUpdate();
-        }
-
-        delete prepStmt;
-
-        return EXIT_SUCCESS;
-    }
-    catch (sql::SQLException &e)
-    {
-        cerr << "\n"
+             << "Error code: " << e.getErrorCode() << endl
              << setw(5) << " "
-             << "-- Error code: " << e.getErrorCode() << endl;
-        cerr << setw(5) << " "
-             << "-- Error message: " << e.what() << endl;
-        cerr << setw(5) << " "
-             << "-- SQLState: " << e.getSQLState() << endl;
-
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
-}
-
-bool adaugare_depozit(void)
-{
-    char *Denumire_Depozit = (char *)malloc(MAXL * sizeof(char) + 1);
-    char *Tip_Depozit = (char *)malloc(MAXL * sizeof(char) + 1);
-    double lat = 0.0, lon = 0.0;
-
-    clear_screen();
-
-    cout << "\n\n"
-         << setw(16) << " "
-         << "Introduceti datele noului depozit\n";
-    underline(60, true);
-
-    cout << setw(5) << " "
-         << "ID depozit: " << contor_noduri_graf << "\n";
-
-    cout << setw(5) << " "
-         << "Denumire depozit: ";
-    cin.get();
-    cin.get(Denumire_Depozit, MAXL);
-    strcpy(denumire_depozit_nou, Denumire_Depozit);
-
-    cout << setw(5) << " "
-         << "Tip depozit:\n\n";
-    cout << setw(5) << " "
-         << "[1] Local / [2] Centralizat\n";
-
-    cout << setw(5) << " "
-         << "I: ";
-    char *input = (char *)malloc(MAXL * sizeof(char) + 1);
-    cin >> input;
-
-    if (_strcasecmp_(input, "1") == 0)
-        strcpy(Tip_Depozit, "local");
-    else if (_strcasecmp_(input, "2") == 0)
-        strcpy(Tip_Depozit, "centralizat");
-
-    clear_screen();
-
-    cout << "\n\n"
-         << setw(16) << " "
-         << "Introduceti datele noului depozit\n";
-    underline(60, true);
-
-    cout << setw(5) << " "
-         << "ID depozit: " << contor_noduri_graf << "\n"
-         << setw(5) << " "
-         << "Denumire depozit: " << Denumire_Depozit << "\n"
-         << setw(5) << " "
-         << "Tip depozit: " << Tip_Depozit << "\n";
-
-    cout << setw(5) << " "
-         << "Latitudine: ";
-    cin >> lat;
-    cout << setw(5) << " "
-         << "Longitudine: ";
-    cin >> lon;
-
-    underline(60, true);
-
-    cout << setw(5) << " "
-         << "Doriti sa finalizati? [Y]/[N] ";
-    cin >> input;
-
-    if (_strcasecmp_(input, "N") == 0)
-        return EXIT_FAILURE;
-    else if (_strcasecmp_(input, "Y") == 0)
-    {
-        try
-        {
-            cout << "\n"
-                 << setw(5) << " "
-                 << "Start...\n";
-
-            sql::Statement *stmt = nullptr;
-
-            string table_name = "city";
-            string query = "INSERT INTO " + table_name + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + to_string(contor_noduri_graf) + ", '" + Denumire_Depozit + "', " + to_string(lat) + ", " + to_string(lon) + ", '" + Tip_Depozit + "')";
-            stmt = con->createStatement();
-            stmt->execute(query);
-            stmt->close();
-
-            delete stmt;
-
-            cout << setw(5) << " "
-                 << "Success...\n";
-
-            return EXIT_SUCCESS;
-        }
-        catch (sql::SQLException &e)
-        {
-            cerr << "\n"
-                 << setw(5) << " "
-                 << "Error code: " << e.getErrorCode() << endl;
-            cerr << setw(5) << " "
-                 << "Error message: " << e.what() << endl;
-            cerr << setw(5) << " "
-                 << "SQLState: " << e.getSQLState() << endl;
-
-            return EXIT_FAILURE;
-        }
-    }
-
-    free(Denumire_Depozit);
-    free(Tip_Depozit);
-    free(input);
-
-    return EXIT_SUCCESS;
-}
-
-bool stergere_depozit(void)
-{
-    clear_screen();
-
-    afisare_date_tabel_oras();
-
-    string ID;
-    cout << setw(5) << " "
-         << "Introduceti ID-ul corespunzator ('EXIT' pentru a anula): ";
-
-    cin.ignore(9999, '\n');
-    getline(cin, ID);
-
-    const char* cStrID = ID.c_str();
-
-    if (_strcasecmp_(cStrID, "EXIT") == 0)
-        return EXIT_SUCCESS;
-
-    try
-    {
-        cout << "\n"
+             << "Error message: " << e.what() << endl
              << setw(5) << " "
-             << "Start...\n";
-
-        sql::Statement *stmt = nullptr;
-
-        string table_name = "city";
-        string query = "DELETE FROM " + table_name + " WHERE ID_Oras = " + ID;
-        stmt = con->createStatement();
-        stmt->execute(query);
-        stmt->close();
-
-        delete stmt;
-
-        cout << setw(5) << " "
-             << "Success...\n";
-
-
-        return EXIT_SUCCESS;
-    }
-    catch (sql::SQLException &e)
-    {
-        cerr << "\n"
-             << setw(5) << " "
-             << "Error code: " << e.getErrorCode() << endl;
-        cerr << setw(5) << " "
-             << "Error message: " << e.what() << endl;
-        cerr << setw(5) << " "
              << "SQLState: " << e.getSQLState() << endl;
 
         return EXIT_FAILURE;
     }
+
+    return EXIT_SUCCESS;
 }
 
-void legaturi_graf(void)
+bool addGraphEdge(void)
 {
     clear_screen();
     cout << "\n\n";
@@ -386,85 +157,65 @@ void legaturi_graf(void)
     afisare_date_tabel_oras();
 
     cout << setw(5) << " "
-         << "Introduceti legaturile depozitului ('0' pentru a te intoarce):\n";
+         << "Enter the city edges ('0' to return):\n";
+
     underline(80, true);
 
-    cout << setw(5) << " " << denumire_depozit_nou << " <--> ";
-
-    char *legatura = (char *)malloc(MAXL * sizeof(char) + 1);
-    int ID_Legatura = 0;
-    bool gasit = false;
-
-    cin.ignore(9999, '\n');
-    cin.get(legatura, MAXL);
-
-    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-        if (_strcasecmp_(date_oras->getCityName(), legatura) == 0)
-        {
-            gasit = true;
-            ID_Legatura = stoi(date_oras->getCityID());
-            break;
-        }
-
-    ofstream fisier;
-    fisier.open("utils/legaturi.txt", std::ios::out | std::ios::app);
-    if (!fisier.is_open())
+    ofstream edgeFile;
+    edgeFile.open("utils/legaturi.txt", std::ios::out | std::ios::app);
+    if (!edgeFile.is_open())
     {
         cerr << setw(5) << " "
-             << "Failed to open file!";
+             << "--> Failed to open the edge file!\n";
         _getch();
-        return;
+        return EXIT_FAILURE;
     }
 
-    if (gasit)
-        fisier << "\n" << contor_noduri_graf - 1 << " " << ID_Legatura << "\n";
-    else
-        cerr << setw(5) << " " << "Legatura invalida!\n\n";
-
+    cin.ignore(9999, '\n');
     while (true)
     {
-        gasit = false;
-        cout << setw(5) << " " << denumire_depozit_nou << " <--> ";
-        cin.ignore(9999, '\n');
-        cin.get(legatura, MAXL);
+        string edge;
+        int City_ID = -1;
+        bool isFound = false;
 
-        if (_strcasecmp_(legatura, "0") == 0)
+        cout << setw(5) << " " << denumire_depozit_nou << " <--> ";
+        std::getline(cin, edge);
+
+        if (_strcasecmp_(edge.c_str(), "0") == 0)
             break;
 
         for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (_strcasecmp_(date_oras->getCityName(), legatura) == 0)
+            if (_strcasecmp_(date_oras->getCityName(), edge.c_str()) == 0)
             {
-                gasit = true;
-                ID_Legatura = stoi(date_oras->getCityID());
+                isFound = true;
+                City_ID = stoi(date_oras->getCityID());
                 break;
             }
 
-        if (gasit)
-            fisier << contor_noduri_graf - 1 << " " << ID_Legatura << "\n";
+        if (isFound)
+            edgeFile << contor_noduri_graf - 1 << " " << City_ID << "\n";
         else
             cerr << setw(5) << " " << "Legatura invalida!\n\n";
     }
     
-    if (load_data("utils/legaturi.txt") == EXIT_FAILURE)
-    {
-        cerr << setw(5) << " " << "Failed to update matrix!\n";
-        _getch();
-        return; 
-    }
+    _init_();
 
-    fisier.close();
-    free(legatura);
+    edgeFile.close();
+
+    return EXIT_SUCCESS;
 }
 
+// TO DO
 bool SQL_Data_Update(const int input)
 {
     if (input == 1)
     {
-        if (adaugare_depozit() == EXIT_FAILURE)
+        if (CITY::addCity() == EXIT_FAILURE)
         {
             cerr << setw(5) << " "
-                 << "SQL: Failed to add row!\n";
+                 << "sql-> Failed to add city!\n";
             _getch();
+            return EXIT_FAILURE;
         }
         else
         {
@@ -481,13 +232,25 @@ bool SQL_Data_Update(const int input)
             depot.tail_depot = nullptr;
 
             contor_noduri_graf = 0;
-            accesareDate();
-            legaturi_graf();
+
+            if (fetchTables() == EXIT_FAILURE)
+            {
+                _getch();
+                return EXIT_FAILURE;
+            }
+
+            if (addGraphEdge() == EXIT_FAILURE)
+            {
+                cerr << setw(5) << " " << "Failed to add edge!\n";
+                _getch();
+                return EXIT_FAILURE;
+            }
+                
         }
     }
     else if (input == 2)
     {
-        if (stergere_depozit() == EXIT_FAILURE)
+        if (CITY::deleteCity() == EXIT_FAILURE)
         {
             cerr << setw(5) << " "
                  << "SQL: Failed to delete row!\n";
@@ -529,11 +292,14 @@ bool SQL_Data_Update(const int input)
             depot.tail_depot = nullptr;
 
             contor_noduri_graf = 0;
-            accesareDate();
 
-            return EXIT_SUCCESS;
+            if (fetchTables() == EXIT_FAILURE)
+            {
+                _getch();
+                return EXIT_FAILURE;
+            }
         }
     }
+
     return EXIT_SUCCESS;
 }
-#pragma endregion
