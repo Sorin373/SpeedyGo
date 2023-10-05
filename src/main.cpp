@@ -3,6 +3,7 @@
 #include "../include/GoogleMatrixAPI.hpp"
 #include "../include/haversine.hpp"
 #include "../include/database.hpp"
+
 #include <iostream>
 #include <iomanip>
 #include <thread>
@@ -69,7 +70,7 @@ bool start(void)
     cout << setw(6) << " "
          << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    product.sortData(1);
+    PRODUCT::PRODUCT_NODE::sortData(1);
     cout << setw(6) << " "
          << "--> Data sort complete (3)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -93,7 +94,7 @@ bool start(void)
     cout << setw(6) << " "
          << "--> Data configuration complete (5)\n";
 
-    traseu_minim_TSP[1] = -1;
+    minimumRouteTSP[1] = -1;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
@@ -102,13 +103,13 @@ bool start(void)
 
 void free_memory(void)
 {
-    matrice_drum.clear();
-    depozite_centralizate.clear();
-    orase_stoc_limitat.clear();
-    orase_izolate.clear();
-    orase_conexiune_unica.clear();
-    stiva.clear();
-    traseu_minim_TSP.clear();
+    adjacencyMatrix.clear();
+    centralDepos.clear();
+    limitedStockCities.clear();
+    isolatedVertex.clear();
+    oneEdgeVertex.clear();
+    stack.clear();
+    minimumRouteTSP.clear();
     free(denumire_depozit_nou);
     AUTHENTICATION::cleanup();
     delete con;
@@ -403,25 +404,25 @@ int main(int argc, char **argv)
                         switch (MENIU_3_2)
                         {
                         case 1:
-                            sortare_categorie_produs();
+                            PRODUCT::PRODUCT_NODE::filterProductByCategory();
                             break;
                         case 2:
-                            sortare_produs_alfabetic(1);
+                            PRODUCT::PRODUCT_NODE::alphabeticalProductSort(1);
                             break;
                         case 3:
-                            sortare_produs_alfabetic(2);
+                            PRODUCT::PRODUCT_NODE::alphabeticalProductSort(2);
                             break;
                         case 4:
-                            product.sortData(2);
+                            PRODUCT::PRODUCT_NODE::sortData(2);
                             break;
                         case 5:
-                            sortare_produs_pret(1);
+                            PRODUCT::PRODUCT_NODE::sortDataByPrice(1);
                             break;
                         case 6:
-                            sortare_produs_pret(2);
+                            PRODUCT::PRODUCT_NODE::sortDataByPrice(2);
                             break;
                         case 7:
-                            product.sortData(1);
+                            PRODUCT::PRODUCT_NODE::sortData(1);
                             break;
                         case 8:
                             unsigned int MENIU_3_2_8;
@@ -448,10 +449,10 @@ int main(int argc, char **argv)
                                 switch (MENIU_3_2_8)
                                 {
                                 case 1:
-                                    cautare_produs_denumire();
+                                    PRODUCT::PRODUCT_NODE::searchProductByName();
                                     break;
                                 case 2:
-                                    cautare_produs_ID();
+                                    PRODUCT::PRODUCT_NODE::searchProductByID();
                                     break;
 
                                 default:
@@ -463,6 +464,7 @@ int main(int argc, char **argv)
                             break;
 
                         default:
+                            PRODUCT::PRODUCT_NODE::sortData(1);
                             break;
                         }
 
@@ -517,18 +519,18 @@ int main(int argc, char **argv)
                     _GPS_UPDATE_DATA_();
                     break;
                 case 2:
-                    if (SQL_Data_Update(1) == EXIT_FAILURE)
+                    if (CITY::addCity() == EXIT_FAILURE)
                     {
                         cerr << setw(5) << " "
-                             << "SQL: Failed to updated table!";
+                             << "sql-> Failed to add row!\n";
                         _getch();
                     }
                     break;
                 case 3:
-                    if (SQL_Data_Update(2) == EXIT_FAILURE)
+                    if (CITY::deleteCity() == EXIT_FAILURE)
                     {
                         cerr << setw(5) << " "
-                             << "SQL: Failed to updated table!";
+                             << "sql-> Failed to delete row!\n";
                         _getch();
                     }
                     break;

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef DECLARATIONS
-#define DECLARATIONS
+#ifndef DECLARATIONS_HPP
+#define DECLARATIONS_HPP
 
 #include "classes/supply.hpp"
 #include "classes/authentification.hpp"
@@ -43,17 +43,13 @@
 #define VAL_STOC_MAXIM 50
 #define EARTH_RADIUS_KM 6371.0
 
-using std::vector;
-
 constexpr int N = 1001;
 
-struct GRAF
+typedef struct GRAF
 {
-    double distanta;
-    int durata;
-};
-
-using GRAF_NEORIENTAT = GRAF;
+    double distance;
+    int duration;
+}GRAF_NEORIENTAT;
 
 extern ADJACENCY_MATRIX_INITIALIZER adjacency_matrix_init;
 extern DEPOT depot;
@@ -68,17 +64,17 @@ extern CONSOLE_SCREEN_BUFFER_INFO csbi;
 extern WORD originalAttributes;
 #endif
 
-extern vector<vector<GRAF_NEORIENTAT>> matrice_drum;
-extern vector<bool> depozite_centralizate;
-extern vector<bool> orase_stoc_limitat;
-extern vector<bool> orase_izolate;
-extern vector<bool> orase_conexiune_unica;
-extern vector<int> stiva;
-extern vector<int> traseu_minim_TSP;
+extern std::vector<std::vector<GRAF_NEORIENTAT>> adjacencyMatrix;
+extern std::vector<bool> centralDepos;
+extern std::vector<bool> limitedStockCities;
+extern std::vector<bool> isolatedVertex;
+extern std::vector<bool> oneEdgeVertex;
+extern std::vector<int> stack;
+extern std::vector<int> minimumRouteTSP;
 
-extern long long unsigned int contor_log;
+extern long long unsigned int logCounter;
 
-extern int contor_noduri_graf, nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse, contor_orase_stoc_limitat,
+extern int VERTEX_COUNT, nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse, contor_orase_stoc_limitat,
     contor_stiva, contor_traseu_TSP, pagina, contor_orase, ERROR_CNT;
 
 extern bool trasee, traseu_completat, buffer, use_API;

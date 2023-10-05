@@ -7,10 +7,13 @@ class ADJACENCY_MATRIX_INITIALIZER
 public:
     struct ADJACENCY_MATRIX_INITIALIZER_NODE
     {
+    private:
         double distance = 0.0;
         int duration = 0;
         char *start = nullptr;
         char *destination = nullptr;
+
+    public:
         ADJACENCY_MATRIX_INITIALIZER_NODE *prev = nullptr;
         ADJACENCY_MATRIX_INITIALIZER_NODE *next = nullptr;
 

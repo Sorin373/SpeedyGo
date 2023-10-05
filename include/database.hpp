@@ -1,6 +1,6 @@
 #pragma once
-#ifndef DATABASE
-#define DATABASE
+#ifndef DATABASE_HPP
+#define DATABASE_HPP
 
 #ifdef _WIN32
 #include <jdbc/mysql_connection.h>
@@ -15,6 +15,5 @@ extern sql::Connection *con;
 
 bool addGraphEdge(void);
 extern bool fetchTables(void);
-extern bool SQL_Data_Update(const int input);
 
 #endif

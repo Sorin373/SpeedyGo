@@ -1,6 +1,6 @@
 #pragma once
-#ifndef GOOGLE_MATRIX_API
-#define GOOGLE_MATRIX_API
+#ifndef GOOGLE_MATRIX_API_HPP
+#define GOOGLE_MATRIX_API_HPP
 
 #include <string>
 

@@ -33,6 +33,7 @@ public:
     DEPOT_NODE *getHead(void);
     DEPOT_NODE *getTail(void);
     void getData(const char *Product_ID, const char *City_ID, const double Product_Quantity);
+    void fetchTable(void);
     void sortData(void);
     bool refreshData(void);
     ~DEPOT();

@@ -7,8 +7,9 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <fstream>
 
-using std::cin, std::cout, std::cerr, std::endl, std::string, std::setw, std::to_string;
+using std::cin, std::cout, std::cerr, std::endl, std::string, std::setw;
 
 CITY::CITY_NODE::CITY_NODE(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude)
 {
@@ -143,7 +144,7 @@ bool CITY::addCity(void)
     underline(60, true);
 
     cout << setw(5) << " "
-         << "City ID: " << contor_noduri_graf << "\n"
+         << "City ID: " << VERTEX_COUNT << "\n"
          << setw(5) << " "
          << "City Name: ";
 
@@ -175,7 +176,7 @@ bool CITY::addCity(void)
     underline(60, true);
 
     cout << setw(5) << " "
-         << "Depot ID: " << contor_noduri_graf << "\n"
+         << "Depot ID: " << VERTEX_COUNT << "\n"
          << setw(5) << " "
          << "Depot Name: " << Depot_Name << "\n"
          << setw(5) << " "
@@ -207,7 +208,7 @@ bool CITY::addCity(void)
             sql::Statement *stmt = nullptr;
 
             string tableName = "oras",
-                   query = "INSERT INTO " + tableName + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + to_string(contor_noduri_graf) + ", '" + Depot_Name + "', " + to_string(latitude) + ", " + to_string(longitude) + ", '" + Depot_Type + "')";
+                   query = "INSERT INTO " + tableName + " (ID_Oras, Denumire_Oras, latitudine, longitudine, Tip_Depozit) VALUES (" + std::to_string(VERTEX_COUNT) + ", '" + Depot_Name + "', " + std::to_string(latitude) + ", " + std::to_string(longitude) + ", '" + Depot_Type + "')";
 
             stmt = con->createStatement();
             stmt->execute(query);
@@ -235,6 +236,22 @@ bool CITY::addCity(void)
     free(Depot_Name);
     free(Depot_Type);
     free(input);
+
+    VERTEX_COUNT = 0;
+
+    if (fetchTables() == EXIT_FAILURE)
+    {
+        _getch();
+        return EXIT_FAILURE;
+    }
+
+    if (addGraphEdge() == EXIT_FAILURE)
+    {
+        std::cerr << std::setw(5) << " "
+                  << "Failed to add edge!\n";
+        _getch();
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }
@@ -289,7 +306,80 @@ bool CITY::deleteCity(void)
         return EXIT_FAILURE;
     }
 
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+    {
+        adjacencyMatrix[std::stoi(ID.c_str())][i].distance = adjacencyMatrix[i][std::stoi(ID.c_str())].distance = 0.0;
+        adjacencyMatrix[std::stoi(ID.c_str())][i].duration = adjacencyMatrix[i][std::stoi(ID.c_str())].duration = 0;
+    }
+
+    std::ofstream edgeFile("utils/legaturi.txt");
+    if (!edgeFile.is_open())
+    {
+        std::cerr << std::setw(5) << " "
+                  << "Failed to open file!\n";
+        _getch();
+        return EXIT_FAILURE;
+    }
+
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
+            if (adjacencyMatrix[i][j].distance != 0 && i < j)
+                edgeFile << j << " " << i << "\n";
+
+    edgeFile.close();
+
+    VERTEX_COUNT = 0;
+
+    if (fetchTables() == EXIT_FAILURE)
+    {
+        _getch();
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
+}
+
+void CITY::fetchTable(void)
+{
+    sql::Statement *stmt = nullptr;
+    sql::ResultSet *res = nullptr;
+
+    stmt = con->createStatement();
+    res = stmt->executeQuery("SELECT * FROM oras");
+
+    while (res->next())
+    {
+        sql::SQLString sqlstr;
+
+        int iCity_ID = res->getInt("ID_Oras");
+        char *cCity_ID = (char *)malloc(std::to_string(iCity_ID).length() + 1);
+        strcpy(cCity_ID, std::to_string(iCity_ID).c_str());
+
+        sqlstr = res->getString("Denumire_Oras");
+        char *City_Name = (char *)malloc(sqlstr.asStdString().length() + 1);
+        strcpy(City_Name, sqlstr.asStdString().c_str());
+
+        sqlstr = res->getString("Tip_Depozit");
+        char *City_Type = (char *)malloc(sqlstr.asStdString().length() + 1); // City_Type = the type of depot (local / central)
+        strcpy(City_Type, sqlstr.asStdString().c_str());
+
+        double latitude = res->getDouble("latitudine");
+        double longitude = res->getDouble("longitudine");
+
+        city.getData(cCity_ID, City_Name, City_Type, latitude, longitude);
+
+        VERTEX_COUNT++;
+
+        free(cCity_ID);
+        free(City_Name);
+        free(City_Type);
+    }
+
+    res->close();
+    stmt->close();
+
+    delete res;
+    delete stmt;
 }
 
 CITY::~CITY()
@@ -302,4 +392,7 @@ CITY::~CITY()
         ptr = ptr->next;
         delete temp;
     }
+
+    head_city = nullptr;
+    tail_city = nullptr;
 }

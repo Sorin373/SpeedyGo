@@ -152,6 +152,38 @@ bool DEPOT::refreshData(void)
     return EXIT_SUCCESS;
 }
 
+void DEPOT::fetchTable(void)
+{
+    sql::Statement *stmt = nullptr;
+    sql::ResultSet *res = nullptr;
+
+    stmt = con->createStatement();
+    res = stmt->executeQuery("SELECT * FROM depozit");
+
+    while (res->next())
+    {
+        int iProduct_ID = res->getInt("ID_Produs");
+        char *cProduct_ID = (char *)malloc(std::to_string(iProduct_ID).length() + 1);
+        strcpy(cProduct_ID, std::to_string(iProduct_ID).c_str());
+
+        int iCity_ID = res->getInt("ID_Oras");
+        char *cCity_ID = (char *)malloc(std::to_string(iCity_ID).length() + 1);
+        strcpy(cCity_ID, std::to_string(iCity_ID).c_str());
+
+        double Prdouct_Quantity = res->getDouble("Cantitate_Produs");
+
+        depot.getData(cProduct_ID, cCity_ID, Prdouct_Quantity);
+
+        free(cProduct_ID);
+        free(cCity_ID);
+    }
+
+    res->close();
+    stmt->close();
+    delete res;
+    delete stmt;
+}
+
 DEPOT::~DEPOT()
 {
     DEPOT_NODE *ptr = head_depot;
@@ -162,4 +194,7 @@ DEPOT::~DEPOT()
         ptr = ptr->next;
         delete temp;
     }
+
+    head_depot = nullptr;
+    tail_depot = nullptr;
 }

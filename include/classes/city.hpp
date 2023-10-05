@@ -35,6 +35,7 @@ public:
     CITY_NODE *getHead(void);
     CITY_NODE *getTail(void);
     void getData(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude);
+    void fetchTable(void);
     void sortData(const int sortType);
     static bool addCity(void);
     static bool deleteCity(void);

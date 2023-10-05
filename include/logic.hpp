@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGIC
-#define LOGIC
+#ifndef LOGIC_HPP
+#define LOGIC_HPP
 
 #include <vector>
 
@@ -50,10 +50,5 @@ extern void sortare_tip_depozit(void);
 extern void sortare_depozit_alfabetic(const int tip_sortare);
 extern void cautare_oras_ID(void);
 extern void cautare_depozit_denumire(void);
-extern void sortare_categorie_produs(void);
-extern void sortare_produs_alfabetic(const int tip_sortare);
-extern void sortare_produs_pret(const int tip_sortare);
-extern void cautare_produs_ID(void);
-extern void cautare_produs_denumire(void);
 
 #endif
