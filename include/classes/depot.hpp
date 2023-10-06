@@ -22,6 +22,8 @@ public:
         double getProductQuantity(void) const;
         void swapData(DEPOT_NODE &node);
         void updateQuantity(const double newQuantity);
+
+        static void sortData(void);
     };
 
     DEPOT_NODE *head_depot = nullptr, *tail_depot = nullptr;
@@ -31,7 +33,6 @@ public:
     DEPOT_NODE *getTail(void) const;
     void getData(const char *Product_ID, const char *City_ID, const double Product_Quantity);
     void fetchTable(void);
-    void sortData(void);
     bool refreshData(void);
     ~DEPOT();
 };

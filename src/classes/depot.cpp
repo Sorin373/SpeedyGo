@@ -71,27 +71,23 @@ void DEPOT::DEPOT_NODE::swapData(DEPOT_NODE &node)
     std::swap(Product_Quantity, node.Product_Quantity);
 }
 
-void DEPOT::sortData(void)
+void DEPOT::DEPOT_NODE::sortData(void)
 {
     bool isSorted = true;
 
-    DEPOT_NODE *ptr;
-    DEPOT_NODE *l_ptr = nullptr;
+    DEPOT_NODE *ptr = nullptr, *l_ptr = nullptr;
 
-    if (head_depot == nullptr)
+    if (depot.getHead() == nullptr)
         return;
 
     do
     {
         isSorted = true;
-        ptr = head_depot;
+        ptr = depot.getHead();
 
         while (ptr->next != l_ptr)
         {
-            int id1 = std::stoi(ptr->getProductID());
-            int id2 = std::stoi(ptr->next->getProductID());
-
-            if (id1 > id2)
+            if (std::stoi(ptr->getProductID()) > std::stoi(ptr->next->getProductID()))
             {
                 ptr->swapData(*(ptr->next));
 

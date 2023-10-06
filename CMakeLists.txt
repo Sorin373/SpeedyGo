@@ -85,7 +85,6 @@ add_custom_command(
 
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt ${CMAKE_BINARY_DIR}/Release/utils/legaturi.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt ${CMAKE_BINARY_DIR}/Release/utils/contor_TSP_log.txt COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json ${CMAKE_BINARY_DIR}/Release/utils/distante_orase.json COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 
 # Check if the config.json with the API key exists in the source directory
@@ -109,7 +108,6 @@ file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/Release/*.dll")
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/logs/ DESTINATION bin/logs FILES_MATCHING PATTERN "*")
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt DESTINATION bin/utils)
-install(FILES ${CMAKE_SOURCE_DIR}/src/utils/distante_orase.json DESTINATION bin/utils)
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt DESTINATION bin/utils)
 install(FILES ${DLL_FILES} DESTINATION bin)
 

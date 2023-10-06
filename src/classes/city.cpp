@@ -186,9 +186,9 @@ void CITY::CITY_NODE::filterCityByCategory(void)
             {
                 std::cout << std::setw(5 + 1)
                           << " [" << city_data->City_ID << "]"
-                          << std::setw(cmax_ID_Oras - strlen(city_data->City_ID) + 8)
+                          << std::setw(maxCityIDLength - strlen(city_data->City_ID) + 8)
                           << " " << city_data->City_Name
-                          << std::setw(cmax_denumire_orase - strlen(city_data->City_Name) + 4)
+                          << std::setw(maxCityNameLength - strlen(city_data->City_Name) + 4)
                           << " " << city_data->City_Type
                           << std::setw(11 - strlen(city_data->City_Type) + 5) << " " << std::fixed << std::setprecision(2)
                           << city_data->latitude;
@@ -197,7 +197,7 @@ void CITY::CITY_NODE::filterCityByCategory(void)
 #elif __linux__
                 std::cout << "\u00B0";
 #endif
-                std::cout << std::setw(cmax_lat_oras - std::to_string(round(city_data->latitude)).length() + 13)
+                std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->latitude)).length() + 13)
                           << " " << city_data->longitude;
 #ifdef _WIN32
                 std::cout << "\370"
@@ -344,9 +344,9 @@ void CITY::CITY_NODE::searchCityByID(void)
 
             std::cout << std::setw(5 + 1)
                       << " [" << city_data->City_ID << "]"
-                      << std::setw(cmax_ID_Oras - strlen(city_data->City_ID) + 8)
+                      << std::setw(maxCityIDLength - strlen(city_data->City_ID) + 8)
                       << " " << city_data->City_Name
-                      << std::setw(cmax_denumire_orase - strlen(city_data->City_Name) + 4)
+                      << std::setw(maxCityNameLength - strlen(city_data->City_Name) + 4)
                       << " " << city_data->City_Type
                       << std::setw(11 - strlen(city_data->City_Type) + 5) << " " << std::fixed << std::setprecision(2)
                       << city_data->latitude;
@@ -355,7 +355,7 @@ void CITY::CITY_NODE::searchCityByID(void)
 #elif __linux__
             std::cout << "\u00B0";
 #endif
-            std::cout << std::setw(cmax_lat_oras - std::to_string(round(city_data->latitude)).length() + 13)
+            std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->latitude)).length() + 13)
                       << " " << city_data->longitude;
 #ifdef _WIN32
             std::cout << "\370"
@@ -455,9 +455,9 @@ void CITY::CITY_NODE::searchCityByName(void)
 
             std::cout << std::setw(5 + 1)
                       << " [" << city_data->City_ID << "]"
-                      << std::setw(cmax_ID_Oras - strlen(city_data->City_ID) + 8)
+                      << std::setw(maxCityIDLength - strlen(city_data->City_ID) + 8)
                       << " " << city_data->City_Name
-                      << std::setw(cmax_denumire_orase - strlen(city_data->City_Name) + 4)
+                      << std::setw(maxCityNameLength - strlen(city_data->City_Name) + 4)
                       << " " << city_data->City_Type
                       << std::setw(11 - strlen(city_data->City_Type) + 5)
                       << " " << std::fixed << std::setprecision(2)
@@ -467,7 +467,7 @@ void CITY::CITY_NODE::searchCityByName(void)
 #elif __linux__
             std::cout << "\u00B0";
 #endif
-            std::cout << std::setw(cmax_lat_oras - std::to_string(round(city_data->latitude)).length() + 13)
+            std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->latitude)).length() + 13)
                       << " " << city_data->longitude;
 #ifdef _WIN32
             std::cout << "\370"
@@ -525,7 +525,7 @@ bool CITY::addCity(void)
 
     std::cin.get();
     std::cin.get(Depot_Name, MAXL);
-    strcpy(denumire_depozit_nou, Depot_Name);
+    strcpy(newCityName, Depot_Name);
 
     std::cout << std::setw(5) << " "
               << "Depot Type:\n\n"

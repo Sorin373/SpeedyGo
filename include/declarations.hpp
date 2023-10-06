@@ -39,17 +39,17 @@
 #define M_PI 3.14159265358979323846
 #define MAX_SIZE 32
 #define MAXL 256
-#define VAL_STOC_MINIM 5
-#define VAL_STOC_MAXIM 50
+#define MINIMUM_STOCK_VALUE 5
+#define MAXIMUM_STOCK_VALUE 50
 #define EARTH_RADIUS_KM 6371.0
 
 constexpr int N = 1001;
 
-typedef struct GRAF
+typedef struct GRAPH
 {
     double distance;
     int duration;
-}GRAF_NEORIENTAT;
+} UNDIRECTED_GRAPH;
 
 extern ADJACENCY_MATRIX_INITIALIZER adjacency_matrix_init;
 extern DEPOT depot;
@@ -64,7 +64,7 @@ extern CONSOLE_SCREEN_BUFFER_INFO csbi;
 extern WORD originalAttributes;
 #endif
 
-extern std::vector<std::vector<GRAF_NEORIENTAT>> adjacencyMatrix;
+extern std::vector<std::vector<UNDIRECTED_GRAPH>> adjacencyMatrix;
 extern std::vector<bool> centralDepos;
 extern std::vector<bool> limitedStockCities;
 extern std::vector<bool> isolatedVertex;
@@ -73,19 +73,13 @@ extern std::vector<int> stack;
 extern std::vector<int> minimumRouteTSP;
 
 extern long long unsigned int logCounter;
+extern int VERTEX_COUNT, limited_stock_cities_count, stackCounter, TSP_RouteCounter, consolePage, ERROR_CNT;
+extern bool dijkstraRoutesCalculated, TSP_RoutesCompleted, buffer, _ENABLE_API;
+extern double minimumDistanceCostTSP, minimumDurationCostTSP, traveledDistanceTSP, elapsedDurationTSP, totalSupplyCost, totalSuppliedQuantity;
+extern char *newCityName;
 
-extern int VERTEX_COUNT, nr_componente, contor_depozite_centralizate, nr_maxim_orase_parcurse, contor_orase_stoc_limitat,
-    contor_stiva, contor_traseu_TSP, pagina, contor_orase, ERROR_CNT;
-
-extern bool trasee, traseu_completat, buffer, use_API;
-
-extern double cost_minim_TSP, durata_minima_TSP, distanta_parcursa, durata_parcursa,
-    cost_aprovizionare_total, cantitate_totala_aprovizionata;
-
-extern int cmax_denumire_produse, cmax_denumire_orase, cmax_categorie_produse, cmax_pret_produse, cmax_ID_Oras, cmax_lat_oras,
-    cmax_ID_produs, cmax_cantitate_produs;
-
-extern char *denumire_depozit_nou;
+extern int maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
+    maxProductIDLength, maxProductQuantityLength;
 
 extern int _strcasecmp_(const char *str1, const char *str2);
 extern void underline(const unsigned int vWidth, const bool bSetw);

@@ -86,7 +86,7 @@ bool autentificare_cont(void)
 
 bool _init_(void)
 {
-    if (_GPS_UPDATE_DATA_() == EXIT_FAILURE)
+    if (_GOOGLE_MATRIX_API_INIT_() == EXIT_FAILURE)
     {
         cout << setw(5) << " "
              << "-- Initialization of the Google API service could not be completed!\n";
@@ -141,8 +141,8 @@ void nr_max_caractere_den(void)
 {
     for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        if (strlen(date_oras->getCityName()) > cmax_denumire_orase)
-            cmax_denumire_orase = strlen(date_oras->getCityName());
+        if (strlen(date_oras->getCityName()) > maxCityNameLength)
+            maxCityNameLength = strlen(date_oras->getCityName());
 
         char temp[MAXL];
         sprintf(temp, "%f", date_oras->getLatitude());
@@ -151,17 +151,17 @@ void nr_max_caractere_den(void)
             if (temp[i] == '.')
                 temp[i] = '\0';
 
-        if (strlen(temp) > cmax_lat_oras)
-            cmax_lat_oras = strlen(temp);
+        if (strlen(temp) > maxCityLatitudeLength)
+            maxCityLatitudeLength = strlen(temp);
     }
 
     for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        if (strlen(date_produs->getProductName()) > cmax_denumire_produse)
-            cmax_denumire_produse = strlen(date_produs->getProductName());
+        if (strlen(date_produs->getProductName()) > maxProductNameLength)
+            maxProductNameLength = strlen(date_produs->getProductName());
 
-        if (strlen(date_produs->getProductCategory()) > cmax_categorie_produse)
-            cmax_categorie_produse = strlen(date_produs->getProductCategory());
+        if (strlen(date_produs->getProductCategory()) > maxProductCategoryLength)
+            maxProductCategoryLength = strlen(date_produs->getProductCategory());
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
         sprintf(pret, "%f", date_produs->getProductPrice());
@@ -170,11 +170,11 @@ void nr_max_caractere_den(void)
             if (pret[i] == '.')
                 pret[i] = '\0';
 
-        if (strlen(pret) > cmax_pret_produse)
-            cmax_pret_produse = strlen(pret);
+        if (strlen(pret) > maxProductPriceLength)
+            maxProductPriceLength = strlen(pret);
 
-        if (strlen(date_produs->getProductID()) > cmax_ID_produs)
-            cmax_ID_produs = strlen(date_produs->getProductID());
+        if (strlen(date_produs->getProductID()) > maxProductIDLength)
+            maxProductIDLength = strlen(date_produs->getProductID());
 
         free(pret);
     }
@@ -188,19 +188,19 @@ void nr_max_caractere_den(void)
             cantitiate_temp /= 10;
             contor_cifre++;
         }
-        if (contor_cifre > cmax_cantitate_produs)
-            cmax_cantitate_produs = contor_cifre;
+        if (contor_cifre > maxProductQuantityLength)
+            maxProductQuantityLength = contor_cifre;
     }
 
     int temp = VERTEX_COUNT;
     while (temp)
     {
         temp /= 10;
-        cmax_ID_Oras++;
+        maxCityIDLength++;
     }
 
-    cmax_lat_oras += 3;
-    cmax_pret_produse += 3;
+    maxCityLatitudeLength += 3;
+    maxProductPriceLength += 3;
 }
 
 void afisare_date_tabel_oras(void)
@@ -229,8 +229,8 @@ void afisare_date_tabel_oras(void)
 
     for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {
-        cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
-             << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+        cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(maxCityIDLength - strlen(date_oras->getCityID()) + 8)
+             << " " << date_oras->getCityName() << setw(maxCityNameLength - strlen(date_oras->getCityName()) + 4)
              << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
              << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
@@ -238,7 +238,7 @@ void afisare_date_tabel_oras(void)
 #elif __linux__
         cout << "\u00B0";
 #endif
-        cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+        cout << setw(maxCityLatitudeLength - to_string(round(date_oras->getLatitude())).length() + 13)
              << " " << date_oras->getLongitude();
 #ifdef _WIN32
         cout << "\370" << endl;
@@ -280,7 +280,7 @@ void afisare_date_tabel_produs(void)
          << "ID_Produs"
          << setw(4) << " "
          << "Denumire_Produs"
-         << setw(cmax_denumire_produse - 10) << " "
+         << setw(maxProductNameLength - 10) << " "
          << "Categorie_Produs"
          << setw(5) << " "
          << "Pret_Produs\n";
@@ -289,15 +289,15 @@ void afisare_date_tabel_produs(void)
 
     for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
     {
-        cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
-             << " " << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5)
-             << " " << date_produs->getProductCategory() << setw(cmax_categorie_produse - strlen(date_produs->getProductCategory()) + 10) << " ";
+        cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(maxProductIDLength - strlen(date_produs->getProductID()) + 9)
+             << " " << date_produs->getProductName() << setw(maxProductNameLength - strlen(date_produs->getProductName()) + 5)
+             << " " << date_produs->getProductCategory() << setw(maxProductCategoryLength - strlen(date_produs->getProductCategory()) + 10) << " ";
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
         snprintf(pret, MAXL, "%g", date_produs->getProductPrice());
 
         cout << fixed << setprecision(2) << date_produs->getProductPrice()
-             << setw(cmax_pret_produse - to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
+             << setw(maxProductPriceLength - to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
 
         free(pret);
     }
@@ -332,11 +332,11 @@ void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
             int ID_PRODUS_DEPOZIT = stoi(date_depozit->getProductID()), ID_DEPOZIT = stoi(date_depozit->getCityID());
             if (ID_PRODUS_DEPOZIT == ID_PRODUS && ID_DEPOZIT == ID_Depozit)
             {
-                if (date_depozit->getProductQuantity() < VAL_STOC_MINIM)
-                    cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(cmax_ID_produs - strlen(date_produs->getProductID()) + 9)
+                if (date_depozit->getProductQuantity() < MINIMUM_STOCK_VALUE)
+                    cout << setw(5 + 1) << " [" << date_produs->getProductID() << "]" << setw(maxProductIDLength - strlen(date_produs->getProductID()) + 9)
                          << " " << date_produs->getProductName()
-                         << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 3) << " " << date_depozit->getProductQuantity()
-                         << setw(cmax_cantitate_produs - to_string(round(date_produs->getProductPrice())).length() + 5) << " "
+                         << setw(maxProductNameLength - strlen(date_produs->getProductName()) + 3) << " " << date_depozit->getProductQuantity()
+                         << setw(maxProductQuantityLength - to_string(round(date_produs->getProductPrice())).length() + 5) << " "
                          << "buc.\n";
             }
         }
@@ -379,7 +379,7 @@ void depozite_conectate(int ID_Depozit)
                 if (_ID == i && _strcasecmp_(t_denumire, date_oras->getCityName()) != 0)
                 {
                     cout << setw(5) << " " << t_denumire << " -> " << date_oras->getCityName()
-                         << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 5)
+                         << setw(maxCityNameLength - strlen(date_oras->getCityName()) + 5)
                          << " (" << adjacencyMatrix[ID_Depozit][i].distance << "km | " << adjacencyMatrix[ID_Depozit][i].duration << "min)\n";
                     break;
                 }
@@ -410,7 +410,7 @@ void determinare_tip_depozit(void)
 
 void cautare_orase_stoc_limitat(void)
 {
-    contor_orase_stoc_limitat = 0;
+    limited_stock_cities_count = 0;
     CITY::CITY_NODE *date_oras = city.getHead();
     while (date_oras != nullptr)
     {
@@ -421,10 +421,10 @@ void cautare_orase_stoc_limitat(void)
         {
             int _ID_Depozit = stoi(date_depozit->getCityID());
             if (_ID_Depozit == _ID_Oras && centralDepos[_ID_Depozit] == false)
-                if (date_depozit->getProductQuantity() < VAL_STOC_MINIM)
+                if (date_depozit->getProductQuantity() < MINIMUM_STOCK_VALUE)
                 {
                     limitedStockCities[_ID_Depozit] = true;
-                    contor_orase_stoc_limitat++;
+                    limited_stock_cities_count++;
                     break;
                 }
             date_depozit = date_depozit->next;
@@ -450,7 +450,7 @@ void vizualizare_status_stoc(void)
 {
     cautare_orase_stoc_limitat();
 
-    if (contor_orase_stoc_limitat == 0)
+    if (limited_stock_cities_count == 0)
     {
         cout << "\n"
              << setw(5) << " "
@@ -483,7 +483,7 @@ void vizualizare_status_stoc(void)
                 int _ID = stoi(date_oras->getCityID());
                 if (_ID == i)
                     cout << setw(5 + 1) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName()
-                         << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 5) << " ";
+                         << setw(maxCityNameLength - strlen(date_oras->getCityName()) + 5) << " ";
                 date_oras = date_oras->next;
             }
             cout << "\n";
@@ -787,7 +787,7 @@ void afisare_optiuni_trasee_optime(const int vStart)
 
 void sistem_aprovizionare_independent(void)
 {
-    if (!trasee)
+    if (!dijkstraRoutesCalculated)
     {
         for (unsigned int i = 0; i < VERTEX_COUNT; i++)
         {
@@ -797,18 +797,18 @@ void sistem_aprovizionare_independent(void)
             if (centralDepos[i])
             {
                 dijkstra(i, distanta, distanta_minima);
-                if (!trasee)
+                if (!dijkstraRoutesCalculated)
                     creare_solutie_distanta(i, distanta, distanta_minima, false, true);
                 else
                 {
-                    trasee = true;
+                    dijkstraRoutesCalculated = true;
                     creare_solutie_distanta(i, distanta, distanta_minima, false, false);
                 }
             }
             distanta_minima.clear();
             distanta.clear();
         }
-        trasee = true;
+        dijkstraRoutesCalculated = true;
     }
 
     clear_screen();
@@ -893,8 +893,8 @@ void afisare_depozite_izolate(void)
                 int ID = stoi(date_oras->getCityID());
                 if (ID == i)
                 {
-                    cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
-                         << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                    cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(maxCityIDLength - strlen(date_oras->getCityID()) + 8)
+                         << " " << date_oras->getCityName() << setw(maxCityNameLength - strlen(date_oras->getCityName()) + 4)
                          << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
                          << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
@@ -902,7 +902,7 @@ void afisare_depozite_izolate(void)
 #elif __linux__
                     cout << "\u00B0";
 #endif
-                    cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                    cout << setw(maxCityLatitudeLength - to_string(round(date_oras->getLatitude())).length() + 13)
                          << " " << date_oras->getLongitude();
 #ifdef _WIN32
                     cout << "\370" << endl;
@@ -990,8 +990,8 @@ void afisare_depozite_unic_drum(void)
                     int ID = stoi(date_oras->getCityID());
                     if (ID == i)
                     {
-                        cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(cmax_ID_Oras - strlen(date_oras->getCityID()) + 8)
-                             << " " << date_oras->getCityName() << setw(cmax_denumire_orase - strlen(date_oras->getCityName()) + 4)
+                        cout << setw(5 + 1) << " [" << date_oras->getCityID() << "]" << setw(maxCityIDLength - strlen(date_oras->getCityID()) + 8)
+                             << " " << date_oras->getCityName() << setw(maxCityNameLength - strlen(date_oras->getCityName()) + 4)
                              << " " << date_oras->getCityType() << setw(11 - strlen(date_oras->getCityType()) + 5)
                              << " " << fixed << setprecision(2) << date_oras->getLatitude();
 #ifdef _WIN32
@@ -999,7 +999,7 @@ void afisare_depozite_unic_drum(void)
 #elif __linux__
                         cout << "\u00B0";
 #endif
-                        cout << setw(cmax_lat_oras - to_string(round(date_oras->getLatitude())).length() + 13)
+                        cout << setw(maxCityLatitudeLength - to_string(round(date_oras->getLatitude())).length() + 13)
                              << " " << date_oras->getLongitude();
 #ifdef _WIN32
                         cout << "\370" << endl;
@@ -1028,14 +1028,14 @@ void afisare_depozite_unic_drum(void)
 #pragma region backtracking
 void init_stiva_hc(void)
 {
-    stack[contor_stiva] = -1;
+    stack[stackCounter] = -1;
 }
 
 bool succesor_hc(void)
 {
-    if (stack[contor_stiva] < VERTEX_COUNT - 1)
+    if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
-        stack[contor_stiva]++;
+        stack[stackCounter]++;
         return true;
     }
     return false;
@@ -1043,22 +1043,22 @@ bool succesor_hc(void)
 
 bool solutie_hc(void)
 {
-    if (contor_stiva == contor_orase_stoc_limitat)
+    if (stackCounter == limited_stock_cities_count)
         return true;
     return false;
 }
 
 bool valid_hc(void)
 {
-    for (unsigned int i = 1; i < contor_stiva; i++)
-        if (stack[contor_stiva] == stack[i])
+    for (unsigned int i = 1; i < stackCounter; i++)
+        if (stack[stackCounter] == stack[i])
             return false;
 
-    if (contor_stiva > 1)
-        if (adjacencyMatrix[stack[contor_stiva]][stack[contor_stiva - 1]].distance == 0)
+    if (stackCounter > 1)
+        if (adjacencyMatrix[stack[stackCounter]][stack[stackCounter - 1]].distance == 0)
             return false;
 
-    if (contor_stiva > 1)
+    if (stackCounter > 1)
         if (centralDepos[stack[1]] == false)
             return false;
 
@@ -1070,30 +1070,30 @@ void determinare_ciclu_hc_minim(void)
     double suma_dist = 0.0;
     int suma_durata = 0;
 
-    for (int i = 1; i <= contor_stiva; i++)
+    for (int i = 1; i <= stackCounter; i++)
     {
         suma_dist += adjacencyMatrix[stack[i]][stack[i + 1]].distance;
         suma_durata += adjacencyMatrix[stack[i]][stack[i + 1]].duration;
     }
 
-    if (suma_dist < cost_minim_TSP || (suma_dist == cost_minim_TSP && suma_durata < durata_minima_TSP))
+    if (suma_dist < minimumDistanceCostTSP || (suma_dist == minimumDistanceCostTSP && suma_durata < minimumDurationCostTSP))
     {
-        cost_minim_TSP = suma_dist;
-        durata_minima_TSP = suma_durata;
+        minimumDistanceCostTSP = suma_dist;
+        minimumDurationCostTSP = suma_durata;
 
-        for (int i = 1; i <= contor_stiva; i++)
+        for (int i = 1; i <= stackCounter; i++)
         {
             minimumRouteTSP[i] = stack[i];
-            contor_traseu_TSP = contor_stiva;
+            TSP_RouteCounter = stackCounter;
         }
     }
 }
 
 void back_hc(void)
 {
-    contor_stiva = 1;
+    stackCounter = 1;
     init_stiva_hc();
-    while (contor_stiva > 0)
+    while (stackCounter > 0)
     {
         int vSuccesor, vValid;
         do
@@ -1108,25 +1108,25 @@ void back_hc(void)
                 determinare_ciclu_hc_minim();
             else
             {
-                contor_stiva++;
+                stackCounter++;
                 init_stiva_hc();
             }
         }
         else
-            contor_stiva--;
+            stackCounter--;
     }
 }
 
 void init_stiva_ac(void)
 {
-    stack[contor_stiva] = -1;
+    stack[stackCounter] = -1;
 }
 
 bool succesor_ac(void)
 {
-    if (stack[contor_stiva] < VERTEX_COUNT - 1)
+    if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
-        stack[contor_stiva]++;
+        stack[stackCounter]++;
         return true;
     }
     return false;
@@ -1134,21 +1134,21 @@ bool succesor_ac(void)
 
 bool solutie_ac(void)
 {
-    if (contor_stiva == VERTEX_COUNT + 1)
+    if (stackCounter == VERTEX_COUNT + 1)
         return true;
     return false;
 }
 
 bool valid_ac(void)
 {
-    if (contor_stiva == VERTEX_COUNT + 1)
+    if (stackCounter == VERTEX_COUNT + 1)
     {
         for (unsigned int i = 0; i < VERTEX_COUNT; i++)
         {
             bool gasit = false;
             if (limitedStockCities[i] == true && !isolatedVertex[i])
             {
-                for (unsigned int j = 1; j <= contor_stiva; j++)
+                for (unsigned int j = 1; j <= stackCounter; j++)
                 {
                     if (stack[j] == i)
                     {
@@ -1163,11 +1163,11 @@ bool valid_ac(void)
         }
     }
 
-    if (contor_stiva > 1)
-        if (adjacencyMatrix[stack[contor_stiva]][stack[contor_stiva - 1]].distance == 0)
+    if (stackCounter > 1)
+        if (adjacencyMatrix[stack[stackCounter]][stack[stackCounter - 1]].distance == 0)
             return false;
 
-    if (contor_stiva > 1)
+    if (stackCounter > 1)
         if (centralDepos[stack[1]] == false)
             return false;
 
@@ -1179,21 +1179,21 @@ void determinare_traseu_minim(void)
     double suma_dist = 0.0;
     int suma_durata = 0;
 
-    for (int i = 1; i < contor_stiva; i++)
+    for (int i = 1; i < stackCounter; i++)
     {
         suma_dist += adjacencyMatrix[stack[i]][stack[i + 1]].distance;
         suma_durata += adjacencyMatrix[stack[i]][stack[i + 1]].duration;
     }
 
-    if (suma_dist < cost_minim_TSP || (suma_dist == cost_minim_TSP && suma_durata < durata_minima_TSP))
+    if (suma_dist < minimumDistanceCostTSP || (suma_dist == minimumDistanceCostTSP && suma_durata < minimumDurationCostTSP))
     {
-        cost_minim_TSP = suma_dist;
-        durata_minima_TSP = suma_durata;
+        minimumDistanceCostTSP = suma_dist;
+        minimumDurationCostTSP = suma_durata;
 
-        for (int i = 1; i <= contor_stiva; i++)
+        for (int i = 1; i <= stackCounter; i++)
         {
             minimumRouteTSP[i] = stack[i];
-            contor_traseu_TSP = contor_stiva;
+            TSP_RouteCounter = stackCounter;
         }
     }
 }
@@ -1201,9 +1201,9 @@ void determinare_traseu_minim(void)
 void back_ac(void)
 {
     int vSuccesor, vValid;
-    contor_stiva = 1;
+    stackCounter = 1;
     init_stiva_ac();
-    while (contor_stiva > 0)
+    while (stackCounter > 0)
     {
         do
         {
@@ -1216,11 +1216,11 @@ void back_ac(void)
                 determinare_traseu_minim();
             else
             {
-                contor_stiva++;
+                stackCounter++;
                 init_stiva_ac();
             }
         else
-            contor_stiva--;
+            stackCounter--;
     }
 }
 #pragma endregion
@@ -1262,21 +1262,21 @@ void TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << " Durata traseu: " << durata_minima_TSP << "min" << endl
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << " Durata traseu: " << minimumDurationCostTSP << "min" << endl
                  << setw(5) << " ";
 
             resetText();
 #elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << "Durata traseu: " << durata_minima_TSP << "min\n"
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << "Durata traseu: " << minimumDurationCostTSP << "min\n"
                  << setw(5) << " "
                  << "\033[0m";
 #endif
 
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+            for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
                 for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
@@ -1284,7 +1284,7 @@ void TSP(void)
                     if (ID == minimumRouteTSP[i])
                     {
                         cout << date_oras->getCityName();
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
@@ -1309,21 +1309,21 @@ void TSP(void)
                 changeText(FOREGROUND_INTENSITY);
 
                 cout << setw(5) << " "
-                     << "Lungime traseu: " << cost_minim_TSP << "km | "
-                     << " Durata traseu: " << durata_minima_TSP << "min" << endl
+                     << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                     << " Durata traseu: " << minimumDurationCostTSP << "min" << endl
                      << setw(5) << " ";
 
                 resetText();
 #elif __linux__
                 cout << setw(5) << " "
                      << "\033[1m"
-                     << "Lungime traseu: " << cost_minim_TSP << "km | "
-                     << "Durata traseu: " << durata_minima_TSP << "min\n"
+                     << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                     << "Durata traseu: " << minimumDurationCostTSP << "min\n"
                      << setw(5) << " "
                      << "\033[0m";
 #endif
 
-                for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+                for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
                 {
                     for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                     {
@@ -1331,7 +1331,7 @@ void TSP(void)
                         if (ID == minimumRouteTSP[i])
                         {
                             cout << date_oras->getCityName();
-                            if (i < contor_traseu_TSP)
+                            if (i < TSP_RouteCounter)
                                 cout << " --> ";
                             break;
                         }
@@ -1356,21 +1356,21 @@ void TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << " Durata traseu: " << durata_minima_TSP << "min" << endl
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << " Durata traseu: " << minimumDurationCostTSP << "min" << endl
                  << setw(5) << " ";
 
             resetText();
 #elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << "Durata traseu: " << durata_minima_TSP << "min\n"
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << "Durata traseu: " << minimumDurationCostTSP << "min\n"
                  << setw(5) << " "
                  << "\033[0m";
 #endif
 
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+            for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
                 for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
@@ -1378,7 +1378,7 @@ void TSP(void)
                     if (ID == minimumRouteTSP[i])
                     {
                         cout << date_oras->getCityName();
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
@@ -1407,7 +1407,7 @@ void produse_transport_TSP(void)
             {
                 int ID_PRODUS_DEPOZIT = stoi(date_depozit->getProductID());
                 if (ID_PRODUS == ID_PRODUS_DEPOZIT)
-                    cantitate += VAL_STOC_MAXIM - date_depozit->getProductQuantity();
+                    cantitate += MAXIMUM_STOCK_VALUE - date_depozit->getProductQuantity();
             }
         }
         supply.getData(date_produs->getProductID(), cantitate);
@@ -1418,17 +1418,17 @@ void pagina_principala_TSP(void)
 {
     clear_screen();
 
-    distanta_parcursa = 0.0;
-    durata_parcursa = 0;
+    traveledDistanceTSP = 0.0;
+    elapsedDurationTSP = 0;
 
     cout << "\n";
     if (!minimumRouteTSP.empty())
     {
         cout << setw(5) << " "
-             << "Lungime traseu: " << cost_minim_TSP << "km | "
-             << "Durata traseu: " << durata_minima_TSP << "min\n"
+             << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+             << "Durata traseu: " << minimumDurationCostTSP << "min\n"
              << setw(5) << " ";
-        for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+        for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
         {
             for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
@@ -1453,7 +1453,7 @@ void pagina_principala_TSP(void)
                 if (ID == minimumRouteTSP[i] && i != 1)
                 {
                     cout << date_oras->getCityName();
-                    if (i < contor_traseu_TSP)
+                    if (i < TSP_RouteCounter)
                         cout << " --> ";
                     break;
                 }
@@ -1481,11 +1481,11 @@ void pagina_principala_TSP(void)
 #ifdef _WIN32
     changeText(FOREGROUND_INTENSITY);
     cout << setw(100) << " "
-         << "Distanta parcursa: " << distanta_parcursa;
+         << "Distanta parcursa: " << traveledDistanceTSP;
     resetText();
     cout << "km | ";
     changeText(FOREGROUND_INTENSITY);
-    cout << "Durata de calatorie: " << durata_parcursa;
+    cout << "Durata de calatorie: " << elapsedDurationTSP;
     resetText();
     cout << "min\n";
 
@@ -1493,10 +1493,10 @@ void pagina_principala_TSP(void)
     cout << setw(100) << " "
          << "\033[1m"
          << "Distanta parcursa: "
-         << "\033[0m" << distanta_parcursa << "km | "
+         << "\033[0m" << traveledDistanceTSP << "km | "
          << "\033[1m"
          << "Durata de calatorie: "
-         << "\033[0m" << durata_parcursa << "min\n";
+         << "\033[0m" << elapsedDurationTSP << "min\n";
 #endif
 
     cout << "\n\n"
@@ -1515,7 +1515,7 @@ void pagina_principala_TSP(void)
             int ID_P = stoi(date_produs->getProductID());
             if (ID_P == ID_AP)
             {
-                cout << date_produs->getProductName() << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5) << " ";
+                cout << date_produs->getProductName() << setw(maxProductNameLength - strlen(date_produs->getProductName()) + 5) << " ";
                 break;
             }
         }
@@ -1527,13 +1527,13 @@ void pagina_principala_TSP(void)
     underline(190, false);
 
     cout << setw(5) << " "
-         << "[1] PREV" << setw(80) << " -" << pagina << "- " << setw(80) << " "
+         << "[1] PREV" << setw(80) << " -" << consolePage << "- " << setw(80) << " "
          << "[2] NEXT\n";
 
     underline(190, false);
 
-    distanta_parcursa += adjacencyMatrix[minimumRouteTSP[1]][minimumRouteTSP[2]].distance;
-    durata_parcursa += adjacencyMatrix[minimumRouteTSP[1]][minimumRouteTSP[2]].duration;
+    traveledDistanceTSP += adjacencyMatrix[minimumRouteTSP[1]][minimumRouteTSP[2]].distance;
+    elapsedDurationTSP += adjacencyMatrix[minimumRouteTSP[1]][minimumRouteTSP[2]].duration;
 }
 
 void pagina_finala_TSP(void)
@@ -1553,7 +1553,7 @@ void pagina_finala_TSP(void)
     }
     get_contor.close();
 
-    traseu_completat = true;
+    TSP_RoutesCompleted = true;
     logCounter++;
 
     ofstream file("utils/contor_TSP_log.txt");
@@ -1588,7 +1588,7 @@ void pagina_finala_TSP(void)
         string s(500, '=');
         log_out << "LOG [" << logCounter << "]\n";
 
-        for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+        for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
         {
             for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
             {
@@ -1596,7 +1596,7 @@ void pagina_finala_TSP(void)
                 if (ID == minimumRouteTSP[i])
                 {
                     log_out << date_oras->getCityName();
-                    if (i < contor_traseu_TSP)
+                    if (i < TSP_RouteCounter)
                         log_out << " --> ";
                     break;
                 }
@@ -1605,9 +1605,9 @@ void pagina_finala_TSP(void)
 
         log_out << "\n"
                 << s << "\n"
-                << "Distanta parcursa: " << cost_minim_TSP << "km\n"
-                << "Cantitate totala transportata: " << cantitate_totala_aprovizionata << "BUC.\n"
-                << "Cost total: " << cost_aprovizionare_total << "RON\nEND-LOG\n"
+                << "Distanta parcursa: " << minimumDistanceCostTSP << "km\n"
+                << "Cantitate totala transportata: " << totalSuppliedQuantity << "BUC.\n"
+                << "Cost total: " << totalSupplyCost << "RON\nEND-LOG\n"
                 << s << "\n\n\n";
 
         log_out.close();
@@ -1637,28 +1637,28 @@ void pagina_stanga_TSP(void)
 {
     clear_screen();
 
-    if (pagina - 1 > 1)
+    if (consolePage - 1 > 1)
     {
-        pagina--;
+        consolePage--;
 
-        distanta_parcursa -= adjacencyMatrix[minimumRouteTSP[pagina]][minimumRouteTSP[pagina + 1]].distance;
-        durata_parcursa -= adjacencyMatrix[minimumRouteTSP[pagina]][minimumRouteTSP[pagina + 1]].duration;
+        traveledDistanceTSP -= adjacencyMatrix[minimumRouteTSP[consolePage]][minimumRouteTSP[consolePage + 1]].distance;
+        elapsedDurationTSP -= adjacencyMatrix[minimumRouteTSP[consolePage]][minimumRouteTSP[consolePage + 1]].duration;
 
         cout << "\n";
         if (!minimumRouteTSP.empty())
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << " | "
-                 << "Durata traseu: " << durata_minima_TSP << "min\n"
+                 << "Lungime traseu: " << minimumDistanceCostTSP << " | "
+                 << "Durata traseu: " << minimumDurationCostTSP << "min\n"
                  << setw(5) << " ";
 
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+            for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
                 for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
                     int ID = stoi(date_oras->getCityID());
 
-                    if (ID == minimumRouteTSP[pagina] && i == pagina)
+                    if (ID == minimumRouteTSP[consolePage] && i == consolePage)
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
@@ -1671,15 +1671,15 @@ void pagina_stanga_TSP(void)
                              << "\033[1m" << date_oras->denumire_oras << "\033[0m"
                              << " --> ";
 #endif
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
 
-                    if (ID == minimumRouteTSP[i] && i != pagina)
+                    if (ID == minimumRouteTSP[i] && i != consolePage)
                     {
                         cout << date_oras->getCityName();
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
@@ -1693,7 +1693,7 @@ void pagina_stanga_TSP(void)
         for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
             int ID = stoi(date_oras->getCityID());
-            if (ID == minimumRouteTSP[pagina])
+            if (ID == minimumRouteTSP[consolePage])
             {
                 cout << setw(5) << " "
                      << "+-----------------------+\n"
@@ -1707,11 +1707,11 @@ void pagina_stanga_TSP(void)
 #ifdef _WIN32
         changeText(FOREGROUND_INTENSITY);
         cout << setw(100) << " "
-             << "Distanta parcursa: " << distanta_parcursa;
+             << "Distanta parcursa: " << traveledDistanceTSP;
         resetText();
         cout << "km | ";
         changeText(FOREGROUND_INTENSITY);
-        cout << "Durata de calatorie: " << durata_parcursa;
+        cout << "Durata de calatorie: " << elapsedDurationTSP;
         resetText();
         cout << "min\n";
 
@@ -1719,10 +1719,10 @@ void pagina_stanga_TSP(void)
         cout << setw(100) << " "
              << "\033[1m"
              << "Distanta parcursa: "
-             << "\033[0m" << distanta_parcursa << "km | "
+             << "\033[0m" << traveledDistanceTSP << "km | "
              << "\033[1m"
              << "Durata de calatorie: "
-             << "\033[0m" << durata_parcursa << "min\n";
+             << "\033[0m" << elapsedDurationTSP << "min\n";
 #endif
 
         cout << "\n\n"
@@ -1732,9 +1732,9 @@ void pagina_stanga_TSP(void)
              << "Cnt.transport/Cnt.ramasa\n";
         underline(70, true);
 
-        if (centralDepos[minimumRouteTSP[pagina]] == false)
+        if (centralDepos[minimumRouteTSP[consolePage]] == false)
         {
-            if (limitedStockCities[minimumRouteTSP[pagina]] == false)
+            if (limitedStockCities[minimumRouteTSP[consolePage]] == false)
             {
 #ifdef _WIN32
                 changeText(FOREGROUND_INTENSITY);
@@ -1774,14 +1774,14 @@ void pagina_stanga_TSP(void)
         underline(190, false);
 
         cout << setw(5) << " "
-             << "[1] PREV" << setw(80) << " -" << pagina << "- " << setw(80) << " "
+             << "[1] PREV" << setw(80) << " -" << consolePage << "- " << setw(80) << " "
              << "[2] NEXT\n";
 
         underline(190, false);
     }
     else
     {
-        pagina = 1;
+        consolePage = 1;
         pagina_principala_TSP();
     }
 }
@@ -1790,31 +1790,31 @@ void pagina_dreapta_TSP(void)
 {
     clear_screen();
 
-    if (pagina < contor_traseu_TSP)
+    if (consolePage < TSP_RouteCounter)
     {
-        if (pagina > 2)
+        if (consolePage > 2)
         {
-            distanta_parcursa += adjacencyMatrix[minimumRouteTSP[pagina]][minimumRouteTSP[pagina + 1]].distance;
-            durata_parcursa += adjacencyMatrix[minimumRouteTSP[pagina]][minimumRouteTSP[pagina + 1]].duration;
+            traveledDistanceTSP += adjacencyMatrix[minimumRouteTSP[consolePage]][minimumRouteTSP[consolePage + 1]].distance;
+            elapsedDurationTSP += adjacencyMatrix[minimumRouteTSP[consolePage]][minimumRouteTSP[consolePage + 1]].duration;
         }
 
-        pagina++;
+        consolePage++;
 
         cout << "\n";
         if (!minimumRouteTSP.empty())
         {
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << "Durata traseu: " << durata_minima_TSP << "min\n"
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << "Durata traseu: " << minimumDurationCostTSP << "min\n"
                  << setw(5) << " ";
 
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+            for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
                 for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
                     int ID = stoi(date_oras->getCityID());
 
-                    if (ID == minimumRouteTSP[pagina] && i == pagina)
+                    if (ID == minimumRouteTSP[consolePage] && i == consolePage)
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
@@ -1827,15 +1827,15 @@ void pagina_dreapta_TSP(void)
                              << "\033[1m" << date_oras->denumire_oras << "\033[0m"
                              << " --> ";
 #endif
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
 
-                    if (ID == minimumRouteTSP[i] && i != pagina)
+                    if (ID == minimumRouteTSP[i] && i != consolePage)
                     {
                         cout << date_oras->getCityName();
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
@@ -1849,7 +1849,7 @@ void pagina_dreapta_TSP(void)
         for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
             int ID = stoi(date_oras->getCityID());
-            if (ID == minimumRouteTSP[pagina])
+            if (ID == minimumRouteTSP[consolePage])
             {
                 cout << setw(5) << " "
                      << "+-----------------------+\n"
@@ -1863,11 +1863,11 @@ void pagina_dreapta_TSP(void)
 #ifdef _WIN32
         changeText(FOREGROUND_INTENSITY);
         cout << setw(100) << " "
-             << "Distanta parcursa: " << distanta_parcursa;
+             << "Distanta parcursa: " << traveledDistanceTSP;
         resetText();
         cout << "km | ";
         changeText(FOREGROUND_INTENSITY);
-        cout << "Durata de calatorie: " << durata_parcursa;
+        cout << "Durata de calatorie: " << elapsedDurationTSP;
         resetText();
         cout << "min\n";
 
@@ -1875,10 +1875,10 @@ void pagina_dreapta_TSP(void)
         cout << setw(100) << " "
              << "\033[1m"
              << "Distanta parcursa: "
-             << "\033[0m" << distanta_parcursa << "km | "
+             << "\033[0m" << traveledDistanceTSP << "km | "
              << "\033[1m"
              << "Durata de calatorie: "
-             << "\033[0m" << durata_parcursa << "min\n";
+             << "\033[0m" << elapsedDurationTSP << "min\n";
 #endif
 
         cout << "\n\n"
@@ -1888,9 +1888,9 @@ void pagina_dreapta_TSP(void)
              << "Cnt.transport/Cnt.ramasa\n";
         underline(70, true);
 
-        if (centralDepos[minimumRouteTSP[pagina]] == false)
+        if (centralDepos[minimumRouteTSP[consolePage]] == false)
         {
-            if (limitedStockCities[minimumRouteTSP[pagina]])
+            if (limitedStockCities[minimumRouteTSP[consolePage]])
             {
                 for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
                 {
@@ -1900,18 +1900,18 @@ void pagina_dreapta_TSP(void)
                     for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
                     {
                         int ID_PRODUS_DEPOZIT = stoi(date_depozit->getProductID()), ID_DEPOZIT = stoi(date_depozit->getCityID());
-                        if (ID_DEPOZIT == minimumRouteTSP[pagina] && !isolatedVertex[ID_DEPOZIT])
+                        if (ID_DEPOZIT == minimumRouteTSP[consolePage] && !isolatedVertex[ID_DEPOZIT])
                         {
                             if (ID_PRODUS_DEPOZIT == ID_PRODUS)
                             {
                                 cantitate_necesara += date_depozit->getProductQuantity();
-                                cantitate_necesara = VAL_STOC_MAXIM - cantitate_necesara;
-                                cost_aprovizionare_total += cantitate_necesara * date_produs->getProductPrice();
-                                cantitate_totala_aprovizionata += cantitate_necesara;
-                                date_depozit->updateQuantity(VAL_STOC_MAXIM);
+                                cantitate_necesara = MAXIMUM_STOCK_VALUE - cantitate_necesara;
+                                totalSupplyCost += cantitate_necesara * date_produs->getProductPrice();
+                                totalSuppliedQuantity += cantitate_necesara;
+                                date_depozit->updateQuantity(MAXIMUM_STOCK_VALUE);
 
                                 cout << setw(5 + 1) << " [" << date_depozit->getProductID() << "] " << setw(8) << " " << date_produs->getProductName()
-                                     << setw(cmax_denumire_produse - strlen(date_produs->getProductName()) + 5) << " " << cantitate_necesara << " buc. /";
+                                     << setw(maxProductNameLength - strlen(date_produs->getProductName()) + 5) << " " << cantitate_necesara << " buc. /";
 
                                 for (SUPPLY::SUPPLY_NODE *supply_data = supply.getHead(); supply_data != nullptr; supply_data = supply_data->next)
                                 {
@@ -1970,17 +1970,17 @@ void pagina_dreapta_TSP(void)
         underline(190, false);
 
         cout << setw(5) << " "
-             << "[1] PREV" << setw(80) << " -" << pagina << "- " << setw(80) << " "
+             << "[1] PREV" << setw(80) << " -" << consolePage << "- " << setw(80) << " "
              << "[2] NEXT\n";
 
         underline(190, false);
 
-        limitedStockCities[minimumRouteTSP[pagina]] = false;
+        limitedStockCities[minimumRouteTSP[consolePage]] = false;
 
-        if (pagina - 1 == 1)
+        if (consolePage - 1 == 1)
         {
-            distanta_parcursa += adjacencyMatrix[minimumRouteTSP[pagina]][minimumRouteTSP[pagina + 1]].distance;
-            durata_parcursa += adjacencyMatrix[minimumRouteTSP[pagina]][minimumRouteTSP[pagina + 1]].duration;
+            traveledDistanceTSP += adjacencyMatrix[minimumRouteTSP[consolePage]][minimumRouteTSP[consolePage + 1]].distance;
+            elapsedDurationTSP += adjacencyMatrix[minimumRouteTSP[consolePage]][minimumRouteTSP[consolePage + 1]].duration;
         }
     }
     else
@@ -1989,10 +1989,10 @@ void pagina_dreapta_TSP(void)
 
 void parcurgere_traseu_TSP(void)
 {
-    pagina = 1;
+    consolePage = 1;
     cout << "\n";
 
-    if (!traseu_completat)
+    if (!TSP_RoutesCompleted)
     {
         if (minimumRouteTSP[1] == -1)
             TSP();
@@ -2003,20 +2003,20 @@ void parcurgere_traseu_TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             cout << setw(5) << " "
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << " Durata traseu: " << durata_minima_TSP << endl
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << " Durata traseu: " << minimumDurationCostTSP << endl
                  << setw(5) << " ";
 
             resetText();
 #elif __linux__
             cout << setw(5) << " "
                  << "\033[1m"
-                 << "Lungime traseu: " << cost_minim_TSP << "km | "
-                 << "Durata traseu: " << durata_minima_TSP << "\n"
+                 << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
+                 << "Durata traseu: " << minimumDurationCostTSP << "\n"
                  << setw(5) << " "
                  << "\033[0m";
 #endif
-            for (unsigned int i = 1; i <= contor_traseu_TSP; i++)
+            for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
                 for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
                 {
@@ -2024,7 +2024,7 @@ void parcurgere_traseu_TSP(void)
                     if (ID == minimumRouteTSP[i])
                     {
                         cout << date_oras->getCityName();
-                        if (i < contor_traseu_TSP)
+                        if (i < TSP_RouteCounter)
                             cout << " --> ";
                         break;
                     }
@@ -2098,7 +2098,7 @@ void parcurgere_traseu_TSP(void)
             default:
                 break;
             }
-        } while (MENIU != 0 && traseu_completat == false);
+        } while (MENIU != 0 && TSP_RoutesCompleted == false);
     }
     free(input);
 }

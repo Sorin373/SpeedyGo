@@ -82,7 +82,7 @@ bool addGraphEdge(void)
         int City_ID = -1;
         bool isFound = false;
 
-        std::cout << std::setw(5) << " " << denumire_depozit_nou << " <--> ";
+        std::cout << std::setw(5) << " " << newCityName << " <--> ";
         std::getline(std::cin, edge);
 
         if (_strcasecmp_(edge.c_str(), "0") == 0)

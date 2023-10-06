@@ -62,34 +62,42 @@ bool start(void)
          << setw(5) << " "
          << "-- Starting application configuration...\n\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    depot.sortData();
+
+    DEPOT::DEPOT_NODE::sortData();
     cout << setw(6) << " "
          << "--> Data sort complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     CITY::CITY_NODE::sortData(1);
     cout << setw(6) << " "
          << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     PRODUCT::PRODUCT_NODE::sortData(1);
     cout << setw(6) << " "
          << "--> Data sort complete (3)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     determinare_tip_depozit();
     cout << setw(6) << " "
          << "--> Data configuration complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     cautare_orase_stoc_limitat();
     cout << setw(6) << " "
          << "--> Data configuration complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     cautare_orase_izolate();
     cout << setw(6) << " "
          << "--> Data configuration complete (3)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     produse_transport_TSP();
     cout << setw(6) << " "
          << "--> Data configuration complete (4)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     nr_max_caractere_den();
     cout << setw(6) << " "
          << "--> Data configuration complete (5)\n";
@@ -110,7 +118,7 @@ void free_memory(void)
     oneEdgeVertex.clear();
     stack.clear();
     minimumRouteTSP.clear();
-    free(denumire_depozit_nou);
+    free(newCityName);
     AUTHENTICATION::cleanup();
     delete con;
 }
@@ -119,7 +127,8 @@ int main(int argc, char **argv)
 {
     if (start() == EXIT_FAILURE)
     {
-        cerr << setw(5) << " " << "-- Can not start the application!\n";
+        cerr << setw(5) << " "
+             << "-- Can not start the application!\n";
         _getch();
         free_memory();
         return EXIT_FAILURE;
@@ -128,8 +137,11 @@ int main(int argc, char **argv)
     {
         cout << "\n"
              << setw(5) << " "
-             << "-- Application configuration completed with " << ERROR_CNT << " error!\n\n"
-             << setw(5) << " "
+             << "-- Application configuration completed with " << ERROR_CNT << " error!\n\n";
+
+        underline(65, true);
+
+        cout << setw(5) << " "
              << "Press 'ENTER' to continue...";
         _getch();
     }
@@ -137,12 +149,15 @@ int main(int argc, char **argv)
     {
         cout << "\n"
              << setw(5) << " "
-             << "-- Application configuration completed with " << ERROR_CNT << " errors!\n\n"
-             << setw(5) << " "
+             << "-- Application configuration completed with " << ERROR_CNT << " errors!\n\n";
+
+        underline(65, true);
+
+        cout << setw(5) << " "
              << "Press 'ENTER' to continue...";
+
         _getch();
     }
-
 
     unsigned int MENIU;
 
@@ -516,7 +531,7 @@ int main(int argc, char **argv)
                 switch (MENIU_5)
                 {
                 case 1:
-                    _GPS_UPDATE_DATA_();
+                    _GOOGLE_MATRIX_API_INIT_();
                     break;
                 case 2:
                     if (CITY::addCity() == EXIT_FAILURE)

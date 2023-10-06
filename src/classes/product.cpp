@@ -101,7 +101,7 @@ void PRODUCT::PRODUCT_NODE::searchProductByName(void)
               << "Product_ID"
               << std::setw(5) << " "
               << "Product_Name"
-              << std::setw(cmax_denumire_produse - 10) << " "
+              << std::setw(maxProductNameLength - 10) << " "
               << "Product_Category"
               << std::setw(5) << " "
               << "Product_Price\n";
@@ -115,18 +115,18 @@ void PRODUCT::PRODUCT_NODE::searchProductByName(void)
 
             std::cout << std::setw(5 + 1)
                       << " [" << product_data->Product_ID << "]"
-                      << std::setw(cmax_ID_produs - strlen(product_data->Product_ID) + 9)
+                      << std::setw(maxProductIDLength - strlen(product_data->Product_ID) + 9)
                       << " " << product_data->Product_Name
-                      << std::setw(cmax_denumire_produse - strlen(product_data->Product_Name) + 5)
+                      << std::setw(maxProductNameLength - strlen(product_data->Product_Name) + 5)
                       << " " << product_data->Product_Category
-                      << std::setw(cmax_categorie_produse - strlen(product_data->Product_Category) + 10) << " ";
+                      << std::setw(maxProductCategoryLength - strlen(product_data->Product_Category) + 10) << " ";
 
             char *Temp_Product_Price = (char *)malloc(MAXL * sizeof(char) + 1);
             snprintf(Temp_Product_Price, MAXL, "%g", product_data->Product_Price);
 
             std::cout << std::fixed << std::setprecision(2)
                       << product_data->Product_Price
-                      << std::setw(cmax_pret_produse - std::to_string(round(product_data->Product_Price)).length() + 10)
+                      << std::setw(maxProductPriceLength - std::to_string(round(product_data->Product_Price)).length() + 10)
                       << "RON\n";
 
             free(Temp_Product_Price);
@@ -203,7 +203,7 @@ void PRODUCT::PRODUCT_NODE::searchProductByID(void)
               << "Product_ID"
               << std::setw(5) << " "
               << "Product_Name"
-              << std::setw(cmax_denumire_produse - 10) << " "
+              << std::setw(maxProductNameLength - 10) << " "
               << "Product_Category"
               << std::setw(5) << " "
               << "Product_Price\n";
@@ -217,18 +217,18 @@ void PRODUCT::PRODUCT_NODE::searchProductByID(void)
 
             std::cout << std::setw(5 + 1)
                       << " [" << product_data->Product_ID << "]"
-                      << std::setw(cmax_ID_produs - strlen(product_data->Product_ID) + 9)
+                      << std::setw(maxProductIDLength - strlen(product_data->Product_ID) + 9)
                       << " " << product_data->Product_Name
-                      << std::setw(cmax_denumire_produse - strlen(product_data->Product_Name) + 5)
+                      << std::setw(maxProductNameLength - strlen(product_data->Product_Name) + 5)
                       << " " << product_data->Product_Category
-                      << std::setw(cmax_categorie_produse - strlen(product_data->Product_Category) + 10) << " ";
+                      << std::setw(maxProductCategoryLength - strlen(product_data->Product_Category) + 10) << " ";
 
             char *Temp_Product_Price = (char *)malloc(MAXL * sizeof(char) + 1);
             snprintf(Temp_Product_Price, MAXL, "%g", product_data->Product_Price);
 
             std::cout << std::fixed << std::setprecision(2)
                       << product_data->Product_Price
-                      << std::setw(cmax_pret_produse - std::to_string(round(product_data->Product_Price)).length() + 10)
+                      << std::setw(maxProductPriceLength - std::to_string(round(product_data->Product_Price)).length() + 10)
                       << "RON\n";
 
             free(Temp_Product_Price);
@@ -322,7 +322,7 @@ void PRODUCT::PRODUCT_NODE::sortDataByPrice(const int sortType)
               << "Product_ID"
               << std::setw(5) << " "
               << "Product_Name"
-              << std::setw(cmax_denumire_produse - 10) << " "
+              << std::setw(maxProductNameLength - 10) << " "
               << "Product_Category"
               << std::setw(5) << " "
               << "Product_Price\n";
@@ -381,7 +381,7 @@ void PRODUCT::PRODUCT_NODE::alphabeticalProductSort(const int sortType)
               << "Product_ID"
               << std::setw(5) << " "
               << "Product_Name"
-              << std::setw(cmax_denumire_produse - 10) << " "
+              << std::setw(maxProductNameLength - 10) << " "
               << "Product_Category"
               << std::setw(5) << " "
               << "Product_Price\n";
@@ -469,7 +469,7 @@ void PRODUCT::PRODUCT_NODE::filterProductByCategory(void)
               << "Product_ID"
               << std::setw(5) << " "
               << "Product_Name"
-              << std::setw(cmax_denumire_produse - 10) << " "
+              << std::setw(maxProductNameLength - 10) << " "
               << "Product_Category"
               << std::setw(5) << " "
               << "Product_Price\n";
@@ -481,18 +481,18 @@ void PRODUCT::PRODUCT_NODE::filterProductByCategory(void)
         {
             std::cout << std::setw(5 + 1)
                       << " [" << product_data->Product_ID << "]"
-                      << std::setw(cmax_ID_produs - strlen(product_data->Product_ID) + 9)
+                      << std::setw(maxProductIDLength - strlen(product_data->Product_ID) + 9)
                       << " " << product_data->Product_Name
-                      << std::setw(cmax_denumire_produse - strlen(product_data->Product_Name) + 5)
+                      << std::setw(maxProductNameLength - strlen(product_data->Product_Name) + 5)
                       << " " << product_data->Product_Category
-                      << std::setw(cmax_categorie_produse - strlen(product_data->Product_Category) + 10) << " ";
+                      << std::setw(maxProductCategoryLength - strlen(product_data->Product_Category) + 10) << " ";
 
             char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
             snprintf(pret, MAXL, "%g", product_data->Product_Price);
 
             std::cout << std::fixed << std::setprecision(2)
                       << product_data->Product_Price
-                      << std::setw(cmax_pret_produse - std::to_string(round(product_data->Product_Price)).length() + 10)
+                      << std::setw(maxProductPriceLength - std::to_string(round(product_data->Product_Price)).length() + 10)
                       << "RON\n";
 
             free(pret);
