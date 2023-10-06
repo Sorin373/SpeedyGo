@@ -46,9 +46,5 @@ extern void pagina_dreapta_TSP(void);
 extern void parcurgere_traseu_TSP(void);
 extern void afisare_detalii_SpeedyGo(void);
 extern void consola_mysql(void);
-extern void sortare_tip_depozit(void);
-extern void sortare_depozit_alfabetic(const int tip_sortare);
-extern void cautare_oras_ID(void);
-extern void cautare_depozit_denumire(void);
 
 #endif

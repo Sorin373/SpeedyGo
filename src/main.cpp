@@ -66,7 +66,7 @@ bool start(void)
     cout << setw(6) << " "
          << "--> Data sort complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    city.sortData(1);
+    CITY::CITY_NODE::sortData(1);
     cout << setw(6) << " "
          << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -305,19 +305,19 @@ int main(int argc, char **argv)
                         switch (MENIU_3_1)
                         {
                         case 1:
-                            sortare_tip_depozit();
+                            CITY::CITY_NODE::filterCityByCategory();
                             break;
                         case 2:
-                            sortare_depozit_alfabetic(1);
+                            CITY::CITY_NODE::alphabeticalCitySort(1);
                             break;
                         case 3:
-                            sortare_depozit_alfabetic(2);
+                            CITY::CITY_NODE::alphabeticalCitySort(2);
                             break;
                         case 4:
-                            city.sortData(2);
+                            CITY::CITY_NODE::sortData(2);
                             break;
                         case 5:
-                            city.sortData(1);
+                            CITY::CITY_NODE::sortData(1);
                             break;
                         case 6:
                             unsigned int MENIU_3_1_6;
@@ -344,10 +344,10 @@ int main(int argc, char **argv)
                                 switch (MENIU_3_1_6)
                                 {
                                 case 1:
-                                    cautare_depozit_denumire();
+                                    CITY::CITY_NODE::searchCityByName();
                                     break;
                                 case 2:
-                                    cautare_oras_ID();
+                                    CITY::CITY_NODE::searchCityByID();
                                     break;
 
                                 default:

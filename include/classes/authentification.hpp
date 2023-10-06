@@ -7,10 +7,7 @@ class AUTHENTICATION
 private:
     struct AUTHENTICATION_NODE
     {
-        char *host_name = nullptr;
-        char *username = nullptr;
-        char *password = nullptr;
-        char *database = nullptr;
+        char *host_name = nullptr, *username = nullptr, *password = nullptr, *database = nullptr;
 
         AUTHENTICATION_NODE(const char *host_name, const char *username, const char *password, const char *database);
         ~AUTHENTICATION_NODE();

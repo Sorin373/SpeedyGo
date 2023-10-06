@@ -38,6 +38,8 @@ include_directories(include)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(${PROJECT_NAME}
+    "src/main.cpp" 
+    "src/declarations.cpp"
     "src/classes/supply.cpp"
     "src/classes/authentification.cpp"
     "src/classes/depot.cpp"
@@ -45,8 +47,6 @@ add_executable(${PROJECT_NAME}
     "src/classes/city.cpp"
     "src/classes/DistanceHandler.cpp"
     "src/classes/route.cpp"
-    "src/main.cpp" 
-    "src/declarations.cpp"
     "src/logic.cpp"
     "src/GoogleMatrixAPI.cpp"
     "src/database.cpp"

@@ -1,71 +1,66 @@
 #include "../include/haversine.hpp"
 #include "../include/declarations.hpp"
+
 #include <fstream>
 #include <string>
 #include <cmath>
 #include <cstring>
-
-using std::stoi;
 
 double toRadians(const double degrees)
 {
     return degrees * M_PI / 180.0;
 }
 
-double calculare_distante(const double lat_1, const double long_1, const double lat_2, const double long_2)
+double distanceCalculator(const double Latitude_City_1, const double Longitude_City_1, const double lat_2, const double long_2)
 {
-    double dLat = toRadians(lat_2 - lat_1),
-           dLon = toRadians(long_2 - long_1),
-           a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2),
+    double dLat = toRadians(lat_2 - Latitude_City_1),
+           dLon = toRadians(long_2 - Longitude_City_1),
+           a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(Latitude_City_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2),
            c = 2 * atan2(sqrt(a), sqrt(1 - a));
-           
+
     return EARTH_RADIUS_KM * c;
 }
 
-bool load_data(const char *path)
+bool _HAVERSINE_INIT_(const char *path)
 {
-    std::ifstream fisier(path);
+    unsigned int City_ID_1 = 0, City_ID_2 = 0;
+    std::ifstream edgeFile(path);
 
-    if (!fisier.is_open())
+    if (!edgeFile.is_open())
         return EXIT_FAILURE;
 
-    unsigned int ID_1 = 0, ID_2 = 0;
-    while (fisier >> ID_1 >> ID_2)
+    while (edgeFile >> City_ID_1 >> City_ID_2)
     {
-        char *oras1 = (char *)malloc(MAXL * sizeof(char) + 1);
-        char *oras2 = (char *)malloc(MAXL * sizeof(char) + 1);
-
-        double lat_oras1 = 0.0, long_oras1 = 0.0;
-        double lat_oras2 = 0.0, long_oras2 = 0.0;
+        char *City_1 = (char *)malloc(MAXL * sizeof(char) + 1), *City_2 = (char *)malloc(MAXL * sizeof(char) + 1);
+        double Latitude_City_1 = 0.0, Longitude_City_1 = 0.0, Latitude_City_2 = 0.0, Longitude_City_2 = 0.0;
 
         for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
         {
-            if (lat_oras1 != 0.0 && lat_oras2 != 0.0 && long_oras1 != 0.0 && long_oras2 != 0.0)
+            if (Latitude_City_1 != 0.0 && Latitude_City_2 != 0.0 && Longitude_City_1 != 0.0 && Longitude_City_2 != 0.0)
                 break;
 
-            unsigned int temp_ID = stoi(date_oras->getCityID());
-
-            if (temp_ID == ID_1)
+            if (std::stoi(date_oras->getCityID()) == City_ID_1)
             {
-                strcpy(oras1, date_oras->getCityName());
-                lat_oras1 = date_oras->getLatitude();
-                long_oras1 = date_oras->getLongitude();
+                strcpy(City_1, date_oras->getCityName());
+                Latitude_City_1 = date_oras->getLatitude();
+                Longitude_City_1 = date_oras->getLongitude();
             }
-            else if (temp_ID == ID_2)
+            else if (std::stoi(date_oras->getCityID()) == City_ID_2)
             {
-                strcpy(oras2, date_oras->getCityName());
-                lat_oras2 = date_oras->getLatitude();
-                long_oras2 = date_oras->getLongitude();
+                strcpy(City_2, date_oras->getCityName());
+                Latitude_City_2 = date_oras->getLatitude();
+                Longitude_City_2 = date_oras->getLongitude();
             }
         }
 
-        adjacency_matrix_init.getData(calculare_distante(lat_oras1, long_oras1, lat_oras2, long_oras2),
-                                               false, oras1, oras2);
+        adjacency_matrix_init.getData(distanceCalculator(Latitude_City_1, Longitude_City_1, Latitude_City_2, Longitude_City_2),
+                                      false, City_1, City_2);
 
-        free(oras1);
-        free(oras2);
+        free(City_1);
+        free(City_2);
     }
-    fisier.close();
+
+    edgeFile.close();
 
     return EXIT_SUCCESS;
 }

@@ -8,14 +8,12 @@ public:
     struct ADJACENCY_MATRIX_INITIALIZER_NODE
     {
     private:
+        char *start = nullptr, *destination = nullptr;
         double distance = 0.0;
         int duration = 0;
-        char *start = nullptr;
-        char *destination = nullptr;
 
     public:
-        ADJACENCY_MATRIX_INITIALIZER_NODE *prev = nullptr;
-        ADJACENCY_MATRIX_INITIALIZER_NODE *next = nullptr;
+        ADJACENCY_MATRIX_INITIALIZER_NODE *prev = nullptr, *next = nullptr;
 
         ADJACENCY_MATRIX_INITIALIZER_NODE(const double distance, const int duration, const char *start, const char *destination);
         ~ADJACENCY_MATRIX_INITIALIZER_NODE();
@@ -25,8 +23,7 @@ public:
         char *getDestination(void);
     };
 
-    ADJACENCY_MATRIX_INITIALIZER_NODE *head = nullptr;
-    ADJACENCY_MATRIX_INITIALIZER_NODE *tail = nullptr;
+    ADJACENCY_MATRIX_INITIALIZER_NODE *head = nullptr, *tail = nullptr;
 
 public:
     ADJACENCY_MATRIX_INITIALIZER_NODE *getHead(void);
