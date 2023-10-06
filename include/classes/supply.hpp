@@ -12,23 +12,21 @@ public:
         int total_necessary_quantity = 0;
 
     public:
-        SUPPLY_NODE *next = nullptr;
-        SUPPLY_NODE *prev = nullptr;
+        SUPPLY_NODE *next = nullptr, *prev = nullptr;
 
         SUPPLY_NODE(char *Product_ID, int total_necessary_quantity);
         ~SUPPLY_NODE();
 
-        char *getID(void);
-        int getQuantity(void);
+        char *getID(void) const;
+        int getQuantity(void) const;
         void updateQuantity(const int newQuantity);
     };
 
-    SUPPLY_NODE *head_supply = nullptr;
-    SUPPLY_NODE *tail_supply = nullptr;
+    SUPPLY_NODE *head_supply = nullptr, *tail_supply = nullptr;
 
 public:
-    SUPPLY_NODE *getHead(void);
-    SUPPLY_NODE *getTail(void);
+    SUPPLY_NODE *getHead(void) const;
+    SUPPLY_NODE *getTail(void) const;
     void getData(char *ID_Produs, int Cantitate_totala_necesara);
     ~SUPPLY();
 };

@@ -25,32 +25,32 @@ PRODUCT::PRODUCT_NODE::~PRODUCT_NODE()
     delete[] Product_Category;
 }
 
-PRODUCT::PRODUCT_NODE *PRODUCT::getHead()
+PRODUCT::PRODUCT_NODE *PRODUCT::getHead() const
 {
     return head_product;
 }
 
-PRODUCT::PRODUCT_NODE *PRODUCT::getTail()
+PRODUCT::PRODUCT_NODE *PRODUCT::getTail() const
 {
     return tail_product;
 }
 
-char *PRODUCT::PRODUCT_NODE::getProductID(void)
+char *PRODUCT::PRODUCT_NODE::getProductID(void) const
 {
     return Product_ID;
 }
 
-char *PRODUCT::PRODUCT_NODE::getProductName(void)
+char *PRODUCT::PRODUCT_NODE::getProductName(void) const
 {
     return Product_Name;
 }
 
-char *PRODUCT::PRODUCT_NODE::getProductCategory(void)
+char *PRODUCT::PRODUCT_NODE::getProductCategory(void) const
 {
     return Product_Category;
 }
 
-double PRODUCT::PRODUCT_NODE::getProductPrice(void)
+double PRODUCT::PRODUCT_NODE::getProductPrice(void) const
 {
     return Product_Price;
 }

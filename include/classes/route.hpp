@@ -15,23 +15,22 @@ public:
         std::vector<int> route;
     
     public:
-        ROUTE_NODE *prev = nullptr;
-        ROUTE_NODE *next = nullptr;
+        ROUTE_NODE *prev = nullptr, *next = nullptr;
 
         ROUTE_NODE(const int start, const int destination, const double distance, std::vector<int> &route);
         ~ROUTE_NODE();
-        int getStart(void);
-        int getDestination(void);
-        double getDistance(void);
-        std::vector<int> getRoute(void);
+
+        int getStart(void) const;
+        int getDestination(void) const;
+        double getDistance(void) const;
+        std::vector<int> getRoute(void) const;
     };
 
-    ROUTE_NODE *head_route = nullptr;
-    ROUTE_NODE *tail_route = nullptr;
+    ROUTE_NODE *head_route = nullptr, *tail_route = nullptr;
 
 public:
-    ROUTE_NODE *getHead();
-    ROUTE_NODE *getTail();
+    ROUTE_NODE *getHead() const;
+    ROUTE_NODE *getTail() const;
     void getData(const int start, const int destination, const double distance, std::vector<int> &route);
     ~ROUTE();
 };

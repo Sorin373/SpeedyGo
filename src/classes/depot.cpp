@@ -22,27 +22,27 @@ DEPOT::DEPOT_NODE::~DEPOT_NODE(void)
     delete[] City_ID;
 }
 
-char *DEPOT::DEPOT_NODE::getProductID(void)
+char *DEPOT::DEPOT_NODE::getProductID(void) const
 {
     return Product_ID;
 }
 
-char *DEPOT::DEPOT_NODE::getCityID(void)
+char *DEPOT::DEPOT_NODE::getCityID(void) const
 {
     return City_ID;
 }
 
-double DEPOT::DEPOT_NODE::getProductQuantity(void)
+double DEPOT::DEPOT_NODE::getProductQuantity(void) const
 {
     return Product_Quantity;
 }
 
-DEPOT::DEPOT_NODE *DEPOT::getHead(void)
+DEPOT::DEPOT_NODE *DEPOT::getHead(void) const
 {
     return head_depot;
 }
 
-DEPOT::DEPOT_NODE *DEPOT::getTail(void)
+DEPOT::DEPOT_NODE *DEPOT::getTail(void) const
 {
     return tail_depot;
 }

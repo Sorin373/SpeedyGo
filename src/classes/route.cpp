@@ -15,32 +15,32 @@ ROUTE::ROUTE_NODE::~ROUTE_NODE()
     route.clear();
 }
 
-ROUTE::ROUTE_NODE *ROUTE::getHead(void)
+ROUTE::ROUTE_NODE *ROUTE::getHead(void) const
 {
     return head_route;
 }
 
-ROUTE::ROUTE_NODE *ROUTE::getTail(void)
+ROUTE::ROUTE_NODE *ROUTE::getTail(void) const
 {
     return tail_route;
 }
 
-int ROUTE::ROUTE_NODE::getStart(void)
+int ROUTE::ROUTE_NODE::getStart(void) const
 {
     return start;
 }
 
-int ROUTE::ROUTE_NODE::getDestination(void)
+int ROUTE::ROUTE_NODE::getDestination(void) const
 {
     return destination;
 }
 
-double ROUTE::ROUTE_NODE::getDistance(void)
+double ROUTE::ROUTE_NODE::getDistance(void) const
 {
     return distance;
 }
 
-std::vector<int> ROUTE::ROUTE_NODE::getRoute(void)
+std::vector<int> ROUTE::ROUTE_NODE::getRoute(void) const
 {
     return route;
 }
