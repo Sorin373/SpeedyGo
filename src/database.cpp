@@ -57,7 +57,7 @@ bool addGraphEdge(void)
     clear_screen();
     std::cout << "\n\n";
 
-    afisare_date_tabel_oras();
+    CITY::CITY_NODE::displayCityData();
 
     std::cout << std::setw(5) << " "
               << "Enter the city edges ('0' to return):\n";

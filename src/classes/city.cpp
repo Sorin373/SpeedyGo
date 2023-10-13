@@ -62,6 +62,54 @@ double CITY::CITY_NODE::getLongitude(void) const
     return longitude;
 }
 
+void CITY::CITY_NODE::displayCityData(void)
+{
+    clear_screen();
+
+    std::cout << "\n\n"
+              << std::setw(5) << " "
+              << "+---------------+\n"
+              << std::setw(5) << " "
+              << "| TABEL-DEPOT |\n"
+              << std::setw(5) << " "
+              << "+---------------+\n\n";
+
+    std::cout << std::setw(5) << " "
+              << "ID_Oras"
+              << std::setw(5) << " "
+              << "Denumire_Oras"
+              << std::setw(5) << " "
+              << "Tip_Depozit"
+              << std::setw(5) << " "
+              << "Latitudine"
+              << std::setw(5) << " "
+              << "Longitudine\n";
+    underline(80, true);
+
+    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    {
+        std::cout << std::setw(5 + 1) << " [" << date_oras->getCityID() << "]" << std::setw(maxCityIDLength - strlen(date_oras->getCityID()) + 8)
+                  << " " << date_oras->getCityName() << std::setw(maxCityNameLength - strlen(date_oras->getCityName()) + 4)
+                  << " " << date_oras->getCityType() << std::setw(11 - strlen(date_oras->getCityType()) + 5)
+                  << " " << std::fixed << std::setprecision(2) << date_oras->getLatitude();
+#ifdef _WIN32
+        std::cout << "\370";
+#elif __linux__
+        std::cout << "\u00B0";
+#endif
+        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(date_oras->getLatitude())).length() + 13)
+                  << " " << date_oras->getLongitude();
+#ifdef _WIN32
+        std::cout << "\370"
+                  << "\n";
+#elif __linux__
+        std::cout << "\u00B0\n";
+#endif
+    }
+
+    underline(80, true);
+}
+
 void CITY::CITY_NODE::swapData(CITY_NODE &node)
 {
     std::swap(City_ID, node.City_ID);
@@ -130,7 +178,7 @@ void CITY::CITY_NODE::filterCityByCategory(void)
 {
     clear_screen();
 
-    afisare_date_tabel_oras();
+    CITY::CITY_NODE::displayCityData();
 
     char *UserInput_City_Type = (char *)malloc((MAXL + 1) * sizeof(char));
 
@@ -285,7 +333,7 @@ void CITY::CITY_NODE::searchCityByID(void)
 {
     clear_screen();
 
-    afisare_date_tabel_oras();
+    CITY::CITY_NODE::displayCityData();
 
     char *UserInput_City_ID = (char *)malloc(MAXL * sizeof(char) + 1);
     bool gasit = false;
@@ -396,7 +444,7 @@ void CITY::CITY_NODE::searchCityByName(void)
 {
     clear_screen();
 
-    afisare_date_tabel_oras();
+    CITY::CITY_NODE::displayCityData();
 
     char *UserInput_City_Name = (char *)malloc(MAXL * sizeof(char) + 1);
     bool isFound = false;
@@ -635,7 +683,7 @@ bool CITY::deleteCity(void)
 {
     clear_screen();
 
-    afisare_date_tabel_oras();
+    CITY::CITY_NODE::displayCityData();
 
     std::string ID = "";
     std::cout << std::setw(5) << " "

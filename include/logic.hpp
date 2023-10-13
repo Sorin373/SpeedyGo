@@ -7,9 +7,6 @@
 extern bool autentificare_cont(void);
 extern bool _init_(void);
 extern void nr_max_caractere_den(void);
-extern void afisare_date_tabel_oras(void);
-extern void afisare_date_tabel_depozit(void);
-extern void afisare_date_tabel_produs(void);
 extern bool verificare_orase_stoc_limitat(void);
 extern void cautare_produse_ID_stoc_limitat(const int ID_Depozit);
 extern void depozite_conectate(int ID_Depozit);

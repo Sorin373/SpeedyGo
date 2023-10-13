@@ -9,12 +9,6 @@
 #include <thread>
 #include <chrono>
 
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
-using std::setw;
-
 bool start(void)
 {
 #ifdef _WIN32
@@ -25,81 +19,81 @@ bool start(void)
 
     if (autentificare_cont() == EXIT_FAILURE)
     {
-        cerr << "\n"
-             << setw(5) << " "
+        std::cerr << "\n"
+             << std::setw(5) << " "
              << "-- Authentication process did not complete!\n";
         ERROR_CNT++;
         return EXIT_FAILURE;
     }
     else
     {
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "-- Authentication successful!\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     if (_init_() == EXIT_FAILURE)
     {
-        cerr << setw(5) << " "
+        std::cerr << std::setw(5) << " "
              << "-- Application initialisation process did not complete!\n";
         ERROR_CNT++;
         return EXIT_FAILURE;
     }
     else if (ERROR_CNT == 1)
     {
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "-- All the necessary files were initialized with " << ERROR_CNT << " error!\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     else
     {
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "-- All the necessary files were initialized with " << ERROR_CNT << " errors!\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
-    cout << "\n"
-         << setw(5) << " "
+    std::cout << "\n"
+         << std::setw(5) << " "
          << "-- Starting application configuration...\n\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     DEPOT::DEPOT_NODE::sortData();
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data sort complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     CITY::CITY_NODE::sortData(1);
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data sort complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     PRODUCT::PRODUCT_NODE::sortData(1);
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data sort complete (3)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     determinare_tip_depozit();
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data configuration complete (1)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     cautare_orase_stoc_limitat();
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data configuration complete (2)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     cautare_orase_izolate();
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data configuration complete (3)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     produse_transport_TSP();
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data configuration complete (4)\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     nr_max_caractere_den();
-    cout << setw(6) << " "
+    std::cout << std::setw(6) << " "
          << "--> Data configuration complete (5)\n";
 
     minimumRouteTSP[1] = -1;
@@ -127,7 +121,7 @@ int main(int argc, char **argv)
 {
     if (start() == EXIT_FAILURE)
     {
-        cerr << setw(5) << " "
+        std::cerr << std::setw(5) << " "
              << "-- Can not start the application!\n";
         _getch();
         free_memory();
@@ -135,25 +129,25 @@ int main(int argc, char **argv)
     }
     else if (ERROR_CNT == 1)
     {
-        cout << "\n"
-             << setw(5) << " "
+        std::cout << "\n"
+             << std::setw(5) << " "
              << "-- Application configuration completed with " << ERROR_CNT << " error!\n\n";
 
         underline(65, true);
 
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "Press 'ENTER' to continue...";
         _getch();
     }
     else
     {
-        cout << "\n"
-             << setw(5) << " "
+        std::cout << "\n"
+             << std::setw(5) << " "
              << "-- Application configuration completed with " << ERROR_CNT << " errors!\n\n";
 
         underline(65, true);
 
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "Press 'ENTER' to continue...";
 
         _getch();
@@ -165,33 +159,33 @@ int main(int argc, char **argv)
     {
         clear_screen();
 
-        cout << "\n\n"
-             << setw(30) << " "
+        std::cout << "\n\n"
+             << std::setw(30) << " "
              << "+-------+\n"
-             << setw(30) << " "
+             << std::setw(30) << " "
              << "| MENIU |\n"
-             << setw(30) << " "
+             << std::setw(30) << " "
              << "+-------+\n";
         underline(60, true);
 
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "[1] Aprovizionarea stocurilor in depozitele din Romania\n"
-             << setw(5) << " "
+             << std::setw(5) << " "
              << "[2] Analiza stoc Romania\n"
-             << setw(5) << " "
+             << std::setw(5) << " "
              << "[3] Vizualizare baza de date\n"
-             << setw(5) << " "
+             << std::setw(5) << " "
              << "[4] SQL Query Tool\n"
-             << setw(5) << " "
+             << std::setw(5) << " "
              << "[5] Actualizare date\n"
-             << setw(5) << " "
+             << std::setw(5) << " "
              << "[0] EXIT\n";
 
         underline(60, true);
-        cout << setw(5) << " "
+        std::cout << std::setw(5) << " "
              << "Introduceti numarul meniului: ";
 
-        cin >> MENIU;
+        std::cin >> MENIU;
 
         switch (MENIU)
         {
@@ -202,30 +196,30 @@ int main(int argc, char **argv)
             {
                 clear_screen();
 
-                cout << "\n\n"
-                     << setw(18) << " "
+                std::cout << "\n\n"
+                     << std::setw(18) << " "
                      << "+--------------------+\n"
-                     << setw(18) << " "
+                     << std::setw(18) << " "
                      << "| GESTIONARE STOCURI |\n"
-                     << setw(18) << " "
+                     << std::setw(18) << " "
                      << "+--------------------+\n";
                 underline(50, true);
 
-                cout << setw(5) << " "
+                std::cout << std::setw(5) << " "
                      << "[1] Ruta optima a aprovizionarii depozitelor\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[2] Traseul optim de la un depozit la altul\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[3] Depozite izolate\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[4] Depozite cu o singura ruta de conexiune\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[0] EXIT\n";
                 underline(50, true);
 
-                cout << setw(5) << " "
+                std::cout << std::setw(5) << " "
                      << "Introduceti numarul meniului: ";
-                cin >> MENIU_1;
+                std::cin >> MENIU_1;
 
                 switch (MENIU_1)
                 {
@@ -260,28 +254,28 @@ int main(int argc, char **argv)
             {
                 clear_screen();
 
-                cout << "\n\n"
-                     << setw(15) << " "
+                std::cout << "\n\n"
+                     << std::setw(15) << " "
                      << "+--------------+\n"
-                     << setw(15) << " "
+                     << std::setw(15) << " "
                      << "| BAZA DE DATE |\n"
-                     << setw(15) << " "
+                     << std::setw(15) << " "
                      << "+--------------+\n";
 
                 underline(40, true);
 
-                cout << setw(5) << " "
+                std::cout << std::setw(5) << " "
                      << "[1] Tabel Depozite Ro\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[2] Tabel Produse\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[0] EXIT\n";
 
                 underline(40, true);
 
-                cout << setw(5) << " "
+                std::cout << std::setw(5) << " "
                      << "Introduceti numarul meniului: ";
-                cin >> MENIU_3;
+                std::cin >> MENIU_3;
 
                 switch (MENIU_3)
                 {
@@ -293,29 +287,29 @@ int main(int argc, char **argv)
                     {
                         clear_screen();
 
-                        afisare_date_tabel_oras();
+                        CITY::CITY_NODE::displayCityData();
 
-                        cout << setw(5) << " "
+                        std::cout << std::setw(5) << " "
                              << "[1] Sortare dupa tipul depozitului\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[2] Sortare alfabetic A-Z\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[3] Sortare alfabetic Z-A\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[4] Sortare descrescatoare dupa ID\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[5] Reseteaza afisarea\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[6] Cautare date\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[0] EXIT\n";
 
                         underline(80, true);
 
-                        cout << setw(5) << " "
+                        std::cout << std::setw(5) << " "
                              << "Introduceti numarul meniului: ";
 
-                        cin >> MENIU_3_1;
+                        std::cin >> MENIU_3_1;
 
                         switch (MENIU_3_1)
                         {
@@ -341,20 +335,20 @@ int main(int argc, char **argv)
                             {
                                 clear_screen();
 
-                                afisare_date_tabel_oras();
+                                CITY::CITY_NODE::displayCityData();
 
-                                cout << setw(5) << " "
+                                std::cout << std::setw(5) << " "
                                      << "[1] Cautare depozit dupa denumire\n"
-                                     << setw(5) << " "
+                                     << std::setw(5) << " "
                                      << "[2] Cautare depozit dupa ID\n"
-                                     << setw(5) << " "
+                                     << std::setw(5) << " "
                                      << "[0] EXIT\n";
 
                                 underline(80, true);
 
-                                cout << setw(5) << " "
+                                std::cout << std::setw(5) << " "
                                      << "Introduceti numarul meniului: ";
-                                cin >> MENIU_3_1_6;
+                                std::cin >> MENIU_3_1_6;
 
                                 switch (MENIU_3_1_6)
                                 {
@@ -388,33 +382,33 @@ int main(int argc, char **argv)
                     {
                         clear_screen();
 
-                        afisare_date_tabel_produs();
+                        PRODUCT::PRODUCT_NODE::displayProductData();
 
-                        cout << setw(5) << " "
+                        std::cout << std::setw(5) << " "
                              << "[1] Sortare dupa categoria produselor\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[2] Sortare alfabetic A-Z\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[3] Sortare alfabetic Z-A\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[4] Sortare descrescatoare dupa ID\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[5] Sortare in ordine crescatoare dupa pret\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[6] Sortare in ordine descrescatoare dupa pret\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[7] Reseteaza afisarea\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[8] Cautare date\n"
-                             << setw(5) << " "
+                             << std::setw(5) << " "
                              << "[0] EXIT\n";
 
                         underline(80, true);
 
-                        cout << setw(5) << " "
+                        std::cout << std::setw(5) << " "
                              << "Introduceti numarul meniului: ";
 
-                        cin >> MENIU_3_2;
+                        std::cin >> MENIU_3_2;
 
                         switch (MENIU_3_2)
                         {
@@ -446,20 +440,20 @@ int main(int argc, char **argv)
                             {
                                 clear_screen();
 
-                                afisare_date_tabel_produs();
+                                PRODUCT::PRODUCT_NODE::displayProductData();
 
-                                cout << setw(5) << " "
+                                std::cout << std::setw(5) << " "
                                      << "[1] Cautare produs dupa denumire\n"
-                                     << setw(5) << " "
+                                     << std::setw(5) << " "
                                      << "[2] Cautare produs dupa ID\n"
-                                     << setw(5) << " "
+                                     << std::setw(5) << " "
                                      << "[0] EXIT\n";
 
                                 underline(80, true);
 
-                                cout << setw(5) << " "
+                                std::cout << std::setw(5) << " "
                                      << "Introduceti numarul meniului: ";
-                                cin >> MENIU_3_2_8;
+                                std::cin >> MENIU_3_2_8;
 
                                 switch (MENIU_3_2_8)
                                 {
@@ -503,30 +497,30 @@ int main(int argc, char **argv)
             {
                 clear_screen();
 
-                cout << "\n\n"
-                     << setw(15) << " "
+                std::cout << "\n\n"
+                     << std::setw(15) << " "
                      << "+------------------+\n"
-                     << setw(15) << " "
+                     << std::setw(15) << " "
                      << "| ACTUALIZARE DATE |\n"
-                     << setw(15) << " "
+                     << std::setw(15) << " "
                      << "+------------------+\n";
 
                 underline(40, true);
 
-                cout << setw(5) << " "
+                std::cout << std::setw(5) << " "
                      << "[1] Actualizare trasee GPS\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[2] Adauga un depozit\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[3] Sterge un depozit\n"
-                     << setw(5) << " "
+                     << std::setw(5) << " "
                      << "[0] EXIT\n";
 
                 underline(40, true);
 
-                cout << setw(5) << " "
+                std::cout << std::setw(5) << " "
                      << "Introduceti numarul meniului: ";
-                cin >> MENIU_5;
+                std::cin >> MENIU_5;
 
                 switch (MENIU_5)
                 {
@@ -536,7 +530,7 @@ int main(int argc, char **argv)
                 case 2:
                     if (CITY::addCity() == EXIT_FAILURE)
                     {
-                        cerr << setw(5) << " "
+                        std::cerr << std::setw(5) << " "
                              << "sql-> Failed to add row!\n";
                         _getch();
                     }
@@ -544,7 +538,7 @@ int main(int argc, char **argv)
                 case 3:
                     if (CITY::deleteCity() == EXIT_FAILURE)
                     {
-                        cerr << setw(5) << " "
+                        std::cerr << std::setw(5) << " "
                              << "sql-> Failed to delete row!\n";
                         _getch();
                     }

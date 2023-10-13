@@ -28,6 +28,7 @@ public:
         static void searchCityByName(void);
         static void searchCityByID(void);
         static void filterCityByCategory(void);
+        static void displayCityData(void);
     };
 
     CITY_NODE *head_city = nullptr, *tail_city = nullptr;

@@ -58,7 +58,7 @@ double PRODUCT::PRODUCT_NODE::getProductPrice(void) const
 void PRODUCT::PRODUCT_NODE::searchProductByName(void)
 {
     clear_screen();
-    afisare_date_tabel_produs();
+    PRODUCT::PRODUCT_NODE::displayProductData();
 
     char *UserInput_Product_Name = (char *)malloc(MAXL * sizeof(char) + 1);
     bool isFound = false;
@@ -162,7 +162,7 @@ void PRODUCT::PRODUCT_NODE::searchProductByName(void)
 void PRODUCT::PRODUCT_NODE::searchProductByID(void)
 {
     clear_screen();
-    afisare_date_tabel_produs();
+    PRODUCT::PRODUCT_NODE::displayProductData();
 
     char *UserInput_Product_ID = (char *)malloc(MAXL * sizeof(char) + 1);
     bool isFound = false;
@@ -428,8 +428,7 @@ void PRODUCT::PRODUCT_NODE::alphabeticalProductSort(const int sortType)
 void PRODUCT::PRODUCT_NODE::filterProductByCategory(void)
 {
     clear_screen();
-
-    afisare_date_tabel_produs();
+    PRODUCT::PRODUCT_NODE::displayProductData();
 
     char *UserInput_Product_Category = (char *)malloc(MAXL * sizeof(char) + 1);
 
@@ -507,6 +506,47 @@ void PRODUCT::PRODUCT_NODE::filterProductByCategory(void)
     free(UserInput_Product_Category);
     _getch();
     filterProductByCategory();
+}
+
+void PRODUCT::PRODUCT_NODE::displayProductData()
+{
+    clear_screen();
+
+    std::cout << "\n\n"
+              << std::setw(5) << " "
+              << "+--------------+\n"
+              << std::setw(5) << " "
+              << "| TABEL-PRODUS |\n"
+              << std::setw(5) << " "
+              << "+--------------+\n\n";
+
+    std::cout << std::setw(5) << " "
+              << "ID_Produs"
+              << std::setw(4) << " "
+              << "Denumire_Produs"
+              << std::setw(maxProductNameLength - 10) << " "
+              << "Categorie_Produs"
+              << std::setw(5) << " "
+              << "Pret_Produs\n";
+
+    underline(80, true);
+
+    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    {
+        std::cout << std::setw(5 + 1) << " [" << date_produs->getProductID() << "]" << std::setw(maxProductIDLength - strlen(date_produs->getProductID()) + 9)
+                  << " " << date_produs->getProductName() << std::setw(maxProductNameLength - strlen(date_produs->getProductName()) + 5)
+                  << " " << date_produs->getProductCategory() << std::setw(maxProductCategoryLength - strlen(date_produs->getProductCategory()) + 10) << " ";
+
+        char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+        snprintf(pret, MAXL, "%g", date_produs->getProductPrice());
+
+        std::cout << std::fixed << std::setprecision(2) << date_produs->getProductPrice()
+                  << std::setw(maxProductPriceLength - std::to_string(round(date_produs->getProductPrice())).length() + 10) << "RON\n";
+
+        free(pret);
+    }
+
+    underline(80, true);
 }
 
 void PRODUCT::getData(const char *Product_ID, const char *Product_Name, const char *Product_Category, const double Product_Price)

@@ -29,6 +29,7 @@ public:
         static void searchProductByName(void);
         static void searchProductByID(void);
         static void filterProductByCategory(void);
+        static void displayProductData(void);
     };
 
     PRODUCT_NODE *head_product = nullptr, *tail_product = nullptr;
