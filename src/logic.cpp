@@ -2062,7 +2062,7 @@ void consola_mysql(void)
                   << std::setw(5) << " "
                   << "mysql> ";
 
-        getline(std::cin, interogare);
+        std::getline(std::cin, interogare);
 
         if (interogare == "exit")
         {
