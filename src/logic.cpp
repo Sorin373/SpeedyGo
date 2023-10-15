@@ -7,8 +7,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <thread>
-#include <chrono>
 #include <iomanip>
 #include <vector>
 #include <cmath>
@@ -75,14 +73,12 @@ bool _init_(void)
     {
         std::cout << std::setw(5) << " "
                   << "-- Initialization of the Google API service could not be completed!\n";
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         ERROR_CNT++;
 
         if (_HAVERSINE_INIT_("utils/legaturi.txt") == EXIT_FAILURE)
         {
             std::cout << std::setw(5) << " "
                       << "-- Manual calculation using the Haversine formula was unsuccessful during initialization!\n";
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
             ERROR_CNT++;
 
             return EXIT_FAILURE;
