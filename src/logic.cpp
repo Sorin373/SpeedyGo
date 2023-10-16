@@ -5,20 +5,48 @@
 #include "../include/haversine.hpp"
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <fstream>
 #include <iomanip>
 #include <vector>
 #include <cmath>
 
-bool autentificare_cont(void)
+bool validateMysqlCredentials(void)
 {
     clear_screen();
 
-    char *host_name = (char *)malloc(MAXL * sizeof(char) + 1),
-         *username = (char *)malloc(MAXL * sizeof(char) + 1),
-         *database = (char *)malloc(MAXL * sizeof(char) + 1),
-         *password = (char *)malloc(MAXL * sizeof(char) + 1);
+    char *host_name = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (host_name == NULL)
+        return EXIT_FAILURE;
+
+    char *username = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (username == NULL)
+    {
+        free(host_name);
+        return EXIT_FAILURE;
+    }
+
+    char *database = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (database == NULL)
+    {
+        free(host_name);
+        free(username);
+        return EXIT_FAILURE;
+    }
+
+    char *password = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (password == NULL)
+    {
+        free(host_name);
+        free(username);
+        free(database);
+        return EXIT_FAILURE;
+    }
 
     std::cout << "\n\n"
               << std::setw(10) << " "
@@ -56,7 +84,7 @@ bool autentificare_cont(void)
         free(username);
         free(password);
         free(database);
-        return autentificare_cont();
+        return validateMysqlCredentials();
     }
 
     free(host_name);
@@ -67,7 +95,7 @@ bool autentificare_cont(void)
     return EXIT_SUCCESS;
 }
 
-bool _init_(void)
+bool _ADJACENCY_MATRIX_INIT_(void)
 {
     if (_GOOGLE_MATRIX_API_INIT_() == EXIT_FAILURE)
     {
@@ -87,9 +115,20 @@ bool _init_(void)
 
     for (ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE *date_gps = adjacency_matrix_init.getHead(); date_gps != nullptr; date_gps = date_gps->next)
     {
-        char *city1 = (char *)malloc(MAXL * sizeof(char) + 1), *city2 = (char *)malloc(MAXL * sizeof(char) + 1);
+        char *city1 = (char *)malloc(MAXL * sizeof(char) + 1), *city2;
+
+        if (city1 == NULL)
+            return EXIT_FAILURE;
+
+        city2 = (char *)malloc(MAXL * sizeof(char) + 1);
+
+        if (city2 == NULL)
+        {
+            free(city1);
+            return EXIT_FAILURE;
+        }
+
         int city1_ID = 0, city2_ID = 0, durata = date_gps->getDuration();
-        ;
         double distanta = date_gps->getDistance();
 
         strcpy(city1, date_gps->getStart());
@@ -457,7 +496,6 @@ void vizualizare_status_stoc(void)
     }
 }
 
-#pragma region Dijkstra
 void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee)
 {
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
@@ -729,7 +767,6 @@ void sistem_aprovizionare_independent(void)
         }
     }
 }
-#pragma endregion
 
 void afisare_depozite_izolate(void)
 {
@@ -907,13 +944,12 @@ void afisare_depozite_unic_drum(void)
     }
 }
 
-#pragma region backtracking
-void init_stiva_hc(void)
+void hamiltonianGraph::init_stiva(void)
 {
     stack[stackCounter] = -1;
 }
 
-bool succesor_hc(void)
+bool hamiltonianGraph::succesor(void)
 {
     if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
@@ -923,14 +959,14 @@ bool succesor_hc(void)
     return false;
 }
 
-bool solutie_hc(void)
+bool hamiltonianGraph::solutie(void)
 {
     if (stackCounter == limited_stock_cities_count)
         return true;
     return false;
 }
 
-bool valid_hc(void)
+bool hamiltonianGraph::valid(void)
 {
     for (unsigned int i = 1; i < stackCounter; i++)
         if (stack[stackCounter] == stack[i])
@@ -947,7 +983,7 @@ bool valid_hc(void)
     return true;
 }
 
-void determinare_ciclu_hc_minim(void)
+void hamiltonianGraph::determinare_ciclu_hc_minim(void)
 {
     double suma_dist = 0.0;
     int suma_durata = 0;
@@ -971,27 +1007,27 @@ void determinare_ciclu_hc_minim(void)
     }
 }
 
-void back_hc(void)
+void hamiltonianGraph::back(void)
 {
     stackCounter = 1;
-    init_stiva_hc();
+    hamiltonianGraph::init_stiva();
     while (stackCounter > 0)
     {
         int vSuccesor, vValid;
         do
         {
-            vSuccesor = succesor_hc();
+            vSuccesor = hamiltonianGraph::succesor();
             if (vSuccesor == 1)
-                vValid = valid_hc();
+                vValid = hamiltonianGraph::valid();
         } while (vSuccesor == 1 && vValid == 0);
         if (vSuccesor == 1)
         {
-            if (solutie_hc() == 1)
-                determinare_ciclu_hc_minim();
+            if (hamiltonianGraph::solutie() == 1)
+                hamiltonianGraph::determinare_ciclu_hc_minim();
             else
             {
                 stackCounter++;
-                init_stiva_hc();
+                hamiltonianGraph::init_stiva();
             }
         }
         else
@@ -999,12 +1035,12 @@ void back_hc(void)
     }
 }
 
-void init_stiva_ac(void)
+void acyclicGraph::init_stiva(void)
 {
     stack[stackCounter] = -1;
 }
 
-bool succesor_ac(void)
+bool acyclicGraph::succesor(void)
 {
     if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
@@ -1014,14 +1050,14 @@ bool succesor_ac(void)
     return false;
 }
 
-bool solutie_ac(void)
+bool acyclicGraph::solutie(void)
 {
     if (stackCounter == VERTEX_COUNT + 1)
         return true;
     return false;
 }
 
-bool valid_ac(void)
+bool acyclicGraph::valid(void)
 {
     if (stackCounter == VERTEX_COUNT + 1)
     {
@@ -1056,7 +1092,7 @@ bool valid_ac(void)
     return true;
 }
 
-void determinare_traseu_minim(void)
+void acyclicGraph::determinare_traseu_minim(void)
 {
     double suma_dist = 0.0;
     int suma_durata = 0;
@@ -1080,32 +1116,31 @@ void determinare_traseu_minim(void)
     }
 }
 
-void back_ac(void)
+void acyclicGraph::back(void)
 {
     int vSuccesor, vValid;
     stackCounter = 1;
-    init_stiva_ac();
+    acyclicGraph::init_stiva();
     while (stackCounter > 0)
     {
         do
         {
-            vSuccesor = succesor_ac();
+            vSuccesor = acyclicGraph::succesor();
             if (vSuccesor == 1)
-                vValid = valid_ac();
+                vValid = acyclicGraph::valid();
         } while (vSuccesor == 1 && vValid == 0);
         if (vSuccesor == 1)
-            if (solutie_ac() == 1)
-                determinare_traseu_minim();
+            if (acyclicGraph::solutie() == 1)
+                acyclicGraph::determinare_traseu_minim();
             else
             {
                 stackCounter++;
-                init_stiva_ac();
+                acyclicGraph::init_stiva();
             }
         else
             stackCounter--;
     }
 }
-#pragma endregion
 
 #pragma region TSP
 void TSP(void)
@@ -1134,7 +1169,7 @@ void TSP(void)
 
     if (!izolat)
     {
-        back_hc();
+        hamiltonianGraph::back();
         clear_screen();
         std::cout << "\n";
 
@@ -1182,7 +1217,7 @@ void TSP(void)
             minimumRouteTSP.clear();
             stack.clear();
 
-            back_ac();
+            acyclicGraph::back();
             clear_screen();
             std::cout << "\n";
 
@@ -1230,7 +1265,7 @@ void TSP(void)
     }
     else
     {
-        back_ac();
+        acyclicGraph::back();
         clear_screen();
 
         std::cout << "\n";

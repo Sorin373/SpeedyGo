@@ -8,15 +8,15 @@
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 
-std::string _GET_API_KEY_(const std::string &config_file_path)
+std::string _GET_API_KEY_(const char *path)
 {
-    std::ifstream config_file(config_file_path);
+    std::ifstream config_file(path);
     std::string API_KEY = "";
 
     if (!config_file.is_open())
     {
         std::cerr << std::setw(6) << " "
-                  << "--> Error: " << config_file_path << "\n"
+                  << "--> Error: " << path << "\n"
                   << std::setw(5) << " "
                   << "Enter the API key ('N' to cancel): ";
 
@@ -59,7 +59,7 @@ std::string _GET_API_KEY_(const std::string &config_file_path)
 size_t _response_data_(void *content, size_t element_size, size_t elements, std::string *buffer)
 {
     size_t total_size = element_size * elements;
-    buffer->append(static_cast<char *>(content), total_size);
+    buffer->append((char *)(content), total_size);
     return total_size;
 }
 

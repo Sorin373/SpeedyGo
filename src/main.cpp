@@ -15,7 +15,7 @@ bool _INIT_(void)
     originalAttributes = csbi.wAttributes;
 #endif
 
-    if (autentificare_cont() == EXIT_FAILURE)
+    if (validateMysqlCredentials() == EXIT_FAILURE)
     {
         std::cerr << "\n"
                   << std::setw(5) << " "
@@ -27,7 +27,7 @@ bool _INIT_(void)
         std::cout << std::setw(5) << " "
                   << "-- Authentication successful!\n";
 
-    if (_init_() == EXIT_FAILURE)
+    if (_ADJACENCY_MATRIX_INIT_() == EXIT_FAILURE)
     {
         std::cerr << std::setw(5) << " "
                   << "-- Application initialisation process did not complete!\n";
