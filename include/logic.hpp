@@ -4,8 +4,11 @@
 
 #include <vector>
 
-extern bool validateMysqlCredentials(void);
-extern bool _ADJACENCY_MATRIX_INIT_(void);
+namespace speedyGo
+{
+    extern bool validateMysqlCredentials(void);
+    extern bool _ADJACENCY_MATRIX_INIT_(void);
+}
 
 extern void nr_max_caractere_den(void);
 extern bool verificare_orase_stoc_limitat(void);
@@ -26,22 +29,22 @@ extern void afisare_depozite_unic_drum(void);
 
 namespace hamiltonianGraph
 {
-    extern void init_stiva(void);
-    extern bool succesor(void);
-    extern bool solutie(void);
-    extern bool valid(void);
-    extern void determinare_ciclu_hc_minim(void);
-    extern void back(void);
+    void initStack(void);
+    bool successor(void);
+    bool solution(void);
+    bool valid(void);
+    void determiningTheMinimumHamiltonianCycle(void);
+    void back(void);
 }
 
 namespace acyclicGraph
 {
-    extern void init_stiva(void);
-    extern bool succesor(void);
-    extern bool solutie(void);
-    extern bool valid(void);
-    extern void determinare_traseu_minim(void);
-    extern void back(void);
+    void initStack(void);
+    bool successor(void);
+    bool solution(void);
+    bool valid(void);
+    void determiningMinimumRoute(void);
+    void back(void);
 }
 
 extern void TSP(void);

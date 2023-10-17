@@ -12,7 +12,7 @@
 #include <vector>
 #include <cmath>
 
-bool validateMysqlCredentials(void)
+bool speedyGo::validateMysqlCredentials(void)
 {
     clear_screen();
 
@@ -95,7 +95,7 @@ bool validateMysqlCredentials(void)
     return EXIT_SUCCESS;
 }
 
-bool _ADJACENCY_MATRIX_INIT_(void)
+bool speedyGo::_ADJACENCY_MATRIX_INIT_(void)
 {
     if (_GOOGLE_MATRIX_API_INIT_() == EXIT_FAILURE)
     {
@@ -185,6 +185,10 @@ void nr_max_caractere_den(void)
             maxProductCategoryLength = strlen(date_produs->getProductCategory());
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
+
+        if (pret == NULL)
+            return;
+
         sprintf(pret, "%f", date_produs->getProductPrice());
 
         for (unsigned int i = 0; i < strlen(pret); i++)
@@ -944,12 +948,12 @@ void afisare_depozite_unic_drum(void)
     }
 }
 
-void hamiltonianGraph::init_stiva(void)
+void hamiltonianGraph::initStack(void)
 {
     stack[stackCounter] = -1;
 }
 
-bool hamiltonianGraph::succesor(void)
+bool hamiltonianGraph::successor(void)
 {
     if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
@@ -959,7 +963,7 @@ bool hamiltonianGraph::succesor(void)
     return false;
 }
 
-bool hamiltonianGraph::solutie(void)
+bool hamiltonianGraph::solution(void)
 {
     if (stackCounter == limited_stock_cities_count)
         return true;
@@ -983,7 +987,7 @@ bool hamiltonianGraph::valid(void)
     return true;
 }
 
-void hamiltonianGraph::determinare_ciclu_hc_minim(void)
+void hamiltonianGraph::determiningTheMinimumHamiltonianCycle(void)
 {
     double suma_dist = 0.0;
     int suma_durata = 0;
@@ -1010,24 +1014,24 @@ void hamiltonianGraph::determinare_ciclu_hc_minim(void)
 void hamiltonianGraph::back(void)
 {
     stackCounter = 1;
-    hamiltonianGraph::init_stiva();
+    hamiltonianGraph::initStack();
     while (stackCounter > 0)
     {
         int vSuccesor, vValid;
         do
         {
-            vSuccesor = hamiltonianGraph::succesor();
+            vSuccesor = hamiltonianGraph::successor();
             if (vSuccesor == 1)
                 vValid = hamiltonianGraph::valid();
         } while (vSuccesor == 1 && vValid == 0);
         if (vSuccesor == 1)
         {
-            if (hamiltonianGraph::solutie() == 1)
-                hamiltonianGraph::determinare_ciclu_hc_minim();
+            if (hamiltonianGraph::solution() == 1)
+                hamiltonianGraph::determiningTheMinimumHamiltonianCycle();
             else
             {
                 stackCounter++;
-                hamiltonianGraph::init_stiva();
+                hamiltonianGraph::initStack();
             }
         }
         else
@@ -1035,12 +1039,12 @@ void hamiltonianGraph::back(void)
     }
 }
 
-void acyclicGraph::init_stiva(void)
+void acyclicGraph::initStack(void)
 {
     stack[stackCounter] = -1;
 }
 
-bool acyclicGraph::succesor(void)
+bool acyclicGraph::successor(void)
 {
     if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
@@ -1050,7 +1054,7 @@ bool acyclicGraph::succesor(void)
     return false;
 }
 
-bool acyclicGraph::solutie(void)
+bool acyclicGraph::solution(void)
 {
     if (stackCounter == VERTEX_COUNT + 1)
         return true;
@@ -1092,7 +1096,7 @@ bool acyclicGraph::valid(void)
     return true;
 }
 
-void acyclicGraph::determinare_traseu_minim(void)
+void acyclicGraph::determiningMinimumRoute(void)
 {
     double suma_dist = 0.0;
     int suma_durata = 0;
@@ -1120,29 +1124,28 @@ void acyclicGraph::back(void)
 {
     int vSuccesor, vValid;
     stackCounter = 1;
-    acyclicGraph::init_stiva();
+    acyclicGraph::initStack();
     while (stackCounter > 0)
     {
         do
         {
-            vSuccesor = acyclicGraph::succesor();
+            vSuccesor = acyclicGraph::successor();
             if (vSuccesor == 1)
                 vValid = acyclicGraph::valid();
         } while (vSuccesor == 1 && vValid == 0);
         if (vSuccesor == 1)
-            if (acyclicGraph::solutie() == 1)
-                acyclicGraph::determinare_traseu_minim();
+            if (acyclicGraph::solution() == 1)
+                acyclicGraph::determiningMinimumRoute();
             else
             {
                 stackCounter++;
-                acyclicGraph::init_stiva();
+                acyclicGraph::initStack();
             }
         else
             stackCounter--;
     }
 }
 
-#pragma region TSP
 void TSP(void)
 {
 #ifdef _WIN32
@@ -2026,7 +2029,6 @@ void parcurgere_traseu_TSP(void)
     }
     free(input);
 }
-#pragma endregion
 
 void afisare_detalii_SpeedyGo(void)
 {
@@ -2116,7 +2118,6 @@ void consola_mysql(void)
                 std::vector<int> coloane(cnt_coloane, 0);
 
                 while (res->next())
-                {
                     for (unsigned int i = 1; i <= cnt_coloane; i++)
                     {
                         int crt_width = res->getString(i).length();
@@ -2125,8 +2126,7 @@ void consola_mysql(void)
                             coloane[i - 1] = crt_width;
                         }
                     }
-                }
-
+                
                 std::cout << "\n";
                 for (unsigned int i = 1; i <= cnt_coloane; i++)
                     std::cout << std::setw(5) << " " << std::setw(coloane[i - 1] + 5) << res->getMetaData()->getColumnName(i) << " ";
