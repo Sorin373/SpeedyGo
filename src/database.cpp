@@ -105,7 +105,7 @@ bool addGraphEdge(void)
 
     edgeFile.close();
 
-    _init_();
+    speedyGo::_ADJACENCY_MATRIX_INIT_();
 
     return EXIT_SUCCESS;
 }

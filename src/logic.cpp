@@ -158,7 +158,7 @@ bool speedyGo::_ADJACENCY_MATRIX_INIT_(void)
     return EXIT_SUCCESS;
 }
 
-void nr_max_caractere_den(void)
+void alignConsoleOutput(void)
 {
     for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
     {

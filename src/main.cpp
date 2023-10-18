@@ -15,7 +15,7 @@ bool _INIT_(void)
     originalAttributes = csbi.wAttributes;
 #endif
 
-    if (validateMysqlCredentials() == EXIT_FAILURE)
+    if (speedyGo::validateMysqlCredentials() == EXIT_FAILURE)
     {
         std::cerr << "\n"
                   << std::setw(5) << " "
@@ -27,7 +27,7 @@ bool _INIT_(void)
         std::cout << std::setw(5) << " "
                   << "-- Authentication successful!\n";
 
-    if (_ADJACENCY_MATRIX_INIT_() == EXIT_FAILURE)
+    if (speedyGo::_ADJACENCY_MATRIX_INIT_() == EXIT_FAILURE)
     {
         std::cerr << std::setw(5) << " "
                   << "-- Application initialisation process did not complete!\n";
@@ -73,7 +73,7 @@ bool _INIT_(void)
     std::cout << std::setw(6) << " "
               << "--> Data configuration complete (4)\n";
 
-    nr_max_caractere_den();
+    alignConsoleOutput();
     std::cout << std::setw(6) << " "
               << "--> Data configuration complete (5)\n";
 
@@ -96,7 +96,7 @@ void free_memory(void)
     delete con;
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
     if (_INIT_() == EXIT_FAILURE)
     {

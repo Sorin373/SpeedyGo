@@ -558,6 +558,7 @@ bool CITY::addCity(void)
 
     char *Depot_Name = (char *)malloc(MAXL * sizeof(char) + 1),
          *Depot_Type = (char *)malloc(MAXL * sizeof(char) + 1);
+         
     double latitude = 0.0, longitude = 0.0;
 
     std::cout << "\n\n"
