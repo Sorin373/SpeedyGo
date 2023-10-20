@@ -57,19 +57,19 @@ bool _INIT_(void)
     std::cout << std::setw(6) << " "
               << "--> Data sort complete (3)\n";
 
-    determinare_tip_depozit();
+    selectDepotType();
     std::cout << std::setw(6) << " "
               << "--> Data configuration complete (1)\n";
 
-    cautare_orase_stoc_limitat();
+    searchLimitedStockCities();
     std::cout << std::setw(6) << " "
               << "--> Data configuration complete (2)\n";
 
-    cautare_orase_izolate();
+    searchIsolatedVertices();
     std::cout << std::setw(6) << " "
               << "--> Data configuration complete (3)\n";
 
-    produse_transport_TSP();
+    tsp::productTransportTSP();
     std::cout << std::setw(6) << " "
               << "--> Data configuration complete (4)\n";
 
@@ -203,10 +203,10 @@ int main(void)
                 switch (MENIU_1)
                 {
                 case 1:
-                    parcurgere_traseu_TSP();
+                    tsp::routeTraversalTSP();
                     break;
                 case 2:
-                    sistem_aprovizionare_independent();
+                    Dijkstra::CityToCityDistanceCalculator();
                     break;
                 case 3:
                     afisare_depozite_izolate();
@@ -224,7 +224,7 @@ int main(void)
 
             break;
         case 2:
-            vizualizare_status_stoc();
+            stockStatusVisualization();
             break;
         case 3:
             unsigned int MENIU_3;
@@ -467,7 +467,7 @@ int main(void)
 
             break;
         case 4:
-            consola_mysql();
+            speedyGo::MySQLconsole();
             break;
         case 5:
             unsigned int MENIU_5;

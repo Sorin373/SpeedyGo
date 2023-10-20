@@ -129,26 +129,26 @@ bool speedyGo::_ADJACENCY_MATRIX_INIT_(void)
         }
 
         int city1_ID = 0, city2_ID = 0, durata = date_gps->getDuration();
-        double distanta = date_gps->getDistance();
+        double distance = date_gps->getDistance();
 
         strcpy(city1, date_gps->getStart());
         strcpy(city2, date_gps->getDestination());
 
-        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (_strcasecmp_(date_oras->getCityName(), city1) == 0)
+        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+            if (_strcasecmp_(city_data->getCityName(), city1) == 0)
             {
-                city1_ID = std::stoi(date_oras->getCityID());
+                city1_ID = std::stoi(city_data->getCityID());
                 break;
             }
 
-        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            if (_strcasecmp_(date_oras->getCityName(), city2) == 0)
+        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+            if (_strcasecmp_(city_data->getCityName(), city2) == 0)
             {
-                city2_ID = std::stoi(date_oras->getCityID());
+                city2_ID = std::stoi(city_data->getCityID());
                 break;
             }
 
-        adjacencyMatrix[city1_ID][city2_ID].distance = adjacencyMatrix[city2_ID][city1_ID].distance = distanta;
+        adjacencyMatrix[city1_ID][city2_ID].distance = adjacencyMatrix[city2_ID][city1_ID].distance = distance;
         adjacencyMatrix[city1_ID][city2_ID].duration = adjacencyMatrix[city2_ID][city1_ID].duration = durata;
 
         free(city1);
@@ -160,13 +160,13 @@ bool speedyGo::_ADJACENCY_MATRIX_INIT_(void)
 
 void alignConsoleOutput(void)
 {
-    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
     {
-        if (strlen(date_oras->getCityName()) > maxCityNameLength)
-            maxCityNameLength = strlen(date_oras->getCityName());
+        if (strlen(city_data->getCityName()) > maxCityNameLength)
+            maxCityNameLength = strlen(city_data->getCityName());
 
         char temp[MAXL];
-        sprintf(temp, "%f", date_oras->getLatitude());
+        sprintf(temp, "%f", city_data->getLatitude());
 
         for (unsigned int i = 0; i < strlen(temp); i++)
             if (temp[i] == '.')
@@ -176,20 +176,20 @@ void alignConsoleOutput(void)
             maxCityLatitudeLength = strlen(temp);
     }
 
-    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *product_data = product.getHead(); product_data != nullptr; product_data = product_data->next)
     {
-        if (strlen(date_produs->getProductName()) > maxProductNameLength)
-            maxProductNameLength = strlen(date_produs->getProductName());
+        if (strlen(product_data->getProductName()) > maxProductNameLength)
+            maxProductNameLength = strlen(product_data->getProductName());
 
-        if (strlen(date_produs->getProductCategory()) > maxProductCategoryLength)
-            maxProductCategoryLength = strlen(date_produs->getProductCategory());
+        if (strlen(product_data->getProductCategory()) > maxProductCategoryLength)
+            maxProductCategoryLength = strlen(product_data->getProductCategory());
 
         char *pret = (char *)malloc(MAXL * sizeof(char) + 1);
 
         if (pret == NULL)
             return;
 
-        sprintf(pret, "%f", date_produs->getProductPrice());
+        sprintf(pret, "%f", product_data->getProductPrice());
 
         for (unsigned int i = 0; i < strlen(pret); i++)
             if (pret[i] == '.')
@@ -198,15 +198,15 @@ void alignConsoleOutput(void)
         if (strlen(pret) > maxProductPriceLength)
             maxProductPriceLength = strlen(pret);
 
-        if (strlen(date_produs->getProductID()) > maxProductIDLength)
-            maxProductIDLength = strlen(date_produs->getProductID());
+        if (strlen(product_data->getProductID()) > maxProductIDLength)
+            maxProductIDLength = strlen(product_data->getProductID());
 
         free(pret);
     }
 
-    for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+    for (DEPOT::DEPOT_NODE *depot_data = depot.getHead(); depot_data != nullptr; depot_data = depot_data->next)
     {
-        int cantitiate_temp = date_depozit->getProductQuantity(), contor_cifre = 0;
+        int cantitiate_temp = depot_data->getProductQuantity(), contor_cifre = 0;
 
         while (cantitiate_temp > 0)
         {
@@ -228,156 +228,142 @@ void alignConsoleOutput(void)
     maxProductPriceLength += 3;
 }
 
-bool verificare_orase_stoc_limitat(void)
-{
-    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
-        if (limitedStockCities[i])
-            return true;
-    return false;
-}
-
-void cautare_produse_ID_stoc_limitat(const int ID_Depozit)
+void limitedStockProductSearchByID(const int ProductID)
 {
     clear_screen();
 
     std::cout << "\n\n"
               << std::setw(5) << " "
-              << "ID_Produs" << std::setw(4) << " "
-              << "Denumire_Produs" << std::setw(8) << " "
-              << "Nr.Buc\n";
+              << "Product_ID" << std::setw(3) << " "
+              << "Product_Name" << std::setw(11) << " "
+              << "Product_Quantity\n";
     underline(55, true);
 
-    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *product_data = product.getHead(); product_data != nullptr; product_data = product_data->next)
     {
-        int ID_PRODUS = std::stoi(date_produs->getProductID());
-        for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
-        {
-            int ID_PRODUS_DEPOZIT = std::stoi(date_depozit->getProductID()), ID_DEPOZIT = std::stoi(date_depozit->getCityID());
-            if (ID_PRODUS_DEPOZIT == ID_PRODUS && ID_DEPOZIT == ID_Depozit)
-            {
-                if (date_depozit->getProductQuantity() < MINIMUM_STOCK_VALUE)
-                    std::cout << std::setw(5 + 1) << " [" << date_produs->getProductID() << "]" << std::setw(maxProductIDLength - strlen(date_produs->getProductID()) + 9)
-                              << " " << date_produs->getProductName()
-                              << std::setw(maxProductNameLength - strlen(date_produs->getProductName()) + 3) << " " << date_depozit->getProductQuantity()
-                              << std::setw(maxProductQuantityLength - std::to_string(round(date_produs->getProductPrice())).length() + 5) << " "
+        int PRODUCT_ID = std::stoi(product_data->getProductID());
+
+        for (DEPOT::DEPOT_NODE *depot_data = depot.getHead(); depot_data != nullptr; depot_data = depot_data->next)
+            if (std::stoi(depot_data->getProductID()) == PRODUCT_ID && std::stoi(depot_data->getCityID()) == ProductID)
+                if (depot_data->getProductQuantity() < MINIMUM_STOCK_VALUE)
+                    std::cout << std::setw(5 + 1) << " [" << product_data->getProductID() << "]" << std::setw(maxProductIDLength - strlen(product_data->getProductID()) + 9)
+                              << " " << product_data->getProductName()
+                              << std::setw(maxProductNameLength - strlen(product_data->getProductName()) + 3) << " " << depot_data->getProductQuantity()
+                              << std::setw(maxProductQuantityLength - std::to_string(round(product_data->getProductPrice())).length() + 5) << " "
                               << "buc.\n";
-            }
-        }
     }
 
     underline(55, true);
 
     std::cout << std::setw(5) << " "
-              << "Apasa 'ENTER' pentru a te intoarce...";
+              << "Press 'ENTER' to return...";
 }
 
-void depozite_conectate(int ID_Depozit)
+void connectedNodes(const int DepotID)
 {
     std::cout << "\n";
 
-    std::vector<bool> temp_depozite(VERTEX_COUNT, false);
-    CITY::CITY_NODE *date_oras = city.getHead();
-    char *t_denumire = (char *)malloc(MAXL * sizeof(char) + 1);
+    std::vector<bool> depots(VERTEX_COUNT, false);
+    CITY::CITY_NODE *city_data = city.getHead();
+    char *depotName = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    while (date_oras != nullptr)
+    if (depotName == NULL)
+        return;
+
+    while (city_data != nullptr)
     {
-        int _ID = std::stoi(date_oras->getCityID());
-        if (_ID == ID_Depozit)
-            strcpy(t_denumire, date_oras->getCityName());
-        date_oras = date_oras->next;
+        if (std::stoi(city_data->getCityID()) == DepotID)
+            strcpy(depotName, city_data->getCityName());
+        city_data = city_data->next;
     }
 
-    int contor = 0;
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
-        if (adjacencyMatrix[ID_Depozit][i].distance != 0)
-            temp_depozite[i] = true;
+        if (adjacencyMatrix[DepotID][i].distance != 0)
+            depots[i] = true;
 
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
-        if (temp_depozite[i] == true)
+        if (depots[i] == true)
         {
-            date_oras = city.getHead();
-            while (date_oras != nullptr)
+            city_data = city.getHead();
+            while (city_data != nullptr)
             {
-                int _ID = std::stoi(date_oras->getCityID());
-                if (_ID == i && _strcasecmp_(t_denumire, date_oras->getCityName()) != 0)
+                if (std::stoi(city_data->getCityID()) == i && _strcasecmp_(depotName, city_data->getCityName()) != 0)
                 {
-                    std::cout << std::setw(5) << " " << t_denumire << " -> " << date_oras->getCityName()
-                              << std::setw(maxCityNameLength - strlen(date_oras->getCityName()) + 5)
-                              << " (" << adjacencyMatrix[ID_Depozit][i].distance << "km | " << adjacencyMatrix[ID_Depozit][i].duration << "min)\n";
+                    std::cout << std::setw(5) << " " << depotName << " -> " << city_data->getCityName()
+                              << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 5)
+                              << " (" << adjacencyMatrix[DepotID][i].distance << "km | " << adjacencyMatrix[DepotID][i].duration << "min)\n";
                     break;
                 }
-                date_oras = date_oras->next;
+                city_data = city_data->next;
             }
         }
 
     std::cout << "\n"
               << std::setw(5) << " "
-              << "Apasa 'ENTER' pentru a te intoarce...";
+              << "Press 'ENTER' to return...";
 
-    free(t_denumire);
+    free(depotName);
 }
 
-void determinare_tip_depozit(void)
+void selectDepotType(void)
 {
-    CITY::CITY_NODE *date_oras = city.getHead();
-    while (date_oras != nullptr)
+    CITY::CITY_NODE *city_data = city.getHead();
+    while (city_data != nullptr)
     {
-        if (_strcasecmp_(date_oras->getCityType(), "centralizat") == 0)
-        {
-            int ID = std::stoi(date_oras->getCityID());
-            centralDepos[ID] = true;
-        }
-        date_oras = date_oras->next;
+        if (_strcasecmp_(city_data->getCityType(), "centralizat") == 0)
+            centralDepos[std::stoi(city_data->getCityID())] = true;
+        city_data = city_data->next;
     }
 }
 
-void cautare_orase_stoc_limitat(void)
+void searchLimitedStockCities(void)
 {
     limited_stock_cities_count = 0;
-    CITY::CITY_NODE *date_oras = city.getHead();
-    while (date_oras != nullptr)
+    CITY::CITY_NODE *city_data = city.getHead();
+    while (city_data != nullptr)
     {
-        int _ID_Oras = std::stoi(date_oras->getCityID());
+        int _ID_Oras = std::stoi(city_data->getCityID());
 
-        DEPOT::DEPOT_NODE *date_depozit = depot.getHead();
-        while (date_depozit != nullptr)
+        DEPOT::DEPOT_NODE *depot_data = depot.getHead();
+        while (depot_data != nullptr)
         {
-            int _ID_Depozit = std::stoi(date_depozit->getCityID());
+            int _ID_Depozit = std::stoi(depot_data->getCityID());
             if (_ID_Depozit == _ID_Oras && centralDepos[_ID_Depozit] == false)
-                if (date_depozit->getProductQuantity() < MINIMUM_STOCK_VALUE)
+                if (depot_data->getProductQuantity() < MINIMUM_STOCK_VALUE)
                 {
                     limitedStockCities[_ID_Depozit] = true;
                     limited_stock_cities_count++;
                     break;
                 }
-            date_depozit = date_depozit->next;
+            depot_data = depot_data->next;
         }
-        date_oras = date_oras->next;
+        city_data = city_data->next;
     }
 }
 
-void cautare_orase_izolate(void)
+void searchIsolatedVertices(void)
 {
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
     {
-        bool izolat = true;
-        for (unsigned int j = 0; j < VERTEX_COUNT && izolat; j++)
+        bool isolated = true;
+        for (unsigned int j = 0; j < VERTEX_COUNT && isolated; j++)
             if (adjacencyMatrix[i][j].distance > 0)
-                izolat = false;
-        if (izolat)
+                isolated = false;
+
+        if (isolated)
             isolatedVertex[i] = true;
     }
 }
 
-void vizualizare_status_stoc(void)
+void stockStatusVisualization(void)
 {
-    cautare_orase_stoc_limitat();
+    searchLimitedStockCities();
 
     if (limited_stock_cities_count == 0)
     {
         std::cout << "\n"
                   << std::setw(5) << " "
-                  << "Nu sunt depozite care necesita aprovizionare...";
+                  << "No supply needed for depots...";
         _getch();
         return;
     }
@@ -386,28 +372,28 @@ void vizualizare_status_stoc(void)
 
     std::cout << "\n\n"
               << std::setw(5) << " "
-              << "+-----------------------+\n"
+              << "+-------------------+\n"
               << std::setw(6) << " "
-              << "Orase cu stocuri reduse\n"
+              << "Limited stock cities\n"
               << std::setw(5) << " "
-              << "+-----------------------+\n";
+              << "+-------------------+\n";
 
     underline(40, true);
 
-    CITY::CITY_NODE *date_oras = city.getHead();
+    CITY::CITY_NODE *city_data = city.getHead();
     int cmax = 0;
 
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
         if (limitedStockCities[i])
         {
-            date_oras = city.getHead();
-            while (date_oras != nullptr)
+            city_data = city.getHead();
+            while (city_data != nullptr)
             {
-                int _ID = std::stoi(date_oras->getCityID());
+                int _ID = std::stoi(city_data->getCityID());
                 if (_ID == i)
-                    std::cout << std::setw(5 + 1) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName()
-                              << std::setw(maxCityNameLength - strlen(date_oras->getCityName()) + 5) << " ";
-                date_oras = date_oras->next;
+                    std::cout << std::setw(5 + 1) << " [" << city_data->getCityID() << "] " << city_data->getCityName()
+                              << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 5) << " ";
+                city_data = city_data->next;
             }
             std::cout << "\n";
         }
@@ -440,11 +426,11 @@ void vizualizare_status_stoc(void)
     {
         int _ID_Oras = std::stoi(t_ID_Oras);
         free(t_ID_Oras);
-        date_oras = city.getHead();
+        city_data = city.getHead();
 
-        while (date_oras != nullptr)
+        while (city_data != nullptr)
         {
-            int t_ID = std::stoi(date_oras->getCityID());
+            int t_ID = std::stoi(city_data->getCityID());
             if (t_ID == _ID_Oras && limitedStockCities[t_ID] == true)
             {
                 unsigned int sMENIU;
@@ -456,7 +442,7 @@ void vizualizare_status_stoc(void)
                     std::cout << "\n\n"
                               << std::setw(5) << " "
                               << "+--------------------------------------------+\n"
-                              << std::setw(7) << " " << date_oras->getCityName() << " | Tip depot: " << date_oras->getCityName() << "\n"
+                              << std::setw(7) << " " << city_data->getCityName() << " | Tip depot: " << city_data->getCityName() << "\n"
                               << std::setw(5) << " "
                               << "+--------------------------------------------+\n";
 
@@ -472,17 +458,17 @@ void vizualizare_status_stoc(void)
                     underline(50, true);
 
                     std::cout << std::setw(5) << " "
-                              << "Introduceti numarul meniului: ";
+                              << "Enter menu number: ";
                     std::cin >> sMENIU;
 
                     switch (sMENIU)
                     {
                     case 1:
-                        cautare_produse_ID_stoc_limitat(_ID_Oras);
+                        limitedStockProductSearchByID(_ID_Oras);
                         _getch();
                         break;
                     case 2:
-                        depozite_conectate(_ID_Oras);
+                        connectedNodes(_ID_Oras);
                         _getch();
                         break;
 
@@ -494,50 +480,49 @@ void vizualizare_status_stoc(void)
 
                 break;
             }
-            date_oras = date_oras->next;
+            city_data = city_data->next;
         }
-        vizualizare_status_stoc();
+        stockStatusVisualization();
     }
 }
 
-void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee)
+void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &distance, std::vector<int> &pathVector, bool debug, bool createRoutes)
 {
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
     {
         if (i != start)
         {
-            if (afisare)
-                std::cout << "Cea mai scurta distanta de la " << start << " la " << i << " este: " << distanta[i] << " : traseu: ";
+            if (debug) // Debugging option
+                std::cout << "The shortest distance from " << start << " to " << i << " is: " << distance[i] << " : optimalRoute: ";
 
-            std::vector<int> traseu;
-
+            std::vector<int> optimalRoute;
             int nod = i;
 
             while (nod != -1)
             {
-                traseu.push_back(nod);
-                nod = distanta_minima[nod];
+                optimalRoute.push_back(nod);
+                nod = pathVector[nod];
             }
 
-            reverse(traseu.begin(), traseu.end());
+            reverse(optimalRoute.begin(), optimalRoute.end());
 
-            if (creare_trasee)
-                route.getData(start, i, distanta[i], traseu);
+            if (createRoutes)
+                route.getData(start, i, distance[i], optimalRoute);
 
-            if (afisare)
-                for (unsigned int j = 0; j < traseu.size(); j++)
-                    std::cout << traseu[j] << " ";
+            if (debug) // Debugging option
+                for (unsigned int j = 0; j < optimalRoute.size(); j++)
+                    std::cout << optimalRoute[j] << " ";
 
-            if (afisare)
+            if (debug) // Debugging option
                 std::cout << "\n";
         }
     }
 }
 
-void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima)
+void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vector<int> &pathVector)
 {
     std::vector<bool> visited(VERTEX_COUNT, false);
-    distanta[start] = 0.0;
+    distance[start] = 0.0;
 
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
     {
@@ -545,52 +530,51 @@ void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distan
         double min_dist = std::numeric_limits<double>::infinity();
 
         for (unsigned int j = 0; j < VERTEX_COUNT; j++)
-            if (!visited[j] && distanta[j] < min_dist)
+            if (!visited[j] && distance[j] < min_dist)
             {
                 min_index = j;
-                min_dist = distanta[j];
+                min_dist = distance[j];
             }
 
         visited[min_index] = true;
 
         for (unsigned int j = 0; j < VERTEX_COUNT; j++)
         {
-            double distanta_noua = distanta[min_index] + adjacencyMatrix[min_index][j].distance;
+            double newDistance = distance[min_index] + adjacencyMatrix[min_index][j].distance;
 
-            if (!visited[j] && adjacencyMatrix[min_index][j].distance > 0 && distanta_noua < distanta[j])
+            if (!visited[j] && adjacencyMatrix[min_index][j].distance > 0 && newDistance < distance[j])
             {
-                distanta[j] = distanta_noua;
-                distanta_minima[j] = min_index;
+                distance[j] = newDistance;
+                pathVector[j] = min_index;
             }
         }
     }
 }
 
-void afisare_depozite_centralizare(void)
+void printCentralDepots(void)
 {
-    std::cout << "\n"
+        std::cout << "\n\n"
               << std::setw(5) << " "
-              << "Depozite centralizate\n";
+              << "+----------------+\n"
+              << std::setw(5) << " "
+              << "| Central depots |\n"
+              << std::setw(5) << " "
+              << "+----------------+\n";
     underline(40, true);
 
     for (unsigned int i = 0; i < VERTEX_COUNT; i++)
-    {
         if (centralDepos[i])
-            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            {
-                int ID = std::stoi(date_oras->getCityID());
-                if (ID == i)
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                if (std::stoi(city_data->getCityID()) == i)
                 {
-                    std::cout << std::setw(5 + 1) << " [" << ID << "] " << date_oras->getCityName() << "\n";
+                    std::cout << std::setw(5 + 1) << " [" << std::stoi(city_data->getCityID()) << "] " << city_data->getCityName() << "\n";
                     break;
                 }
-            }
-    }
 
     underline(40, true);
 }
 
-void afisare_trasee_optime(const int _ID, const int vStart)
+void Dijkstra::PrintCityToCityOptimalRoutes(const int _ID, const int start)
 {
     bool gasit = false;
 
@@ -604,7 +588,7 @@ void afisare_trasee_optime(const int _ID, const int vStart)
 
     for (ROUTE::ROUTE_NODE *date_traseu = route.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
     {
-        if (date_traseu->getDestination() == _ID && date_traseu->getStart() == vStart)
+        if (date_traseu->getDestination() == _ID && date_traseu->getStart() == start)
         {
             gasit = true;
             std::cout << "\n"
@@ -613,18 +597,17 @@ void afisare_trasee_optime(const int _ID, const int vStart)
             std::cout << date_traseu->getDistance() << "km\n"
                       << std::setw(5) << " ";
 
-            const std::vector<int> &traseu = date_traseu->getRoute();
+            const std::vector<int> &optimalRoute = date_traseu->getRoute();
 
-            for (unsigned int i = 0; i < traseu.size(); i++)
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (unsigned int i = 0; i < optimalRoute.size(); i++)
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
                 {
-                    int ID = std::stoi(date_oras->getCityID());
+                    int ID = std::stoi(city_data->getCityID());
 
-                    if (ID == traseu[i])
+                    if (ID == optimalRoute[i])
                     {
-                        std::cout << date_oras->getCityName();
-                        // corectare afisare '->'
-                        if (i != traseu.size() - 1)
+                        std::cout << city_data->getCityName();
+                        if (i != optimalRoute.size() - 1)
                             std::cout << " --> ";
                         break;
                     }
@@ -642,109 +625,118 @@ void afisare_trasee_optime(const int _ID, const int vStart)
     }
 }
 
-void afisare_optiuni_trasee_optime(const int vStart)
+void Dijkstra::DisplayCityToCityOptimalRoutes(const int start)
 {
     clear_screen();
 
     std::cout << "\n\n"
               << std::setw(5) << " "
-              << "SCRIE 'exit' PENTRU A TE INTOARCE...\n";
+              << "Type 'EXIT' to return\n";
 
     underline(45, true);
 
-    char *oras_start = (char *)malloc(MAXL * sizeof(char) + 1);
+    char *city_start = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    if (city_start == NULL)
+        return;
+
+    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
     {
-        int ID = std::stoi(date_oras->getCityID());
-        if (ID == vStart)
+        int ID = std::stoi(city_data->getCityID());
+        if (ID == start)
         {
-            strcpy(oras_start, date_oras->getCityName());
+            strcpy(city_start, city_data->getCityName());
             break;
         }
     }
 
     for (ROUTE::ROUTE_NODE *date_traseu = route.getHead(); date_traseu != nullptr; date_traseu = date_traseu->next)
-    {
-        if (date_traseu->getStart() == vStart)
-        {
-            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            {
-                int ID = std::stoi(date_oras->getCityID());
-                if (ID == date_traseu->getDestination())
+        if (date_traseu->getStart() == start)
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                if (std::stoi(city_data->getCityID()) == date_traseu->getDestination())
                 {
-                    std::cout << std::setw(5 + 1) << " [" << date_oras->getCityID() << "] ";
-                    std::cout << oras_start << " -> " << date_oras->getCityName() << "\n";
+                    std::cout << std::setw(5 + 1) 
+                              << " [" << city_data->getCityID() << "] " << city_start << " -> " << city_data->getCityName() << "\n";
                     break;
                 }
-            }
-        }
-    }
 
     underline(45, true);
 
     char *_ID = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (_ID == NULL)
+    {
+        free(city_start);
+        return;
+    }
+        
+
     std::cout << std::setw(5) << " "
-              << "Introduceti ID-ul corespunzator: ";
+              << "Menu ID: ";
     std::cin >> _ID;
+
     if (_strcasecmp_(_ID, "exit") == 0)
     {
         free(_ID);
-        free(oras_start);
+        free(city_start);
         return;
     }
     else
     {
-        free(oras_start);
+        free(city_start);
 
         int _ID_temp = std::stoi(_ID);
 
         free(_ID);
 
-        afisare_trasee_optime(_ID_temp, vStart);
+        PrintCityToCityOptimalRoutes(_ID_temp, start);
         _getch();
-        afisare_optiuni_trasee_optime(vStart);
+        DisplayCityToCityOptimalRoutes(start);
     }
 }
 
-void sistem_aprovizionare_independent(void)
+void Dijkstra::CityToCityDistanceCalculator(void)
 {
     if (!dijkstraRoutesCalculated)
     {
         for (unsigned int i = 0; i < VERTEX_COUNT; i++)
         {
-            std::vector<int> distanta_minima(VERTEX_COUNT, -1);
-            std::vector<double> distanta(VERTEX_COUNT, std::numeric_limits<double>::infinity());
+            std::vector<int> pathVector(VERTEX_COUNT, -1);
+            std::vector<double> distance(VERTEX_COUNT, std::numeric_limits<double>::infinity());
 
             if (centralDepos[i])
             {
-                dijkstra(i, distanta, distanta_minima);
+                dijkstra(i, distance, pathVector);
                 if (!dijkstraRoutesCalculated)
-                    creare_solutie_distanta(i, distanta, distanta_minima, false, true);
+                    Dijkstra::generateDistanceSolution(i, distance, pathVector, false, true);
                 else
                 {
                     dijkstraRoutesCalculated = true;
-                    creare_solutie_distanta(i, distanta, distanta_minima, false, false);
+                    Dijkstra::generateDistanceSolution(i, distance, pathVector, false, false);
                 }
             }
-            distanta_minima.clear();
-            distanta.clear();
+            pathVector.clear();
+            distance.clear();
         }
         dijkstraRoutesCalculated = true;
     }
 
     clear_screen();
 
-    std::cout << "\n\n"
-              << std::setw(5) << " "
-              << "SCRIE 'exit' PENTRU A TE INTOARCE...\n";
+    printCentralDepots();
 
-    afisare_depozite_centralizare();
+    std::cout << std::setw(5) << " "
+              << "Type 'EXIT' to return\n\n";
 
     char *_ID = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (_ID == NULL)
+        return;
+
     std::cout << std::setw(5) << " "
-              << "Introduceti ID-ul corespunzator: ";
+              << "City ID: ";
     std::cin >> _ID;
+
     if (_strcasecmp_(_ID, "exit") == 0)
     {
         free(_ID);
@@ -757,17 +749,17 @@ void sistem_aprovizionare_independent(void)
         if (centralDepos[_ID_temp])
         {
             free(_ID);
-            afisare_optiuni_trasee_optime(_ID_temp);
-            sistem_aprovizionare_independent();
+            DisplayCityToCityOptimalRoutes(_ID_temp);
+            CityToCityDistanceCalculator();
         }
         else
         {
             std::cout << "\n"
                       << std::setw(5) << " "
-                      << "Nu exista depozitul central cu acest ID...";
+                      << "No central depot with this ID exists...";
             free(_ID);
             _getch();
-            sistem_aprovizionare_independent();
+            CityToCityDistanceCalculator();
         }
     }
 }
@@ -798,10 +790,10 @@ void afisare_depozite_izolate(void)
     underline(75, true);
 
     int cmax = -1;
-    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
     {
-        if (strlen(date_oras->getCityName()) > cmax)
-            cmax = strlen(date_oras->getCityName());
+        if (strlen(city_data->getCityName()) > cmax)
+            cmax = strlen(city_data->getCityName());
     }
 
     bool gasit = false;
@@ -809,22 +801,22 @@ void afisare_depozite_izolate(void)
         if (isolatedVertex[i] == true)
         {
             gasit = true;
-            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
             {
-                int ID = std::stoi(date_oras->getCityID());
+                int ID = std::stoi(city_data->getCityID());
                 if (ID == i)
                 {
-                    std::cout << std::setw(5 + 1) << " [" << date_oras->getCityID() << "]" << std::setw(maxCityIDLength - strlen(date_oras->getCityID()) + 8)
-                              << " " << date_oras->getCityName() << std::setw(maxCityNameLength - strlen(date_oras->getCityName()) + 4)
-                              << " " << date_oras->getCityType() << std::setw(11 - strlen(date_oras->getCityType()) + 5)
-                              << " " << std::fixed << std::setprecision(2) << date_oras->getLatitude();
+                    std::cout << std::setw(5 + 1) << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
+                              << " " << city_data->getCityName() << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
+                              << " " << city_data->getCityType() << std::setw(11 - strlen(city_data->getCityType()) + 5)
+                              << " " << std::fixed << std::setprecision(2) << city_data->getLatitude();
 #ifdef _WIN32
                     std::cout << "\370";
 #elif __linux__
                     std::cout << "\u00B0";
 #endif
-                    std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(date_oras->getLatitude())).length() + 13)
-                              << " " << date_oras->getLongitude();
+                    std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
+                              << " " << city_data->getLongitude();
 #ifdef _WIN32
                     std::cout << "\370"
                               << "\n";
@@ -897,32 +889,32 @@ void afisare_depozite_unic_drum(void)
     if (gasit)
     {
         int cmax = -1;
-        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
         {
-            if (strlen(date_oras->getCityName()) > cmax)
-                cmax = strlen(date_oras->getCityName());
+            if (strlen(city_data->getCityName()) > cmax)
+                cmax = strlen(city_data->getCityName());
         }
 
         for (unsigned int i = 0; i < oneEdgeVertex.size(); i++)
         {
             if (oneEdgeVertex[i])
             {
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
                 {
-                    int ID = std::stoi(date_oras->getCityID());
+                    int ID = std::stoi(city_data->getCityID());
                     if (ID == i)
                     {
-                        std::cout << std::setw(5 + 1) << " [" << date_oras->getCityID() << "]" << std::setw(maxCityIDLength - strlen(date_oras->getCityID()) + 8)
-                                  << " " << date_oras->getCityName() << std::setw(maxCityNameLength - strlen(date_oras->getCityName()) + 4)
-                                  << " " << date_oras->getCityType() << std::setw(11 - strlen(date_oras->getCityType()) + 5)
-                                  << " " << std::fixed << std::setprecision(2) << date_oras->getLatitude();
+                        std::cout << std::setw(5 + 1) << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
+                                  << " " << city_data->getCityName() << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
+                                  << " " << city_data->getCityType() << std::setw(11 - strlen(city_data->getCityType()) + 5)
+                                  << " " << std::fixed << std::setprecision(2) << city_data->getLatitude();
 #ifdef _WIN32
                         std::cout << "\370";
 #elif __linux__
                         std::cout << "\u00B0";
 #endif
-                        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(date_oras->getLatitude())).length() + 13)
-                                  << " " << date_oras->getLongitude();
+                        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
+                                  << " " << city_data->getLongitude();
 #ifdef _WIN32
                         std::cout << "\370"
                                   << "\n";
@@ -948,12 +940,12 @@ void afisare_depozite_unic_drum(void)
     }
 }
 
-void hamiltonianGraph::initStack(void)
+void tsp::hamiltonianGraph::initStack(void)
 {
     stack[stackCounter] = -1;
 }
 
-bool hamiltonianGraph::successor(void)
+bool tsp::hamiltonianGraph::successor(void)
 {
     if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
@@ -963,14 +955,14 @@ bool hamiltonianGraph::successor(void)
     return false;
 }
 
-bool hamiltonianGraph::solution(void)
+bool tsp::hamiltonianGraph::solution(void)
 {
     if (stackCounter == limited_stock_cities_count)
         return true;
     return false;
 }
 
-bool hamiltonianGraph::valid(void)
+bool tsp::hamiltonianGraph::valid(void)
 {
     for (unsigned int i = 1; i < stackCounter; i++)
         if (stack[stackCounter] == stack[i])
@@ -987,21 +979,21 @@ bool hamiltonianGraph::valid(void)
     return true;
 }
 
-void hamiltonianGraph::determiningTheMinimumHamiltonianCycle(void)
+void tsp::hamiltonianGraph::determiningMinimumHamiltonianCycle(void)
 {
-    double suma_dist = 0.0;
-    int suma_durata = 0;
+    double totalDistance = 0.0;
+    int totalDuration = 0;
 
     for (int i = 1; i <= stackCounter; i++)
     {
-        suma_dist += adjacencyMatrix[stack[i]][stack[i + 1]].distance;
-        suma_durata += adjacencyMatrix[stack[i]][stack[i + 1]].duration;
+        totalDistance += adjacencyMatrix[stack[i]][stack[i + 1]].distance;
+        totalDuration += adjacencyMatrix[stack[i]][stack[i + 1]].duration;
     }
 
-    if (suma_dist < minimumDistanceCostTSP || (suma_dist == minimumDistanceCostTSP && suma_durata < minimumDurationCostTSP))
+    if (totalDistance < minimumDistanceCostTSP || (totalDistance == minimumDistanceCostTSP && totalDuration < minimumDurationCostTSP))
     {
-        minimumDistanceCostTSP = suma_dist;
-        minimumDurationCostTSP = suma_durata;
+        minimumDistanceCostTSP = totalDistance;
+        minimumDurationCostTSP = totalDuration;
 
         for (int i = 1; i <= stackCounter; i++)
         {
@@ -1011,7 +1003,7 @@ void hamiltonianGraph::determiningTheMinimumHamiltonianCycle(void)
     }
 }
 
-void hamiltonianGraph::back(void)
+void tsp::hamiltonianGraph::back(void)
 {
     stackCounter = 1;
     hamiltonianGraph::initStack();
@@ -1027,7 +1019,7 @@ void hamiltonianGraph::back(void)
         if (vSuccesor == 1)
         {
             if (hamiltonianGraph::solution() == 1)
-                hamiltonianGraph::determiningTheMinimumHamiltonianCycle();
+                hamiltonianGraph::determiningMinimumHamiltonianCycle();
             else
             {
                 stackCounter++;
@@ -1039,12 +1031,12 @@ void hamiltonianGraph::back(void)
     }
 }
 
-void acyclicGraph::initStack(void)
+void tsp::acyclicGraph::initStack(void)
 {
     stack[stackCounter] = -1;
 }
 
-bool acyclicGraph::successor(void)
+bool tsp::acyclicGraph::successor(void)
 {
     if (stack[stackCounter] < VERTEX_COUNT - 1)
     {
@@ -1054,14 +1046,14 @@ bool acyclicGraph::successor(void)
     return false;
 }
 
-bool acyclicGraph::solution(void)
+bool tsp::acyclicGraph::solution(void)
 {
     if (stackCounter == VERTEX_COUNT + 1)
         return true;
     return false;
 }
 
-bool acyclicGraph::valid(void)
+bool tsp::acyclicGraph::valid(void)
 {
     if (stackCounter == VERTEX_COUNT + 1)
     {
@@ -1096,21 +1088,21 @@ bool acyclicGraph::valid(void)
     return true;
 }
 
-void acyclicGraph::determiningMinimumRoute(void)
+void tsp::acyclicGraph::determiningMinimumRoute(void)
 {
-    double suma_dist = 0.0;
-    int suma_durata = 0;
+    double totalDistance = 0.0;
+    int totalDuration = 0;
 
     for (int i = 1; i < stackCounter; i++)
     {
-        suma_dist += adjacencyMatrix[stack[i]][stack[i + 1]].distance;
-        suma_durata += adjacencyMatrix[stack[i]][stack[i + 1]].duration;
+        totalDistance += adjacencyMatrix[stack[i]][stack[i + 1]].distance;
+        totalDuration += adjacencyMatrix[stack[i]][stack[i + 1]].duration;
     }
 
-    if (suma_dist < minimumDistanceCostTSP || (suma_dist == minimumDistanceCostTSP && suma_durata < minimumDurationCostTSP))
+    if (totalDistance < minimumDistanceCostTSP || (totalDistance == minimumDistanceCostTSP && totalDuration < minimumDurationCostTSP))
     {
-        minimumDistanceCostTSP = suma_dist;
-        minimumDurationCostTSP = suma_durata;
+        minimumDistanceCostTSP = totalDistance;
+        minimumDurationCostTSP = totalDuration;
 
         for (int i = 1; i <= stackCounter; i++)
         {
@@ -1120,7 +1112,7 @@ void acyclicGraph::determiningMinimumRoute(void)
     }
 }
 
-void acyclicGraph::back(void)
+void tsp::acyclicGraph::back(void)
 {
     int vSuccesor, vValid;
     stackCounter = 1;
@@ -1146,33 +1138,27 @@ void acyclicGraph::back(void)
     }
 }
 
-void TSP(void)
+void tsp::TSP(void)
 {
 #ifdef _WIN32
-
     changeText(FOREGROUND_INTENSITY | FOREGROUND_BLUE);
-
     std::cout << std::setw(5) << " "
-              << "Se calculeaza traseul cel mai optim...\n";
-
+              << "Calculating the most optimal route...\n";
     resetText();
 #elif __linux__
     std::cout << "\033[1;34m" << std::setw(5) << " "
-              << "Se calculeaza traseul cel mai optim..."
+              << "Calculating the most optimal route..."
               << "\033[0m" << endl;
 #endif
 
-    bool izolat = false;
-    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+    bool vIsolatedVertex = false;
+    for (unsigned int i = 0; i < VERTEX_COUNT && !vIsolatedVertex; i++)
         if (isolatedVertex[i] == true)
-        {
-            izolat = true;
-            break;
-        }
+            vIsolatedVertex = true;
 
-    if (!izolat)
+    if (!vIsolatedVertex)
     {
-        hamiltonianGraph::back();
+        tsp::hamiltonianGraph::back();
         clear_screen();
         std::cout << "\n";
 
@@ -1180,37 +1166,29 @@ void TSP(void)
         {
 #ifdef _WIN32
             changeText(FOREGROUND_INTENSITY);
-
             std::cout << std::setw(5) << " "
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << " Durata traseu: " << minimumDurationCostTSP << "min"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "min"
                       << "\n"
                       << std::setw(5) << " ";
-
             resetText();
 #elif __linux__
             std::cout << std::setw(5) << " "
                       << "\033[1m"
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << "Durata traseu: " << minimumDurationCostTSP << "min\n"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "min\n"
                       << std::setw(5) << " "
                       << "\033[0m";
 #endif
-
             for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
-            {
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-                {
-                    int ID = std::stoi(date_oras->getCityID());
-                    if (ID == minimumRouteTSP[i])
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                    if (std::stoi(city_data->getCityID()) == minimumRouteTSP[i])
                     {
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
                         if (i < TSP_RouteCounter)
                             std::cout << " --> ";
                         break;
                     }
-                }
-            }
 
             std::cout << "\n";
             underline(190, false);
@@ -1219,8 +1197,8 @@ void TSP(void)
         {
             minimumRouteTSP.clear();
             stack.clear();
+            tsp::acyclicGraph::back(); // generating routes
 
-            acyclicGraph::back();
             clear_screen();
             std::cout << "\n";
 
@@ -1230,8 +1208,8 @@ void TSP(void)
                 changeText(FOREGROUND_INTENSITY);
 
                 std::cout << std::setw(5) << " "
-                          << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                          << " Durata traseu: " << minimumDurationCostTSP << "min"
+                          << "Route length: " << minimumDistanceCostTSP << "km | "
+                          << "Route duration: " << minimumDurationCostTSP << "min"
                           << "\n"
                           << std::setw(5) << " ";
 
@@ -1239,36 +1217,32 @@ void TSP(void)
 #elif __linux__
                 std::cout << std::setw(5) << " "
                           << "\033[1m"
-                          << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                          << "Durata traseu: " << minimumDurationCostTSP << "min\n"
+                          << "Route length: " << minimumDistanceCostTSP << "km | "
+                          << "Route duration: " << minimumDurationCostTSP << "min\n"
                           << std::setw(5) << " "
                           << "\033[0m";
 #endif
-
                 for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
-                {
-                    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-                    {
-                        int ID = std::stoi(date_oras->getCityID());
-                        if (ID == minimumRouteTSP[i])
+                    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                        if (std::stoi(city_data->getCityID()) == minimumRouteTSP[i])
                         {
-                            std::cout << date_oras->getCityName();
+                            std::cout << city_data->getCityName();
                             if (i < TSP_RouteCounter)
                                 std::cout << " --> ";
                             break;
                         }
-                    }
-                }
+
                 std::cout << "\n";
                 underline(190, false);
             }
             else
-                std::cout << "Toate depozitele sunt izolate!";
+                std::cout << std::setw(5) << " "
+                          << "--> All depots are isolated!\n";
         }
     }
     else
     {
-        acyclicGraph::back();
+        tsp::acyclicGraph::back();
         clear_screen();
 
         std::cout << "\n";
@@ -1278,8 +1252,8 @@ void TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             std::cout << std::setw(5) << " "
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << " Durata traseu: " << minimumDurationCostTSP << "min"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "min"
                       << "\n"
                       << std::setw(5) << " ";
 
@@ -1287,57 +1261,49 @@ void TSP(void)
 #elif __linux__
             std::cout << std::setw(5) << " "
                       << "\033[1m"
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << "Durata traseu: " << minimumDurationCostTSP << "min\n"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "min\n"
                       << std::setw(5) << " "
                       << "\033[0m";
 #endif
 
             for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
-            {
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-                {
-                    int ID = std::stoi(date_oras->getCityID());
-                    if (ID == minimumRouteTSP[i])
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                    if (std::stoi(city_data->getCityID()) == minimumRouteTSP[i])
                     {
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
                         if (i < TSP_RouteCounter)
                             std::cout << " --> ";
                         break;
                     }
-                }
-            }
+
             std::cout << "\n";
             underline(190, false);
         }
         else
             std::cout << "\n"
                       << std::setw(5) << " "
-                      << "Toate depozitele sunt izolate!";
+                      << "--> All depots are isolated!\n";
     }
 }
 
-void produse_transport_TSP(void)
+void tsp::productTransportTSP(void)
 {
-    for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+    for (PRODUCT::PRODUCT_NODE *product_data = product.getHead(); product_data != nullptr; product_data = product_data->next)
     {
-        int cantitate = 0;
-        int ID_PRODUS = std::stoi(date_produs->getProductID());
-        for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
-        {
-            int ID_DEPOZIT = std::stoi(date_depozit->getCityID());
-            if (limitedStockCities[ID_DEPOZIT] == true && isolatedVertex[ID_DEPOZIT] == false && centralDepos[ID_DEPOZIT] == false)
-            {
-                int ID_PRODUS_DEPOZIT = std::stoi(date_depozit->getProductID());
-                if (ID_PRODUS == ID_PRODUS_DEPOZIT)
-                    cantitate += MAXIMUM_STOCK_VALUE - date_depozit->getProductQuantity();
-            }
-        }
-        supply.getData(date_produs->getProductID(), cantitate);
+        int PRODUCT_ID = std::stoi(product_data->getProductID()), quantity = 0;
+        for (DEPOT::DEPOT_NODE *depot_data = depot.getHead(); depot_data != nullptr; depot_data = depot_data->next)
+            if (limitedStockCities[std::stoi(depot_data->getCityID())] == true &&
+                isolatedVertex[std::stoi(depot_data->getCityID())] == false &&
+                centralDepos[std::stoi(depot_data->getCityID())] == false)
+                if (PRODUCT_ID == std::stoi(depot_data->getProductID()))
+                    quantity += MAXIMUM_STOCK_VALUE - depot_data->getProductQuantity();
+
+        supply.getData(product_data->getProductID(), quantity);
     }
 }
 
-void pagina_principala_TSP(void)
+void tsp::mainPageTSP(void)
 {
     clear_screen();
 
@@ -1348,118 +1314,111 @@ void pagina_principala_TSP(void)
     if (!minimumRouteTSP.empty())
     {
         std::cout << std::setw(5) << " "
-                  << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                  << "Durata traseu: " << minimumDurationCostTSP << "min\n"
+                  << "Route length: " << minimumDistanceCostTSP << "km | "
+                  << "Route duration: " << minimumDurationCostTSP << "min\n"
                   << std::setw(5) << " ";
-        for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
-        {
-            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-            {
-                int ID = std::stoi(date_oras->getCityID());
 
+        for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+            {
+                int ID = std::stoi(city_data->getCityID());
                 if (i == 1)
                     if (ID == minimumRouteTSP[1])
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
                         resetText();
-
                         std::cout << " --> ";
 #elif __linux__
                         std::cout << "\033[4m"
-                                  << "\033[1m" << date_oras->denumire_oras << "\033[0m"
+                                  << "\033[1m" << city_data->getCityName() << "\033[0m"
                                   << " --> ";
 #endif
                     }
 
                 if (ID == minimumRouteTSP[i] && i != 1)
                 {
-                    std::cout << date_oras->getCityName();
+                    std::cout << city_data->getCityName();
                     if (i < TSP_RouteCounter)
                         std::cout << " --> ";
                     break;
                 }
             }
-        }
     }
+
     std::cout << "\n";
     underline(190, false);
 
     std::cout << "\n";
-    for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-    {
-        int ID = std::stoi(date_oras->getCityID());
-        if (ID == minimumRouteTSP[1])
+    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+        if (std::stoi(city_data->getCityID()) == minimumRouteTSP[1])
         {
             std::cout << std::setw(5) << " "
                       << "+-----------------------+\n"
-                      << std::setw(8) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName() << " - START\n"
+                      << std::setw(8) << " [" << city_data->getCityID() << "] " << city_data->getCityName() << " - START\n"
                       << std::setw(5) << " "
                       << "+-----------------------+";
             break;
         }
-    }
 
 #ifdef _WIN32
     changeText(FOREGROUND_INTENSITY);
     std::cout << std::setw(100) << " "
-              << "Distanta parcursa: " << traveledDistanceTSP;
+              << "Distance traveled: " << traveledDistanceTSP;
     resetText();
     std::cout << "km | ";
     changeText(FOREGROUND_INTENSITY);
-    std::cout << "Durata de calatorie: " << elapsedDurationTSP;
+    std::cout << "Travel duration: " << elapsedDurationTSP;
     resetText();
     std::cout << "min\n";
-
 #elif __linux__
     std::cout << std::setw(100) << " "
               << "\033[1m"
-              << "Distanta parcursa: "
+              << "Distance traveled: "
               << "\033[0m" << traveledDistanceTSP << "km | "
               << "\033[1m"
-              << "Durata de calatorie: "
+              << "Travel duration: "
               << "\033[0m" << elapsedDurationTSP << "min\n";
 #endif
-
     std::cout << "\n\n"
               << std::setw(5) << " "
-              << "ID" << std::setw(7) << " "
-              << "Den.Produs" << std::setw(15) << " "
-              << "Cnt.transport_totala\n";
-    underline(65, true);
+              << "Product_ID" << std::setw(7) << " "
+              << "Product_Name" << std::setw(13) << " "
+              << "Total_transport_quantity\n";
+    underline(70, true);
 
     for (SUPPLY::SUPPLY_NODE *supply_data = supply.getHead(); supply_data != nullptr; supply_data = supply_data->next)
     {
-        int ID_AP = std::stoi(supply_data->getID());
-        std::cout << std::setw(5 + 1) << " [" << ID_AP << "] " << std::setw(5) << " ";
-        for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
-        {
-            int ID_P = std::stoi(date_produs->getProductID());
-            if (ID_P == ID_AP)
+        int supplyProductID = std::stoi(supply_data->getID());
+        std::cout << std::setw(5 + 1)
+                  << " [" << supplyProductID << "] "
+                  << std::setw(13) << " ";
+
+        for (PRODUCT::PRODUCT_NODE *product_data = product.getHead(); product_data != nullptr; product_data = product_data->next)
+            if (std::stoi(product_data->getProductID()) == supplyProductID)
             {
-                std::cout << date_produs->getProductName() << std::setw(maxProductNameLength - strlen(date_produs->getProductName()) + 5) << " ";
+                std::cout << product_data->getProductName()
+                          << std::setw(maxProductNameLength - strlen(product_data->getProductName()) + 5) << " ";
                 break;
             }
-        }
+
         std::cout << supply_data->getQuantity() << " buc.\n";
     }
-    underline(65, true);
 
+    underline(70, true);
     std::cout << "\n\n";
     underline(190, false);
-
     std::cout << std::setw(5) << " "
-              << "[1] PREV" << std::setw(80) << " -" << consolePage << "- " << std::setw(80) << " "
+              << "[1] PREVIOUS" << std::setw(80) << " -" << consolePage << "- " << std::setw(80) << " "
               << "[2] NEXT\n";
-
     underline(190, false);
 
     traveledDistanceTSP += adjacencyMatrix[minimumRouteTSP[1]][minimumRouteTSP[2]].distance;
     elapsedDurationTSP += adjacencyMatrix[minimumRouteTSP[1]][minimumRouteTSP[2]].duration;
 }
 
-void pagina_finala_TSP(void)
+void tsp::finalPageTSP(void)
 {
     std::ifstream get_contor("utils/contor_TSP_log.txt");
     if (!get_contor.is_open())
@@ -1513,12 +1472,12 @@ void pagina_finala_TSP(void)
 
         for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
         {
-            for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
             {
-                int ID = std::stoi(date_oras->getCityID());
+                int ID = std::stoi(city_data->getCityID());
                 if (ID == minimumRouteTSP[i])
                 {
-                    log_out << date_oras->getCityName();
+                    log_out << city_data->getCityName();
                     if (i < TSP_RouteCounter)
                         log_out << " --> ";
                     break;
@@ -1528,7 +1487,7 @@ void pagina_finala_TSP(void)
 
         log_out << "\n"
                 << s << "\n"
-                << "Distanta parcursa: " << minimumDistanceCostTSP << "km\n"
+                << "Distance traveled: " << minimumDistanceCostTSP << "km\n"
                 << "Cantitate totala transportata: " << totalSuppliedQuantity << "BUC.\n"
                 << "Cost total: " << totalSupplyCost << "RON\nEND-LOG\n"
                 << s << "\n\n\n";
@@ -1556,7 +1515,7 @@ void pagina_finala_TSP(void)
     _getch();
 }
 
-void pagina_stanga_TSP(void)
+void tsp::leftPageTSP(void)
 {
     clear_screen();
 
@@ -1571,27 +1530,27 @@ void pagina_stanga_TSP(void)
         if (!minimumRouteTSP.empty())
         {
             std::cout << std::setw(5) << " "
-                      << "Lungime traseu: " << minimumDistanceCostTSP << " | "
-                      << "Durata traseu: " << minimumDurationCostTSP << "min\n"
+                      << "Route length: " << minimumDistanceCostTSP << " | "
+                      << "Route duration: " << minimumDurationCostTSP << "min\n"
                       << std::setw(5) << " ";
 
             for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
                 {
-                    int ID = std::stoi(date_oras->getCityID());
+                    int ID = std::stoi(city_data->getCityID());
 
                     if (ID == minimumRouteTSP[consolePage] && i == consolePage)
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
 
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
 
                         resetText();
 #elif __linux__
                         std::cout << "\033[4m"
-                                  << "\033[1m" << date_oras->denumire_oras << "\033[0m"
+                                  << "\033[1m" << city_data->denumire_oras << "\033[0m"
                                   << " --> ";
 #endif
                         if (i < TSP_RouteCounter)
@@ -1601,7 +1560,7 @@ void pagina_stanga_TSP(void)
 
                     if (ID == minimumRouteTSP[i] && i != consolePage)
                     {
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
                         if (i < TSP_RouteCounter)
                             std::cout << " --> ";
                         break;
@@ -1613,14 +1572,14 @@ void pagina_stanga_TSP(void)
         underline(190, false);
         std::cout << "\n";
 
-        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
         {
-            int ID = std::stoi(date_oras->getCityID());
+            int ID = std::stoi(city_data->getCityID());
             if (ID == minimumRouteTSP[consolePage])
             {
                 std::cout << std::setw(5) << " "
                           << "+-----------------------+\n"
-                          << std::setw(8) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName() << "\n"
+                          << std::setw(8) << " [" << city_data->getCityID() << "] " << city_data->getCityName() << "\n"
                           << std::setw(5) << " "
                           << "+-----------------------+";
                 break;
@@ -1630,30 +1589,30 @@ void pagina_stanga_TSP(void)
 #ifdef _WIN32
         changeText(FOREGROUND_INTENSITY);
         std::cout << std::setw(100) << " "
-                  << "Distanta parcursa: " << traveledDistanceTSP;
+                  << "Distance traveled: " << traveledDistanceTSP;
         resetText();
         std::cout << "km | ";
         changeText(FOREGROUND_INTENSITY);
-        std::cout << "Durata de calatorie: " << elapsedDurationTSP;
+        std::cout << "Travel duration: " << elapsedDurationTSP;
         resetText();
         std::cout << "min\n";
 
 #elif __linux__
         std::cout << std::setw(100) << " "
                   << "\033[1m"
-                  << "Distanta parcursa: "
+                  << "Distance traveled: "
                   << "\033[0m" << traveledDistanceTSP << "km | "
                   << "\033[1m"
-                  << "Durata de calatorie: "
+                  << "Travel duration: "
                   << "\033[0m" << elapsedDurationTSP << "min\n";
 #endif
 
         std::cout << "\n\n"
                   << std::setw(5) << " "
-                  << "ID" << std::setw(10) << " "
-                  << "Den.Produs" << std::setw(15) << " "
-                  << "Cnt.transport/Cnt.ramasa\n";
-        underline(70, true);
+                  << "Product_ID" << std::setw(5) << " "
+                  << "Product_Name" << std::setw(13) << " "
+                  << "Quantity Transported/Quantity Remaining\n";
+        underline(85, true);
 
         if (centralDepos[minimumRouteTSP[consolePage]] == false)
         {
@@ -1661,16 +1620,14 @@ void pagina_stanga_TSP(void)
             {
 #ifdef _WIN32
                 changeText(FOREGROUND_INTENSITY);
-
                 std::cout << std::setw(5) << " "
-                          << "Depozitul a fost aprovizionat!"
+                          << "The depot has been restocked!"
                           << "\n";
-
                 resetText();
 #elif __linux__
                 std::cout << std::setw(5) << " "
                           << "\033[1m"
-                          << "Depozitul a fost aprovizionat!\n"
+                          << "The depot has been restocked!\n"
                           << "\033[0m";
 #endif
             }
@@ -1679,39 +1636,34 @@ void pagina_stanga_TSP(void)
         {
 #ifdef _WIN32
             changeText(FOREGROUND_INTENSITY);
-
             std::cout << std::setw(5) << " "
-                      << "Depozit centralizat!!"
+                      << "Central depot!"
                       << "\n";
-
             resetText();
 #elif __linux__
             std::cout << std::setw(5) << " "
                       << "\033[1m"
-                      << "Depozit centralizat!\n"
+                      << "Central depot!\n"
                       << "\033[0m";
 #endif
         }
 
-        underline(70, true);
-
+        underline(85, true);
         std::cout << "\n\n";
         underline(190, false);
-
         std::cout << std::setw(5) << " "
-                  << "[1] PREV" << std::setw(80) << " -" << consolePage << "- " << std::setw(80) << " "
+                  << "[1] PREVIOUS" << std::setw(80) << " -" << consolePage << "- " << std::setw(80) << " "
                   << "[2] NEXT\n";
-
         underline(190, false);
     }
     else
     {
         consolePage = 1;
-        pagina_principala_TSP();
+        tsp::mainPageTSP();
     }
 }
 
-void pagina_dreapta_TSP(void)
+void tsp::rightPageTSP(void)
 {
     clear_screen();
 
@@ -1729,27 +1681,27 @@ void pagina_dreapta_TSP(void)
         if (!minimumRouteTSP.empty())
         {
             std::cout << std::setw(5) << " "
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << "Durata traseu: " << minimumDurationCostTSP << "min\n"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "min\n"
                       << std::setw(5) << " ";
 
             for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
             {
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
                 {
-                    int ID = std::stoi(date_oras->getCityID());
+                    int ID = std::stoi(city_data->getCityID());
 
                     if (ID == minimumRouteTSP[consolePage] && i == consolePage)
                     {
 #ifdef _WIN32
                         changeText(FOREGROUND_INTENSITY | COMMON_LVB_UNDERSCORE | FOREGROUND_RED | FOREGROUND_GREEN);
 
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
 
                         resetText();
 #elif __linux__
                         std::cout << "\033[4m"
-                                  << "\033[1m" << date_oras->denumire_oras << "\033[0m"
+                                  << "\033[1m" << city_data->denumire_oras << "\033[0m"
                                   << " --> ";
 #endif
                         if (i < TSP_RouteCounter)
@@ -1759,7 +1711,7 @@ void pagina_dreapta_TSP(void)
 
                     if (ID == minimumRouteTSP[i] && i != consolePage)
                     {
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
                         if (i < TSP_RouteCounter)
                             std::cout << " --> ";
                         break;
@@ -1771,14 +1723,14 @@ void pagina_dreapta_TSP(void)
         underline(190, false);
         std::cout << "\n";
 
-        for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
+        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
         {
-            int ID = std::stoi(date_oras->getCityID());
+            int ID = std::stoi(city_data->getCityID());
             if (ID == minimumRouteTSP[consolePage])
             {
                 std::cout << std::setw(5) << " "
                           << "+-----------------------+\n"
-                          << std::setw(8) << " [" << date_oras->getCityID() << "] " << date_oras->getCityName() << "\n"
+                          << std::setw(8) << " [" << city_data->getCityID() << "] " << city_data->getCityName() << "\n"
                           << std::setw(5) << " "
                           << "+-----------------------+";
                 break;
@@ -1788,70 +1740,70 @@ void pagina_dreapta_TSP(void)
 #ifdef _WIN32
         changeText(FOREGROUND_INTENSITY);
         std::cout << std::setw(100) << " "
-                  << "Distanta parcursa: " << traveledDistanceTSP;
+                  << "Distance traveled: " << traveledDistanceTSP;
         resetText();
         std::cout << "km | ";
         changeText(FOREGROUND_INTENSITY);
-        std::cout << "Durata de calatorie: " << elapsedDurationTSP;
+        std::cout << "Travel duration: " << elapsedDurationTSP;
         resetText();
         std::cout << "min\n";
 
 #elif __linux__
         std::cout << std::setw(100) << " "
                   << "\033[1m"
-                  << "Distanta parcursa: "
+                  << "Distance traveled: "
                   << "\033[0m" << traveledDistanceTSP << "km | "
                   << "\033[1m"
-                  << "Durata de calatorie: "
+                  << "Travel duration: "
                   << "\033[0m" << elapsedDurationTSP << "min\n";
 #endif
 
         std::cout << "\n\n"
                   << std::setw(5) << " "
-                  << "ID" << std::setw(10) << " "
-                  << "Den.Produs" << std::setw(15) << " "
-                  << "Cnt.transport/Cnt.ramasa\n";
-        underline(70, true);
+                  << "Product_ID" << std::setw(5) << " "
+                  << "Product_Name" << std::setw(13) << " "
+                  << "Quantity Transported/Quantity Remaining\n";
+        underline(85, true);
 
         if (centralDepos[minimumRouteTSP[consolePage]] == false)
         {
             if (limitedStockCities[minimumRouteTSP[consolePage]])
             {
-                for (PRODUCT::PRODUCT_NODE *date_produs = product.getHead(); date_produs != nullptr; date_produs = date_produs->next)
+                for (PRODUCT::PRODUCT_NODE *product_data = product.getHead(); product_data != nullptr; product_data = product_data->next)
                 {
-                    int ID_PRODUS = std::stoi(date_produs->getProductID());
-                    double cantitate_necesara = 0.0;
+                    int PRODUCT_ID = std::stoi(product_data->getProductID());
+                    double requiredQuantity = 0.0;
 
-                    for (DEPOT::DEPOT_NODE *date_depozit = depot.getHead(); date_depozit != nullptr; date_depozit = date_depozit->next)
+                    for (DEPOT::DEPOT_NODE *depot_data = depot.getHead(); depot_data != nullptr; depot_data = depot_data->next)
                     {
-                        int ID_PRODUS_DEPOZIT = std::stoi(date_depozit->getProductID()), ID_DEPOZIT = std::stoi(date_depozit->getCityID());
+                        int ID_PRODUS_DEPOZIT = std::stoi(depot_data->getProductID()), ID_DEPOZIT = std::stoi(depot_data->getCityID());
                         if (ID_DEPOZIT == minimumRouteTSP[consolePage] && !isolatedVertex[ID_DEPOZIT])
-                        {
-                            if (ID_PRODUS_DEPOZIT == ID_PRODUS)
+                            if (ID_PRODUS_DEPOZIT == PRODUCT_ID)
                             {
-                                cantitate_necesara += date_depozit->getProductQuantity();
-                                cantitate_necesara = MAXIMUM_STOCK_VALUE - cantitate_necesara;
-                                totalSupplyCost += cantitate_necesara * date_produs->getProductPrice();
-                                totalSuppliedQuantity += cantitate_necesara;
-                                date_depozit->updateQuantity(MAXIMUM_STOCK_VALUE);
+                                requiredQuantity += depot_data->getProductQuantity();
+                                requiredQuantity = MAXIMUM_STOCK_VALUE - requiredQuantity;
+                                totalSupplyCost += requiredQuantity * product_data->getProductPrice();
+                                totalSuppliedQuantity += requiredQuantity;
+                                depot_data->updateQuantity(MAXIMUM_STOCK_VALUE);
 
-                                std::cout << std::setw(5 + 1) << " [" << date_depozit->getProductID() << "] " << std::setw(8) << " " << date_produs->getProductName()
-                                          << std::setw(maxProductNameLength - strlen(date_produs->getProductName()) + 5) << " " << cantitate_necesara << " buc. /";
+                                std::cout << std::setw(5 + 1)
+                                          << " [" << depot_data->getProductID() << "] "
+                                          << std::setw(11) << " "
+                                          << product_data->getProductName()
+                                          << std::setw(maxProductNameLength - strlen(product_data->getProductName()) + 5)
+                                          << " " << requiredQuantity << " buc. /";
 
                                 for (SUPPLY::SUPPLY_NODE *supply_data = supply.getHead(); supply_data != nullptr; supply_data = supply_data->next)
-                                {
-                                    int ID_PRODUS_APROVIZIONARE = std::stoi(supply_data->getID());
-                                    if (ID_PRODUS_APROVIZIONARE == ID_PRODUS)
+                                    if (std::stoi(supply_data->getID()) == PRODUCT_ID)
                                     {
                                         std::cout << supply_data->getQuantity() << " buc.";
                                         int currentQuantity = supply_data->getQuantity();
-                                        supply_data->updateQuantity(currentQuantity - cantitate_necesara);
+                                        supply_data->updateQuantity(currentQuantity - requiredQuantity);
                                         break;
                                     }
-                                }
+
                                 std::cout << "\n";
                             }
-                        }
                     }
                 }
             }
@@ -1859,16 +1811,14 @@ void pagina_dreapta_TSP(void)
             {
 #ifdef _WIN32
                 changeText(FOREGROUND_INTENSITY);
-
                 std::cout << std::setw(5) << " "
-                          << "Depozitul a fost aprovizionat!"
+                          << "The depot has been restocked!"
                           << "\n";
-
                 resetText();
 #elif __linux__
                 std::cout << std::setw(5) << " "
                           << "\033[1m"
-                          << "Depozitul a fost aprovizionat!\n"
+                          << "The depot has been restocked!\n"
                           << "\033[0m";
 #endif
             }
@@ -1877,29 +1827,24 @@ void pagina_dreapta_TSP(void)
         {
 #ifdef _WIN32
             changeText(FOREGROUND_INTENSITY);
-
             std::cout << std::setw(5) << " "
-                      << "Depozit centralizat!!"
+                      << "Central depot!"
                       << "\n";
-
             resetText();
 #elif __linux__
             std::cout << std::setw(5) << " "
                       << "\033[1m"
-                      << "Depozit centralizat!\n"
+                      << "Central depot!\n"
                       << "\033[0m";
 #endif
         }
 
-        underline(70, true);
-
+        underline(85, true);
         std::cout << "\n\n";
         underline(190, false);
-
         std::cout << std::setw(5) << " "
-                  << "[1] PREV" << std::setw(80) << " -" << consolePage << "- " << std::setw(80) << " "
+                  << "[1] PREVIOUS" << std::setw(80) << " -" << consolePage << "- " << std::setw(80) << " "
                   << "[2] NEXT\n";
-
         underline(190, false);
 
         limitedStockCities[minimumRouteTSP[consolePage]] = false;
@@ -1911,18 +1856,24 @@ void pagina_dreapta_TSP(void)
         }
     }
     else
-        pagina_finala_TSP();
+        tsp::finalPageTSP();
 }
 
-void parcurgere_traseu_TSP(void)
+void tsp::routeTraversalTSP(void)
 {
     consolePage = 1;
     std::cout << "\n";
 
-    if (!TSP_RoutesCompleted)
+    bool isFound = false;
+
+    for (unsigned int i = 0; i < limited_stock_cities_count && !isFound; i++)
+        if (limitedStockCities[i] == true)
+            isFound = true;
+
+    if (!TSP_RoutesCompleted && isFound)
     {
         if (minimumRouteTSP[1] == -1)
-            TSP();
+            tsp::TSP();
         else
         {
             clear_screen();
@@ -1930,33 +1881,28 @@ void parcurgere_traseu_TSP(void)
             changeText(FOREGROUND_INTENSITY);
 
             std::cout << std::setw(5) << " "
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << " Durata traseu: " << minimumDurationCostTSP << "\n"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "\n"
                       << std::setw(5) << " ";
 
             resetText();
 #elif __linux__
             std::cout << std::setw(5) << " "
                       << "\033[1m"
-                      << "Lungime traseu: " << minimumDistanceCostTSP << "km | "
-                      << "Durata traseu: " << minimumDurationCostTSP << "\n"
+                      << "Route length: " << minimumDistanceCostTSP << "km | "
+                      << "Route duration: " << minimumDurationCostTSP << "\n"
                       << std::setw(5) << " "
                       << "\033[0m";
 #endif
             for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
-            {
-                for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
-                {
-                    int ID = std::stoi(date_oras->getCityID());
-                    if (ID == minimumRouteTSP[i])
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                    if (std::stoi(city_data->getCityID()) == minimumRouteTSP[i])
                     {
-                        std::cout << date_oras->getCityName();
+                        std::cout << city_data->getCityName();
                         if (i < TSP_RouteCounter)
                             std::cout << " --> ";
                         break;
                     }
-                }
-            }
 
             std::cout << "\n";
             underline(190, false);
@@ -1971,14 +1917,14 @@ void parcurgere_traseu_TSP(void)
 
         std::cout << "\n\n"
                   << std::setw(5) << " "
-                  << "Nu exista depozite cu stoc limitat/epuizat...";
+                  << "There are no depots with limited/exhausted stock...";
 
         resetText();
 #elif __linux__
         std::cout << "\n\n"
                   << std::setw(5) << " "
                   << "\033[1m"
-                  << "Nu exista depozite cu stoc limitat/epuizat..."
+                  << "There are no depots with limited/exhausted stock..."
                   << "\033[0m";
 #endif
         minimumRouteTSP.clear();
@@ -1988,10 +1934,12 @@ void parcurgere_traseu_TSP(void)
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    std::cout << std::setw(5) << " "
-              << "Scrie '0' pentru a te intoarce...\n\n";
+    if (input == NULL)
+        return;
 
     std::cout << std::setw(5) << " "
+              << "Enter '0' to return\n\n"
+              << std::setw(5) << " "
               << "[S] Start: ";
     std::cin >> input;
 
@@ -2002,35 +1950,36 @@ void parcurgere_traseu_TSP(void)
     }
     else if (_strcasecmp_(input, "s") == 0)
     {
-        unsigned int MENIU;
+        unsigned int MENU = 0;
 
-        pagina_principala_TSP();
+        tsp::mainPageTSP();
 
         do
         {
             std::cout << "\n"
                       << std::setw(5) << " "
-                      << "Introduceti numarul meniului: ";
-            std::cin >> MENIU;
+                      << "Enter menu number: ";
+            std::cin >> MENU;
 
-            switch (MENIU)
+            switch (MENU)
             {
             case 1:
-                pagina_stanga_TSP();
+                tsp::leftPageTSP();
                 break;
             case 2:
-                pagina_dreapta_TSP();
+                tsp::rightPageTSP();
                 break;
 
             default:
                 break;
             }
-        } while (MENIU != 0 && TSP_RoutesCompleted == false);
+        } while (MENU != 0 && !TSP_RoutesCompleted);
     }
+
     free(input);
 }
 
-void afisare_detalii_SpeedyGo(void)
+void speedyGo::displaySpeedyGoDetails(void)
 {
     std::cout << "\n";
     underline(100, true);
@@ -2075,7 +2024,7 @@ void afisare_detalii_SpeedyGo(void)
     delete res;
 }
 
-void consola_mysql(void)
+void speedyGo::MySQLconsole(void)
 {
     clear_screen();
 
@@ -2085,9 +2034,9 @@ void consola_mysql(void)
         std::cin.ignore(9999, '\n');
     }
 
-    afisare_detalii_SpeedyGo();
+    displaySpeedyGoDetails();
 
-    std::string interogare;
+    std::string query = "";
 
     while (true)
     {
@@ -2095,24 +2044,24 @@ void consola_mysql(void)
                   << std::setw(5) << " "
                   << "mysql> ";
 
-        std::getline(std::cin, interogare);
+        std::getline(std::cin, query);
 
-        if (interogare == "exit")
+        if (query == "exit")
         {
             buffer = true;
             break;
         }
-        else if (interogare == "clear")
+        else if (query == "clear")
         {
             clear_screen();
-            afisare_detalii_SpeedyGo();
+            displaySpeedyGoDetails();
         }
         else
         {
             try
             {
                 sql::Statement *stmt = con->createStatement();
-                sql::ResultSet *res = stmt->executeQuery(interogare);
+                sql::ResultSet *res = stmt->executeQuery(query);
 
                 int cnt_coloane = res->getMetaData()->getColumnCount();
                 std::vector<int> coloane(cnt_coloane, 0);
@@ -2122,11 +2071,9 @@ void consola_mysql(void)
                     {
                         int crt_width = res->getString(i).length();
                         if (crt_width > coloane[i - 1])
-                        {
                             coloane[i - 1] = crt_width;
-                        }
                     }
-                
+
                 std::cout << "\n";
                 for (unsigned int i = 1; i <= cnt_coloane; i++)
                     std::cout << std::setw(5) << " " << std::setw(coloane[i - 1] + 5) << res->getMetaData()->getColumnName(i) << " ";
@@ -2146,16 +2093,8 @@ void consola_mysql(void)
                 underline(100, true);
 
                 city.~CITY();
-                city.head_city = nullptr;
-                city.tail_city = nullptr;
-
                 product.~PRODUCT();
-                product.head_product = nullptr;
-                product.tail_product = nullptr;
-
                 depot.~DEPOT();
-                depot.head_depot = nullptr;
-                depot.tail_depot = nullptr;
 
                 if (fetchTables() == EXIT_FAILURE)
                     _getch();
@@ -2175,5 +2114,5 @@ void consola_mysql(void)
         }
     }
 
-    interogare.clear();
+    query.clear();
 }

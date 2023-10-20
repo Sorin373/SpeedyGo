@@ -66,6 +66,7 @@ size_t _response_data_(void *content, size_t element_size, size_t elements, std:
 HTTP_RESPONSE _http_request_(const std::string &url)
 {
     CURL *curl = curl_easy_init();
+    
     std::string response_body = "";
     long response_code = 0;
 
@@ -97,20 +98,28 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
     char *input = (char *)malloc(MAXL * sizeof(char) + 1);
 
+    if (input == NULL)
+        return EXIT_FAILURE;
+
     if (!_ENABLE_API)
+    {
         std::cout << std::setw(5) << " "
                   << "-- Do you want to use Google services to calculate distances between cities? [Y]/[N]: ";
+        std::cin >> input;
 
-    std::cin >> input;
-    std::cout << "\n";
+        std::cout << "\n";
 
-    if (_strcasecmp_(input, "N") == 0)
-    {
-        free(input);
-        return EXIT_FAILURE;
+        if (_strcasecmp_(input, "N") == 0)
+        {
+            free(input);
+            return EXIT_FAILURE;
+        }
     }
-    else if (_strcasecmp_(input, "Y") == 0)
+
+    if (_strcasecmp_(input, "Y") == 0 || _ENABLE_API)
     {
+        _ENABLE_API = true;
+
         std::string API_KEY = _GET_API_KEY_("utils/config.json");
 
         if (API_KEY.empty())
@@ -128,8 +137,6 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
             return EXIT_FAILURE;
         }
-
-        _ENABLE_API = true;
 
         underline(65, true);
 
@@ -150,7 +157,19 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
             while (edgeFile >> City_ID_1 >> City_ID_2)
             {
-                char *City_1 = (char *)malloc(MAXL * sizeof(char) + 1), *City_2 = (char *)malloc(MAXL * sizeof(char) + 1);
+                char *City_1 = (char *)malloc(MAXL * sizeof(char) + 1); 
+
+                if (City_1 == NULL)
+                    return EXIT_FAILURE;
+
+                char *City_2 = (char *)malloc(MAXL * sizeof(char) + 1);
+
+                if (City_2 == NULL)
+                {
+                    free(City_1);
+                    return EXIT_FAILURE;
+                }
+
                 double Latitude_City_1 = 0.0, Longitude_City_1 = 0.0, Latitude_City_2 = 0.0, Longitude_City_2 = 0.0;
 
                 for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
@@ -233,6 +252,8 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
                     }
                     else
                     {
+                        _ENABLE_API = false;
+
                         std::cerr << std::setw(5) << " "
                                   << "--> API key not valid.\n\n"
                                   << std::setw(5) << " "
@@ -243,8 +264,6 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
                                   << "Press 'ENTER' to continue...";
                         _getch();
                         std::cout << "\n\n";
-
-                        _ENABLE_API = false;
 
                         free(City_1);
                         free(City_2);

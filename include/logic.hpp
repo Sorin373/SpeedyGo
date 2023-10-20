@@ -6,56 +6,64 @@
 
 namespace speedyGo
 {
-    extern bool validateMysqlCredentials(void);
-    extern bool _ADJACENCY_MATRIX_INIT_(void);
+    bool validateMysqlCredentials(void);
+    bool _ADJACENCY_MATRIX_INIT_(void);
+    void displaySpeedyGoDetails(void);
+    void MySQLconsole(void);
 }
 
 void alignConsoleOutput(void);
+void limitedStockProductSearchByID(const int ProductID);
+void connectedNodes(const int DepotID);
+void selectDepotType(void);
 
-extern bool verificare_orase_stoc_limitat(void);
-extern void cautare_produse_ID_stoc_limitat(const int ID_Depozit);
-extern void depozite_conectate(int ID_Depozit);
-extern void determinare_tip_depozit(void);
-extern void cautare_orase_stoc_limitat(void);
-extern void cautare_orase_izolate(void);
-extern void vizualizare_status_stoc(void);
-extern void creare_solutie_distanta(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee);
-extern void dijkstra(int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
-extern void afisare_depozite_centralizare(void);
-extern void afisare_trasee_optime(const int _ID, const int vStart);
-extern void afisare_optiuni_trasee_optime(const int vStart);
-extern void sistem_aprovizionare_independent(void);
+void searchLimitedStockCities(void);
+void searchIsolatedVertices(void);
+void stockStatusVisualization(void);
+
+void printCentralDepots(void);
+
+namespace Dijkstra
+{
+    void generateDistanceSolution(const int start, std::vector<double> &distanta, std::vector<int> &distanta_minima, bool afisare, bool creare_trasee);
+    void dijkstra(const int start, std::vector<double> &distanta, std::vector<int> &distanta_minima);
+    void PrintCityToCityOptimalRoutes(const int _ID, const int vStart);
+    void DisplayCityToCityOptimalRoutes(const int vStart);
+    void CityToCityDistanceCalculator(void);
+}
+
 extern void afisare_depozite_izolate(void);
 extern void afisare_depozite_unic_drum(void);
 
-namespace hamiltonianGraph
+namespace tsp
 {
-    void initStack(void);
-    bool successor(void);
-    bool solution(void);
-    bool valid(void);
-    void determiningTheMinimumHamiltonianCycle(void);
-    void back(void);
-}
+    namespace hamiltonianGraph
+    {
+        void initStack(void);
+        bool successor(void);
+        bool solution(void);
+        bool valid(void);
+        void determiningMinimumHamiltonianCycle(void);
+        void back(void);
+    }
 
-namespace acyclicGraph
-{
-    void initStack(void);
-    bool successor(void);
-    bool solution(void);
-    bool valid(void);
-    void determiningMinimumRoute(void);
-    void back(void);
-}
+    namespace acyclicGraph
+    {
+        void initStack(void);
+        bool successor(void);
+        bool solution(void);
+        bool valid(void);
+        void determiningMinimumRoute(void);
+        void back(void);
+    }
 
-extern void TSP(void);
-extern void produse_transport_TSP(void);
-extern void pagina_principala_TSP(void);
-extern void pagina_finala_TSP(void);
-extern void pagina_stanga_TSP(void);
-extern void pagina_dreapta_TSP(void);
-extern void parcurgere_traseu_TSP(void);
-extern void afisare_detalii_SpeedyGo(void);
-extern void consola_mysql(void);
+    void TSP(void);
+    void productTransportTSP(void);
+    void mainPageTSP(void);
+    void finalPageTSP(void);
+    void leftPageTSP(void);
+    void rightPageTSP(void);
+    void routeTraversalTSP(void);
+}
 
 #endif // LOGIC_HPP

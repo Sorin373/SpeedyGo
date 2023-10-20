@@ -447,6 +447,10 @@ void CITY::CITY_NODE::searchCityByName(void)
     CITY::CITY_NODE::displayCityData();
 
     char *UserInput_City_Name = (char *)malloc(MAXL * sizeof(char) + 1);
+
+    if (UserInput_City_Name == NULL)
+        return;
+
     bool isFound = false;
 
 #ifdef _WIN32

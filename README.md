@@ -215,36 +215,35 @@ Not only is the application able to generate the most efficient path between two
 ## Dijkstra's alghorithm
 1. This function takes a start node and two vectors (distanta and distanta_minima) as input. The distanta vector represents the distances from the start node to each node in the graph, while the distanta_minima vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the distanta vector and the shortest paths (previous nodes) in the distanta_minima vector.
 ```c++
-void creare_solutie_distanta(int start, vector<double> &distanta, vector<int> &distanta_minima, bool afisare, bool creare_trasee)
+void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &distance, std::vector<int> &pathVector, bool debug, bool createRoutes)
 {
-    for (unsigned int i = 0; i < contor_noduri_graf; i++)
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
     {
         if (i != start)
         {
-            if (afisare)
-                cout << "Cea mai scurta distanta de la " << start << " la " << i << " este: " << distanta[i] << " : traseu: ";
+            if (debug) // Debugging option
+                std::cout << "The shortest distance from " << start << " to " << i << " is: " << distance[i] << " : optimalRoute: ";
 
-            vector<int> traseu;
-
+            std::vector<int> optimalRoute;
             int nod = i;
 
             while (nod != -1)
             {
-                traseu.push_back(nod);
-                nod = distanta_minima[nod];
+                optimalRoute.push_back(nod);
+                nod = pathVector[nod];
             }
 
-            reverse(traseu.begin(), traseu.end());
+            reverse(optimalRoute.begin(), optimalRoute.end());
 
-            if (creare_trasee)
-                _traseu.inserareDateTraseu(start, i, distanta[i], traseu);
+            if (createRoutes)
+                route.getData(start, i, distance[i], optimalRoute);
 
-            if (afisare)
-                for (unsigned int j = 0; j < traseu.size(); j++)
-                    cout << traseu[j] << " ";
+            if (debug) // Debugging option
+                for (unsigned int j = 0; j < optimalRoute.size(); j++)
+                    std::cout << optimalRoute[j] << " ";
 
-            if (afisare)
-                cout << "\n";
+            if (debug) // Debugging option
+                std::cout << "\n";
         }
     }
 }
