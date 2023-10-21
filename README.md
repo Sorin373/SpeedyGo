@@ -193,9 +193,11 @@ HTTP_RESPONSE _http_request_(const std::string &url)
 $$
 a = \sin^2\left(\frac{\Delta\text{Lat}}{2}\right) + \cos(\text{Lat}_1) \cdot \cos(\text{Lat}_2) \cdot \sin^2\left(\frac{\Delta\text{Lon}}{2}\right)
 $$
+
 $$
 c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1 - a}\right)
 $$
+
 $$
 d = R \cdot c
 $$
