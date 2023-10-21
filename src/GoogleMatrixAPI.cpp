@@ -198,7 +198,7 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
                 HTTP_RESPONSE response = _http_request_(url);
 
-                if (response.status_cod == 200)
+                if (response.status_code == 200)
                 {
                     nlohmann::json json_data = nlohmann::json::parse(response.body);
                     std::string status_str = json_data["status"];

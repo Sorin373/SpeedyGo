@@ -14,6 +14,6 @@ extern sql::Driver *driver;
 extern sql::Connection *con;
 
 bool addGraphEdge(void);
-extern bool fetchTables(void);
+bool fetchTables(void);
 
 #endif

@@ -834,24 +834,24 @@ void tsp::hamiltonianGraph::determiningMinimumHamiltonianCycle(void)
 void tsp::hamiltonianGraph::back(void)
 {
     stackCounter = 1;
-    hamiltonianGraph::initStack();
+    tsp::hamiltonianGraph::initStack();
     while (stackCounter > 0)
     {
         int vSuccesor, vValid;
         do
         {
-            vSuccesor = hamiltonianGraph::successor();
+            vSuccesor = tsp::hamiltonianGraph::successor();
             if (vSuccesor == 1)
-                vValid = hamiltonianGraph::valid();
+                vValid = tsp::hamiltonianGraph::valid();
         } while (vSuccesor == 1 && vValid == 0);
         if (vSuccesor == 1)
         {
-            if (hamiltonianGraph::solution() == 1)
-                hamiltonianGraph::determiningMinimumHamiltonianCycle();
+            if (tsp::hamiltonianGraph::solution() == 1)
+                tsp::hamiltonianGraph::determiningMinimumHamiltonianCycle();
             else
             {
                 stackCounter++;
-                hamiltonianGraph::initStack();
+                tsp::hamiltonianGraph::initStack();
             }
         }
         else
@@ -944,22 +944,22 @@ void tsp::acyclicGraph::back(void)
 {
     int vSuccesor, vValid;
     stackCounter = 1;
-    acyclicGraph::initStack();
+    tsp::acyclicGraph::initStack();
     while (stackCounter > 0)
     {
         do
         {
-            vSuccesor = acyclicGraph::successor();
+            vSuccesor = tsp::acyclicGraph::successor();
             if (vSuccesor == 1)
-                vValid = acyclicGraph::valid();
+                vValid = tsp::acyclicGraph::valid();
         } while (vSuccesor == 1 && vValid == 0);
         if (vSuccesor == 1)
-            if (acyclicGraph::solution() == 1)
-                acyclicGraph::determiningMinimumRoute();
+            if (tsp::acyclicGraph::solution() == 1)
+                tsp::acyclicGraph::determiningMinimumRoute();
             else
             {
                 stackCounter++;
-                acyclicGraph::initStack();
+                tsp::acyclicGraph::initStack();
             }
         else
             stackCounter--;

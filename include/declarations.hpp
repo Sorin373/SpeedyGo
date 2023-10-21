@@ -81,15 +81,15 @@ extern char *newCityName;
 extern int maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
     maxProductIDLength, maxProductQuantityLength;
 
-extern int _strcasecmp_(const char *str1, const char *str2);
-extern void underline(const unsigned int vWidth, const bool bSetw);
+int _strcasecmp_(const char *str1, const char *str2);
+void underline(const unsigned int vWidth, const bool bSetw);
 #ifdef _WIN32
-extern void changeText(WORD attributes);
-extern void resetText();
+void changeText(WORD attributes);
+void resetText();
 #endif
 #ifdef __linux__
-extern char _getch(void);
+char _getch(void);
 #endif
-extern void clear_screen(void);
+void clear_screen(void);
 
 #endif
