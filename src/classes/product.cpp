@@ -122,6 +122,10 @@ void PRODUCT::PRODUCT_NODE::searchProductByName(void)
                       << std::setw(maxProductCategoryLength - strlen(product_data->Product_Category) + 10) << " ";
 
             char *Temp_Product_Price = (char *)malloc(MAXL * sizeof(char) + 1);
+
+            if (Temp_Product_Price == NULL)
+                return;
+
             snprintf(Temp_Product_Price, MAXL, "%g", product_data->Product_Price);
 
             std::cout << std::fixed << std::setprecision(2)

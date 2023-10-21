@@ -16,11 +16,9 @@ void alignConsoleOutput(void);
 void limitedStockProductSearchByID(const int ProductID);
 void connectedNodes(const int DepotID);
 void selectDepotType(void);
-
 void searchLimitedStockCities(void);
 void searchIsolatedVertices(void);
 void stockStatusVisualization(void);
-
 void printCentralDepots(void);
 
 namespace Dijkstra
@@ -31,9 +29,6 @@ namespace Dijkstra
     void DisplayCityToCityOptimalRoutes(const int vStart);
     void CityToCityDistanceCalculator(void);
 }
-
-extern void afisare_depozite_izolate(void);
-extern void afisare_depozite_unic_drum(void);
 
 namespace tsp
 {

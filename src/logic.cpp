@@ -289,7 +289,8 @@ void connectedNodes(const int DepotID)
             {
                 if (std::stoi(city_data->getCityID()) == i && _strcasecmp_(depotName, city_data->getCityName()) != 0)
                 {
-                    std::cout << std::setw(5) << " " << depotName << " -> " << city_data->getCityName()
+                    std::cout << std::setw(5) << " "
+                              << depotName << " -> " << city_data->getCityName()
                               << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 5)
                               << " (" << adjacencyMatrix[DepotID][i].distance << "km | " << adjacencyMatrix[DepotID][i].duration << "min)\n";
                     break;
@@ -322,16 +323,16 @@ void searchLimitedStockCities(void)
     CITY::CITY_NODE *city_data = city.getHead();
     while (city_data != nullptr)
     {
-        int _ID_Oras = std::stoi(city_data->getCityID());
+        int CityID = std::stoi(city_data->getCityID());
 
         DEPOT::DEPOT_NODE *depot_data = depot.getHead();
         while (depot_data != nullptr)
         {
-            int _ID_Depozit = std::stoi(depot_data->getCityID());
-            if (_ID_Depozit == _ID_Oras && centralDepos[_ID_Depozit] == false)
+            int depotID = std::stoi(depot_data->getCityID());
+            if (depotID == CityID && centralDepos[depotID] == false)
                 if (depot_data->getProductQuantity() < MINIMUM_STOCK_VALUE)
                 {
-                    limitedStockCities[_ID_Depozit] = true;
+                    limitedStockCities[depotID] = true;
                     limited_stock_cities_count++;
                     break;
                 }
@@ -403,37 +404,41 @@ void stockStatusVisualization(void)
 #ifdef _WIN32
     changeText(FOREGROUND_INTENSITY);
     std::cout << std::setw(5) << " "
-              << "Scrieti 'exit' pentru a iesi\n\n";
+              << "Type 'EXIT' to return\n\n";
     resetText();
 #elif __linux__
     std::cout << std::setw(5) << " "
               << "\033[3m"
-              << "Scrieti 'exit' pentru a iesi\n\n"
+              << "Type 'EXIT' to return\n\n"
               << "\033[0m";
 #endif
 
-    char *t_ID_Oras = (char *)malloc(MAXL * sizeof(char) + 1);
-    std::cout << std::setw(5) << " "
-              << "Introduceti ID-ul orasului: ";
-    std::cin >> t_ID_Oras;
+    char *t_CityID = (char *)malloc(MAXL * sizeof(char) + 1);
 
-    if (_strcasecmp_(t_ID_Oras, "exit") == 0)
+    if (t_CityID == NULL)
+        return;
+
+    std::cout << std::setw(5) << " "
+              << "City ID: ";
+    std::cin >> t_CityID;
+
+    if (_strcasecmp_(t_CityID, "exit") == 0)
     {
-        free(t_ID_Oras);
+        free(t_CityID);
         return;
     }
     else
     {
-        int _ID_Oras = std::stoi(t_ID_Oras);
-        free(t_ID_Oras);
+        int CityID = std::stoi(t_CityID);
+        free(t_CityID);
         city_data = city.getHead();
 
         while (city_data != nullptr)
         {
             int t_ID = std::stoi(city_data->getCityID());
-            if (t_ID == _ID_Oras && limitedStockCities[t_ID] == true)
+            if (t_ID == CityID && limitedStockCities[t_ID] == true)
             {
-                unsigned int sMENIU;
+                unsigned int MENU;
 
                 do
                 {
@@ -442,33 +447,33 @@ void stockStatusVisualization(void)
                     std::cout << "\n\n"
                               << std::setw(5) << " "
                               << "+--------------------------------------------+\n"
-                              << std::setw(7) << " " << city_data->getCityName() << " | Tip depot: " << city_data->getCityName() << "\n"
+                              << std::setw(7) << " " << city_data->getCityName() << " | Depot type: " << city_data->getCityName() << "\n"
                               << std::setw(5) << " "
                               << "+--------------------------------------------+\n";
 
                     underline(50, true);
 
                     std::cout << std::setw(5) << " "
-                              << "[1] Vizualizare produse cu stoc limitat\n"
+                              << "[1] View products with limited stock\n"
                               << std::setw(5) << " "
-                              << "[2] Vizualizare conexiuni cu alte depozite\n"
+                              << "[2] View connections with other depots\n"
                               << std::setw(5) << " "
-                              << "[0] Inapoi\n";
+                              << "[0] Back\n";
 
                     underline(50, true);
 
                     std::cout << std::setw(5) << " "
                               << "Enter menu number: ";
-                    std::cin >> sMENIU;
+                    std::cin >> MENU;
 
-                    switch (sMENIU)
+                    switch (MENU)
                     {
                     case 1:
-                        limitedStockProductSearchByID(_ID_Oras);
+                        limitedStockProductSearchByID(CityID);
                         _getch();
                         break;
                     case 2:
-                        connectedNodes(_ID_Oras);
+                        connectedNodes(CityID);
                         _getch();
                         break;
 
@@ -476,7 +481,7 @@ void stockStatusVisualization(void)
                         break;
                     }
 
-                } while (sMENIU != 0);
+                } while (MENU != 0);
 
                 break;
             }
@@ -553,7 +558,7 @@ void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vec
 
 void printCentralDepots(void)
 {
-        std::cout << "\n\n"
+    std::cout << "\n\n"
               << std::setw(5) << " "
               << "+----------------+\n"
               << std::setw(5) << " "
@@ -576,13 +581,13 @@ void printCentralDepots(void)
 
 void Dijkstra::PrintCityToCityOptimalRoutes(const int _ID, const int start)
 {
-    bool gasit = false;
+    bool isFound = false;
 
     if (isolatedVertex[_ID] == true)
     {
         std::cout << "\n"
                   << std::setw(5) << " "
-                  << "Nu exista traseul cu acest ID. Depozit izolat...";
+                  << "There is no route with this ID. Isolated depot...";
         return;
     }
 
@@ -590,10 +595,10 @@ void Dijkstra::PrintCityToCityOptimalRoutes(const int _ID, const int start)
     {
         if (date_traseu->getDestination() == _ID && date_traseu->getStart() == start)
         {
-            gasit = true;
+            isFound = true;
             std::cout << "\n"
                       << std::setw(5) << " "
-                      << "Distanta: ";
+                      << "Distance: ";
             std::cout << date_traseu->getDistance() << "km\n"
                       << std::setw(5) << " ";
 
@@ -616,11 +621,11 @@ void Dijkstra::PrintCityToCityOptimalRoutes(const int _ID, const int start)
         }
     }
 
-    if (!gasit)
+    if (!isFound)
     {
         std::cout << "\n"
                   << std::setw(5) << " "
-                  << "Nu exista traseul cu acest ID!";
+                  << "There is no route with this ID!";
         return;
     }
 }
@@ -655,7 +660,7 @@ void Dijkstra::DisplayCityToCityOptimalRoutes(const int start)
             for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
                 if (std::stoi(city_data->getCityID()) == date_traseu->getDestination())
                 {
-                    std::cout << std::setw(5 + 1) 
+                    std::cout << std::setw(5 + 1)
                               << " [" << city_data->getCityID() << "] " << city_start << " -> " << city_data->getCityName() << "\n";
                     break;
                 }
@@ -669,7 +674,6 @@ void Dijkstra::DisplayCityToCityOptimalRoutes(const int start)
         free(city_start);
         return;
     }
-        
 
     std::cout << std::setw(5) << " "
               << "Menu ID: ";
@@ -761,182 +765,6 @@ void Dijkstra::CityToCityDistanceCalculator(void)
             _getch();
             CityToCityDistanceCalculator();
         }
-    }
-}
-
-void afisare_depozite_izolate(void)
-{
-    clear_screen();
-
-    std::cout << "\n\n"
-              << std::setw(5) << " "
-              << "+------------------+\n"
-              << std::setw(5) << " "
-              << "| DEPOZITE IZOLATE |\n"
-              << std::setw(5) << " "
-              << "+------------------+\n\n";
-
-    std::cout << std::setw(5) << " "
-              << "ID_Oras"
-              << std::setw(5) << " "
-              << "Denumire_Oras"
-              << std::setw(5) << " "
-              << "Tip_Depozit"
-              << std::setw(5) << " "
-              << "Latitudine"
-              << std::setw(5) << " "
-              << "Longitudine\n";
-
-    underline(75, true);
-
-    int cmax = -1;
-    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
-    {
-        if (strlen(city_data->getCityName()) > cmax)
-            cmax = strlen(city_data->getCityName());
-    }
-
-    bool gasit = false;
-    for (unsigned int i = 0; i < isolatedVertex.size(); i++)
-        if (isolatedVertex[i] == true)
-        {
-            gasit = true;
-            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
-            {
-                int ID = std::stoi(city_data->getCityID());
-                if (ID == i)
-                {
-                    std::cout << std::setw(5 + 1) << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
-                              << " " << city_data->getCityName() << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
-                              << " " << city_data->getCityType() << std::setw(11 - strlen(city_data->getCityType()) + 5)
-                              << " " << std::fixed << std::setprecision(2) << city_data->getLatitude();
-#ifdef _WIN32
-                    std::cout << "\370";
-#elif __linux__
-                    std::cout << "\u00B0";
-#endif
-                    std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
-                              << " " << city_data->getLongitude();
-#ifdef _WIN32
-                    std::cout << "\370"
-                              << "\n";
-#elif __linux__
-                    std::cout << "\u00B0\n";
-#endif
-                    break;
-                }
-            }
-        }
-
-    underline(75, true);
-
-    if (!gasit)
-    {
-        std::cout << std::setw(5) << " "
-                  << "Nu exista depozite izolate...";
-        return;
-    }
-    else
-        std::cout << "\n"
-                  << std::setw(5) << " "
-                  << " Apasati 'ENTER' pentru a iesi...";
-}
-
-void afisare_depozite_unic_drum(void)
-{
-    clear_screen();
-
-    std::cout << "\n\n";
-    std::cout << std::setw(5) << " "
-              << "+-------------------------------+\n";
-    std::cout << std::setw(5) << " "
-              << "| DEPOZITE CU O UNICA CONEXIUNE |\n";
-    std::cout << std::setw(5) << " "
-              << "+-------------------------------+\n\n";
-
-    std::cout << std::setw(5) << " "
-              << "ID_Oras"
-              << std::setw(5) << " "
-              << "Denumire_Oras"
-              << std::setw(5) << " "
-              << "Tip_Depozit"
-              << std::setw(5) << " "
-              << "Latitudine"
-              << std::setw(5) << " "
-              << "Longitudine\n";
-
-    underline(75, true);
-
-    bool gasit = false;
-    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
-    {
-        int contor = 0;
-        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
-            if (adjacencyMatrix[i][j].distance != 0)
-            {
-                contor++;
-                if (contor >= 2)
-                    break;
-            }
-
-        if (contor == 1)
-        {
-            gasit = true;
-            oneEdgeVertex[i] = true;
-        }
-    }
-
-    if (gasit)
-    {
-        int cmax = -1;
-        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
-        {
-            if (strlen(city_data->getCityName()) > cmax)
-                cmax = strlen(city_data->getCityName());
-        }
-
-        for (unsigned int i = 0; i < oneEdgeVertex.size(); i++)
-        {
-            if (oneEdgeVertex[i])
-            {
-                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
-                {
-                    int ID = std::stoi(city_data->getCityID());
-                    if (ID == i)
-                    {
-                        std::cout << std::setw(5 + 1) << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
-                                  << " " << city_data->getCityName() << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
-                                  << " " << city_data->getCityType() << std::setw(11 - strlen(city_data->getCityType()) + 5)
-                                  << " " << std::fixed << std::setprecision(2) << city_data->getLatitude();
-#ifdef _WIN32
-                        std::cout << "\370";
-#elif __linux__
-                        std::cout << "\u00B0";
-#endif
-                        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
-                                  << " " << city_data->getLongitude();
-#ifdef _WIN32
-                        std::cout << "\370"
-                                  << "\n";
-#elif __linux__
-                        std::cout << "\u00B0\n";
-#endif
-                        break;
-                    }
-                }
-            }
-        }
-        underline(75, true);
-
-        std::cout << "\n"
-                  << std::setw(5) << " "
-                  << " Apasati 'ENTER' pentru a iesi...";
-    }
-    else
-    {
-        std::cout << std::setw(5) << " "
-                  << "Nu exista depozite cu o unica conexiune...";
-        return;
     }
 }
 
@@ -1059,19 +887,19 @@ bool tsp::acyclicGraph::valid(void)
     {
         for (unsigned int i = 0; i < VERTEX_COUNT; i++)
         {
-            bool gasit = false;
+            bool isFound = false;
             if (limitedStockCities[i] == true && !isolatedVertex[i])
             {
                 for (unsigned int j = 1; j <= stackCounter; j++)
                 {
                     if (stack[j] == i)
                     {
-                        gasit = true;
+                        isFound = true;
                         break;
                     }
                 }
 
-                if (!gasit)
+                if (!isFound)
                     return false;
             }
         }

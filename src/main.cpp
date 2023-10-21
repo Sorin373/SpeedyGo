@@ -209,11 +209,11 @@ int main(void)
                     Dijkstra::CityToCityDistanceCalculator();
                     break;
                 case 3:
-                    afisare_depozite_izolate();
+                    CITY::CITY_NODE::displayIsolatedCities();
                     _getch();
                     break;
                 case 4:
-                    afisare_depozite_unic_drum();
+                    CITY::CITY_NODE::displayUniqueRouteDepots();
                     _getch();
                     break;
 

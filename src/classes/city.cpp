@@ -110,6 +110,184 @@ void CITY::CITY_NODE::displayCityData(void)
     underline(80, true);
 }
 
+void CITY::CITY_NODE::displayIsolatedCities(void)
+{
+    clear_screen();
+
+    std::cout << "\n\n"
+              << std::setw(5) << " "
+              << "+-----------------+\n"
+              << std::setw(5) << " "
+              << "| ISOLATED DEPOTS |\n"
+              << std::setw(5) << " "
+              << "+-----------------+\n\n";
+
+    std::cout << std::setw(5) << " "
+              << "City_ID"
+              << std::setw(5) << " "
+              << "City_Name"
+              << std::setw(5) << " "
+              << "City_Type"
+              << std::setw(5) << " "
+              << "Latitude"
+              << std::setw(5) << " "
+              << "Longitude\n";
+
+    underline(75, true);
+
+    int cmax = -1;
+
+    for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+        if (strlen(city_data->getCityName()) > cmax)
+            cmax = strlen(city_data->getCityName());
+
+    bool isFound = false;
+    for (unsigned int i = 0; i < isolatedVertex.size(); i++)
+        if (isolatedVertex[i] == true)
+        {
+            isFound = true;
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+            {
+                int ID = std::stoi(city_data->getCityID());
+                if (ID == i)
+                {
+                    std::cout << std::setw(5 + 1)
+                              << " [" << city_data->getCityID() << "]"
+                              << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
+                              << " " << city_data->getCityName()
+                              << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
+                              << " " << city_data->getCityType()
+                              << std::setw(11 - strlen(city_data->getCityType()) + 5) << " " << std::fixed << std::setprecision(2)
+                              << city_data->getLatitude();
+#ifdef _WIN32
+                    std::cout << "\370";
+#elif __linux__
+                    std::cout << "\u00B0";
+#endif
+                    std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
+                              << " " << city_data->getLongitude();
+#ifdef _WIN32
+                    std::cout << "\370"
+                              << "\n";
+#elif __linux__
+                    std::cout << "\u00B0\n";
+#endif
+                    break;
+                }
+            }
+        }
+
+    underline(75, true);
+
+    if (!isFound)
+    {
+        std::cout << std::setw(5) << " "
+                  << "There are no isolated depots...";
+        return;
+    }
+    else
+        std::cout << "\n"
+                  << std::setw(5) << " "
+                  << "Press 'ENTER' to return...";
+}
+
+void CITY::CITY_NODE::displayUniqueRouteDepots(void)
+{
+    clear_screen();
+
+    std::cout << "\n\n";
+    std::cout << std::setw(5) << " "
+              << "+---------------------+\n";
+    std::cout << std::setw(5) << " "
+              << "| UNIQUE ROUTE DEPOTS |\n";
+    std::cout << std::setw(5) << " "
+              << "+---------------------+\n\n";
+
+    std::cout << std::setw(5) << " "
+              << "City_ID"
+              << std::setw(5) << " "
+              << "City_Name"
+              << std::setw(5) << " "
+              << "City_Type"
+              << std::setw(5) << " "
+              << "Latitude"
+              << std::setw(5) << " "
+              << "Longitude\n";
+
+    underline(75, true);
+
+    bool isFound = false;
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+    {
+        int count = 0;
+        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
+            if (adjacencyMatrix[i][j].distance != 0)
+            {
+                count++;
+                if (count >= 2)
+                    break;
+            }
+
+        if (count == 1)
+        {
+            isFound = true;
+            oneEdgeVertex[i] = true;
+        }
+    }
+
+    if (isFound)
+    {
+        int cmax = -1;
+        for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+            if (strlen(city_data->getCityName()) > cmax)
+                cmax = strlen(city_data->getCityName());
+
+        for (unsigned int i = 0; i < oneEdgeVertex.size(); i++)
+            if (oneEdgeVertex[i])
+                for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                {
+                    int ID = std::stoi(city_data->getCityID());
+                    if (ID == i)
+                    {
+                        std::cout << std::setw(5 + 1) 
+                                  << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
+                                  << " " << city_data->getCityName() 
+                                  << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
+                                  << " " << city_data->getCityType() 
+                                  << std::setw(11 - strlen(city_data->getCityType()) + 5)
+                                  << " " << std::fixed << std::setprecision(2) 
+                                  << city_data->getLatitude();
+#ifdef _WIN32
+                        std::cout << "\370";
+#elif __linux__
+                        std::cout << "\u00B0";
+#endif
+                        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
+                                  << " " << city_data->getLongitude();
+#ifdef _WIN32
+                        std::cout << "\370"
+                                  << "\n";
+#elif __linux__
+                        std::cout << "\u00B0\n";
+#endif
+                        break;
+                    }
+                }
+
+        underline(75, true);
+
+        std::cout << "\n"
+                  << std::setw(5) << " "
+                  << "Press 'ENTER' to return...";
+    }
+    else
+    {
+        std::cout << std::setw(5) << " "
+                  << "There are no depots with a unique connection...";
+        return;
+    }
+}
+
 void CITY::CITY_NODE::swapData(CITY_NODE &node)
 {
     std::swap(City_ID, node.City_ID);
@@ -562,7 +740,7 @@ bool CITY::addCity(void)
 
     char *Depot_Name = (char *)malloc(MAXL * sizeof(char) + 1),
          *Depot_Type = (char *)malloc(MAXL * sizeof(char) + 1);
-         
+
     double latitude = 0.0, longitude = 0.0;
 
     std::cout << "\n\n"
