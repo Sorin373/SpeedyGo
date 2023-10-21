@@ -190,6 +190,16 @@ HTTP_RESPONSE _http_request_(const std::string &url)
 
 - The Haversine formula provides an approximation of the distance between two points on a sphere, such as the Earth.
 
+$$
+a = \sin^2\left(\frac{\Delta\text{Lat}}{2}\right) + \cos(\text{Lat}_1) \cdot \cos(\text{Lat}_2) \cdot \sin^2\left(\frac{\Delta\text{Lon}}{2}\right)
+$$
+$$
+c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1 - a}\right)
+$$
+$$
+d = R \cdot c
+$$
+
 1. This is the first part of the Haversine formula. It represents the square of half the chord length between the two points on the Earth's surface.
 ```txt
 a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2)
@@ -227,12 +237,12 @@ void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &di
                 std::cout << "The shortest distance from " << start << " to " << i << " is: " << distance[i] << " : optimalRoute: ";
 
             std::vector<int> optimalRoute;
-            int nod = i;
+            int node = i;
 
-            while (nod != -1)
+            while (node != -1)
             {
-                optimalRoute.push_back(nod);
-                nod = pathVector[nod];
+                optimalRoute.push_back(node);
+                node = pathVector[node];
             }
 
             reverse(optimalRoute.begin(), optimalRoute.end());

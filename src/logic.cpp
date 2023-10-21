@@ -501,12 +501,12 @@ void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &di
                 std::cout << "The shortest distance from " << start << " to " << i << " is: " << distance[i] << " : optimalRoute: ";
 
             std::vector<int> optimalRoute;
-            int nod = i;
+            int node = i;
 
-            while (nod != -1)
+            while (node != -1)
             {
-                optimalRoute.push_back(nod);
-                nod = pathVector[nod];
+                optimalRoute.push_back(node);
+                node = pathVector[node];
             }
 
             reverse(optimalRoute.begin(), optimalRoute.end());
