@@ -16,4 +16,4 @@ extern sql::Connection *con;
 bool addGraphEdge(void);
 bool fetchTables(void);
 
-#endif
+#endif // DATABASE_HPP

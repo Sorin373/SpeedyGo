@@ -73,11 +73,11 @@ extern std::vector<int> stack;
 extern std::vector<int> minimumRouteTSP;
 
 extern long long unsigned int logCounter;
+
 extern int VERTEX_COUNT, limited_stock_cities_count, stackCounter, TSP_RouteCounter, consolePage, ERROR_CNT;
 extern bool dijkstraRoutesCalculated, TSP_RoutesCompleted, buffer, _ENABLE_API;
 extern double minimumDistanceCostTSP, minimumDurationCostTSP, traveledDistanceTSP, elapsedDurationTSP, totalSupplyCost, totalSuppliedQuantity;
 extern char *newCityName;
-
 extern int maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
     maxProductIDLength, maxProductQuantityLength;
 
@@ -92,4 +92,4 @@ char _getch(void);
 #endif
 void clear_screen(void);
 
-#endif
+#endif // DECLARATIONS_HPP
