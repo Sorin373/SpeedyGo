@@ -146,10 +146,10 @@ Not only does the application use Dijkstra's algorithm to generate the most effi
 - __string *buffer:__ A pointer to a string object where the received data should be stored.
 
 ```c++
-size_t _response_data_(void *content, size_t element_size, size_t elements, string *buffer)
+size_t _response_data_(void *content, size_t element_size, size_t elements, std::string *buffer)
 {
     size_t total_size = element_size * elements;
-    buffer->append(static_cast<char *>(content), total_size);
+    buffer->append((char *)(content), total_size);
     return total_size;
 }
 ```
@@ -157,17 +157,19 @@ size_t _response_data_(void *content, size_t element_size, size_t elements, stri
 2. The second step is to create the __HTTP GET__ request to the specified *URL*. It returns an HTTP_RESPONSE object containing the response body and response code.
 
 ```c++
-HTTP_RESPONSE _http_request_(const string &url)
+HTTP_RESPONSE _http_request_(const std::string &url)
 {
     CURL *curl = curl_easy_init();
+    
+    std::string response_body = "";
+    long response_code = 0;
+
     if (!curl)
     {
-        cerr << setw(5) << " " << "Failed to initialize Curl!\n";
+        std::cerr << std::setw(5) << " "
+                  << "Failed to initialize Curl!\n";
         return HTTP_RESPONSE{};
     }
-
-    string response_body;
-    long response_code = 0;
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _response_data_);
@@ -176,7 +178,7 @@ HTTP_RESPONSE _http_request_(const string &url)
     CURLcode res = curl_easy_perform(curl);
 
     if (res != CURLE_OK)
-        cerr << curl_easy_strerror(res) << "\n";
+        std::cerr << curl_easy_strerror(res) << "\n";
     else
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 
@@ -198,13 +200,13 @@ c = 2 * atan2(sqrt(a), sqrt(1 - a))
 ```
 
 ```c++
-double calculare_distante(const double lat_1, const double long_1, const double lat_2, const double long_2)
+double distanceCalculator(const double Latitude_City_1, const double Longitude_City_1, const double lat_2, const double long_2)
 {
-    double dLat = toRadians(lat_2 - lat_1),
-           dLon = toRadians(long_2 - long_1),
-           a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2),
+    double dLat = toRadians(lat_2 - Latitude_City_1),
+           dLon = toRadians(long_2 - Longitude_City_1),
+           a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(Latitude_City_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2),
            c = 2 * atan2(sqrt(a), sqrt(1 - a));
-           
+
     return EARTH_RADIUS_KM * c;
 }
 ```
@@ -251,33 +253,33 @@ void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &di
 
 2. This function takes the start node, the "distanta vector", and the "distanta_minima" vector as input. It also accepts two boolean flags, "afisare" and "creare_trasee". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the "distanta_minima" vector from the start node to the current node. It reverses the path to display it in the correct order. If "creare_trasee" is true, the function inserts the path into a data structure. The "afisare" flag controls whether the results are printed to the console.
 ```c++
-void dijkstra(int start, vector<double> &distanta, vector<int> &distanta_minima)
+void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vector<int> &pathVector)
 {
-    vector<bool> visited(contor_noduri_graf, false);
-    distanta[start] = 0.0;
+    std::vector<bool> visited(VERTEX_COUNT, false);
+    distance[start] = 0.0;
 
-    for (unsigned int i = 0; i < contor_noduri_graf; i++)
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
     {
         int min_index = 0;
-        double min_dist = numeric_limits<double>::infinity();
+        double min_dist = std::numeric_limits<double>::infinity();
 
-        for (unsigned int j = 0; j < contor_noduri_graf; j++)
-            if (!visited[j] && distanta[j] < min_dist)
+        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
+            if (!visited[j] && distance[j] < min_dist)
             {
                 min_index = j;
-                min_dist = distanta[j];
+                min_dist = distance[j];
             }
 
         visited[min_index] = true;
 
-        for (unsigned int j = 0; j < contor_noduri_graf; j++)
+        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
         {
-            double distanta_noua = distanta[min_index] + matrice_drum[min_index][j].distanta;
+            double newDistance = distance[min_index] + adjacencyMatrix[min_index][j].distance;
 
-            if (!visited[j] && matrice_drum[min_index][j].distanta > 0 && distanta_noua < distanta[j])
+            if (!visited[j] && adjacencyMatrix[min_index][j].distance > 0 && newDistance < distance[j])
             {
-                distanta[j] = distanta_noua;
-                distanta_minima[j] = min_index;
+                distance[j] = newDistance;
+                pathVector[j] = min_index;
             }
         }
     }
