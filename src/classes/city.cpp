@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <string>
 #include <fstream>
+#include <cmath>
 
 CITY::CITY_NODE::CITY_NODE(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude)
 {
@@ -368,10 +369,10 @@ void CITY::CITY_NODE::filterCityByCategory(void)
     std::cout << std::setw(5) << " "
               << "Enter the depot type: ";
 #elif __linux__
-    std::cout << setw(5) << " "
+    std::cout << std::setw(5) << " "
               << "\033[3m"
               << "Enter '0' to return\n\n"
-              << "\033[0m" << setw(5) << " "
+              << "\033[0m" << std::setw(5) << " "
               << "Enter the depot type: ";
 #endif
 
@@ -423,7 +424,7 @@ void CITY::CITY_NODE::filterCityByCategory(void)
 #elif __linux__
                 std::cout << "\u00B0";
 #endif
-                std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->latitude)).length() + 13)
+                std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
                           << " " << city_data->longitude;
 #ifdef _WIN32
                 std::cout << "\370"
@@ -581,7 +582,7 @@ void CITY::CITY_NODE::searchCityByID(void)
 #elif __linux__
             std::cout << "\u00B0";
 #endif
-            std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->latitude)).length() + 13)
+            std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
                       << " " << city_data->longitude;
 #ifdef _WIN32
             std::cout << "\370"
@@ -697,7 +698,7 @@ void CITY::CITY_NODE::searchCityByName(void)
 #elif __linux__
             std::cout << "\u00B0";
 #endif
-            std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->latitude)).length() + 13)
+            std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
                       << " " << city_data->longitude;
 #ifdef _WIN32
             std::cout << "\370"

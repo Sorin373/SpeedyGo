@@ -7,6 +7,9 @@
 #include <iomanip>
 #include <cstring>
 #include <string>
+#ifdef __linux__
+#include <tgmath.h>
+#endif
 
 PRODUCT::PRODUCT_NODE::PRODUCT_NODE(const char *Product_ID, const char *Product_Name, const char *Product_Category, const double Product_Price)
 {
@@ -71,10 +74,10 @@ void PRODUCT::PRODUCT_NODE::searchProductByName(void)
     std::cout << std::setw(5) << " "
               << "Enter the product name: ";
 #elif __linux__
-    std::cout << setw(5) << " "
+    std::cout << std::setw(5) << " "
               << "\033[3m"
               << "Enter '0' to return\n\n"
-              << "\033[0m" << setw(5) << " "
+              << "\033[0m" << std::setw(5) << " "
               << "Enter the product name: ";
 #endif
 
@@ -179,10 +182,10 @@ void PRODUCT::PRODUCT_NODE::searchProductByID(void)
     std::cout << std::setw(5) << " "
               << "Enter the product ID: ";
 #elif __linux__
-    std::cout << setw(5) << " "
+    std::cout << std::setw(5) << " "
               << "\033[3m"
               << "Type 'EXIT' to return\n\n"
-              << "\033[0m" << setw(5) << " "
+              << "\033[0m" << std::setw(5) << " "
               << "Enter the product ID: ";
 #endif
     std::cin >> UserInput_Product_ID;
@@ -444,10 +447,10 @@ void PRODUCT::PRODUCT_NODE::filterProductByCategory(void)
     std::cout << std::setw(5) << " "
               << "Enter the product category: ";
 #elif __linux__
-    std::cout << setw(5) << " "
+    std::cout << std::setw(5) << " "
               << "\033[3m"
               << "Enter '0' to return\n\n"
-              << "\033[0m" << setw(5) << " "
+              << "\033[0m" << std::setw(5) << " "
               << "Enter the product category: ";
 #endif
     std::cin >> UserInput_Product_Category;

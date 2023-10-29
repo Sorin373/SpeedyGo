@@ -976,7 +976,7 @@ void tsp::TSP(void)
 #elif __linux__
     std::cout << "\033[1;34m" << std::setw(5) << " "
               << "Calculating the most optimal route..."
-              << "\033[0m" << endl;
+              << "\033[0m" << "\n";
 #endif
 
     bool vIsolatedVertex = false;
@@ -1378,7 +1378,7 @@ void tsp::leftPageTSP(void)
                         resetText();
 #elif __linux__
                         std::cout << "\033[4m"
-                                  << "\033[1m" << city_data->denumire_oras << "\033[0m"
+                                  << "\033[1m" << city_data->getCityName() << "\033[0m"
                                   << " --> ";
 #endif
                         if (i < TSP_RouteCounter)
@@ -1529,7 +1529,7 @@ void tsp::rightPageTSP(void)
                         resetText();
 #elif __linux__
                         std::cout << "\033[4m"
-                                  << "\033[1m" << city_data->denumire_oras << "\033[0m"
+                                  << "\033[1m" << city_data->getCityName() << "\033[0m"
                                   << " --> ";
 #endif
                         if (i < TSP_RouteCounter)

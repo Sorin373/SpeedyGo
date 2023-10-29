@@ -36,7 +36,12 @@ endif()
 
 include_directories(include)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+if (WIN32)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+elseif(UNIX)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
+endif()
+    
 add_executable(${PROJECT_NAME}
     "src/main.cpp" 
     "src/declarations.cpp"
