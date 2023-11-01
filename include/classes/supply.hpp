@@ -1,3 +1,13 @@
+/*
+*
+*  SUPPLY_HPP
+*  Restocking information
+*
+*  This C++ header file defines the Supply class which stores the information about the products which need to be restocked.
+*  See logic.cpp (void tsp::productTransportTSP(void))
+*
+*/
+
 #pragma once
 #ifndef SUPPLY_HPP
 #define SUPPLY_HPP
@@ -31,4 +41,4 @@ public:
     ~SUPPLY();
 };
 
-#endif
+#endif // SUPPLY_HPP

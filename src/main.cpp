@@ -1,3 +1,29 @@
+/*
+*
+*                                    SpeedyGo - A Depot Management Application
+*
+* Comaptibility: I provide both UNIX and WINDOWS versions since I also wanted to learn about system compatibility.
+*                It is tested on Ubuntu 22.04 and Windows 10 (22H2).
+*
+* Author: Sorin Tudose
+*
+* Description: This application manages depots restocking operations, including inventory analysis, database visualization, and more.
+*              This app has been created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
+*
+*              (https://github.com/nlohmann/json)
+*              (https://curl.se/libcurl/c/)
+*              (https://dev.mysql.com/doc/connector-cpp/1.1/en/connector-cpp-getting-started-examples.html)
+*              (https://vcpkg.io/en/getting-started)
+*
+* Github: https://github.com/sorin373/SpeedyGo
+*
+* Test it: To run the app yourself I provided a demo database in the github repo and a set of instructions. 
+*          ! Please report any bugs !
+*
+* Thank you for checking out my project! :D
+*
+*/
+
 #include "../include/declarations.hpp"
 #include "../include/logic.hpp"
 #include "../include/GoogleMatrixAPI.hpp"
@@ -132,7 +158,7 @@ int main(void)
         _getch();
     }
 
-    unsigned int MENIU;
+    unsigned int MENU;
 
     do
     {
@@ -140,36 +166,36 @@ int main(void)
 
         std::cout << "\n\n"
                   << std::setw(30) << " "
-                  << "+-------+\n"
+                  << "+------+\n"
                   << std::setw(30) << " "
-                  << "| MENIU |\n"
+                  << "| MENU |\n"
                   << std::setw(30) << " "
-                  << "+-------+\n";
+                  << "+------+\n";
         underline(60, true);
 
         std::cout << std::setw(5) << " "
-                  << "[1] Aprovizionarea stocurilor in depozitele din Romania\n"
+                  << "[1] Restocking the depots\n"
                   << std::setw(5) << " "
-                  << "[2] Analiza stoc Romania\n"
+                  << "[2] Inventory Analysis \n"
                   << std::setw(5) << " "
-                  << "[3] Vizualizare baza de date\n"
+                  << "[3] Database Visualization\n"
                   << std::setw(5) << " "
                   << "[4] SQL Query Tool\n"
                   << std::setw(5) << " "
-                  << "[5] Actualizare date\n"
+                  << "[5] Updating data\n"
                   << std::setw(5) << " "
                   << "[0] EXIT\n";
 
         underline(60, true);
         std::cout << std::setw(5) << " "
-                  << "Introduceti numarul meniului: ";
+                  << "Enter menu number: ";
 
-        std::cin >> MENIU;
+        std::cin >> MENU;
 
-        switch (MENIU)
+        switch (MENU)
         {
         case 1:
-            unsigned int MENIU_1;
+            unsigned int MENU_1;
 
             do
             {
@@ -177,30 +203,30 @@ int main(void)
 
                 std::cout << "\n\n"
                           << std::setw(18) << " "
-                          << "+--------------------+\n"
+                          << "+------------------+\n"
                           << std::setw(18) << " "
-                          << "| GESTIONARE STOCURI |\n"
+                          << "| STOCK MANAGEMENT |\n"
                           << std::setw(18) << " "
-                          << "+--------------------+\n";
+                          << "+------------------+\n";
                 underline(50, true);
 
                 std::cout << std::setw(5) << " "
-                          << "[1] Ruta optima a aprovizionarii depozitelor\n"
+                          << "[1] Optimal depot restocking route\n"
                           << std::setw(5) << " "
-                          << "[2] Traseul optim de la un depozit la altul\n"
+                          << "[2] Optimal route between depots\n"
                           << std::setw(5) << " "
-                          << "[3] Depozite izolate\n"
+                          << "[3] Isolated depots\n"
                           << std::setw(5) << " "
-                          << "[4] Depozite cu o singura ruta de conexiune\n"
+                          << "[4] Depots with a single connection route\n"
                           << std::setw(5) << " "
                           << "[0] EXIT\n";
                 underline(50, true);
 
                 std::cout << std::setw(5) << " "
-                          << "Introduceti numarul meniului: ";
-                std::cin >> MENIU_1;
+                          << "Enter menu number: ";
+                std::cin >> MENU_1;
 
-                switch (MENIU_1)
+                switch (MENU_1)
                 {
                 case 1:
                     tsp::routeTraversalTSP();
@@ -220,14 +246,14 @@ int main(void)
                 default:
                     break;
                 }
-            } while (MENIU_1 != 0);
+            } while (MENU_1 != 0);
 
             break;
         case 2:
             stockStatusVisualization();
             break;
         case 3:
-            unsigned int MENIU_3;
+            unsigned int MENU_3;
 
             do
             {
@@ -235,32 +261,32 @@ int main(void)
 
                 std::cout << "\n\n"
                           << std::setw(15) << " "
-                          << "+--------------+\n"
+                          << "+----------+\n"
                           << std::setw(15) << " "
-                          << "| BAZA DE DATE |\n"
+                          << "| DATABASE |\n"
                           << std::setw(15) << " "
-                          << "+--------------+\n";
+                          << "+----------+\n";
 
                 underline(40, true);
 
                 std::cout << std::setw(5) << " "
-                          << "[1] Tabel Depozite Ro\n"
+                          << "[1] Depots table\n"
                           << std::setw(5) << " "
-                          << "[2] Tabel Produse\n"
+                          << "[2] Products Table\n"
                           << std::setw(5) << " "
                           << "[0] EXIT\n";
 
                 underline(40, true);
 
                 std::cout << std::setw(5) << " "
-                          << "Introduceti numarul meniului: ";
-                std::cin >> MENIU_3;
+                          << "Enter menu number: ";
+                std::cin >> MENU_3;
 
-                switch (MENIU_3)
+                switch (MENU_3)
                 {
                 case 1:
                 {
-                    unsigned int MENIU_3_1;
+                    unsigned int MENU_3_1;
 
                     do
                     {
@@ -269,28 +295,28 @@ int main(void)
                         CITY::CITY_NODE::displayCityData();
 
                         std::cout << std::setw(5) << " "
-                                  << "[1] Sortare dupa tipul depozitului\n"
+                                  << "[1] Sort by depot category\n"
                                   << std::setw(5) << " "
-                                  << "[2] Sortare alfabetic A-Z\n"
+                                  << "[2] Sort alphabetically A-Z\n"
                                   << std::setw(5) << " "
-                                  << "[3] Sortare alfabetic Z-A\n"
+                                  << "[3] Sort alphabetically Z-A\n"
                                   << std::setw(5) << " "
-                                  << "[4] Sortare descrescatoare dupa ID\n"
+                                  << "[4] Sort by ID descending\n"
                                   << std::setw(5) << " "
-                                  << "[5] Reseteaza afisarea\n"
+                                  << "[5] Reset data order\n"
                                   << std::setw(5) << " "
-                                  << "[6] Cautare date\n"
+                                  << "[6] Search data\n"
                                   << std::setw(5) << " "
                                   << "[0] EXIT\n";
 
                         underline(80, true);
 
                         std::cout << std::setw(5) << " "
-                                  << "Introduceti numarul meniului: ";
+                                  << "Enter menu number: ";
 
-                        std::cin >> MENIU_3_1;
+                        std::cin >> MENU_3_1;
 
-                        switch (MENIU_3_1)
+                        switch (MENU_3_1)
                         {
                         case 1:
                             CITY::CITY_NODE::filterCityByCategory();
@@ -308,7 +334,7 @@ int main(void)
                             CITY::CITY_NODE::sortData(1);
                             break;
                         case 6:
-                            unsigned int MENIU_3_1_6;
+                            unsigned int MENU_3_1_6;
 
                             do
                             {
@@ -317,19 +343,19 @@ int main(void)
                                 CITY::CITY_NODE::displayCityData();
 
                                 std::cout << std::setw(5) << " "
-                                          << "[1] Cautare depozit dupa denumire\n"
+                                          << "[1] Search depot by name\n"
                                           << std::setw(5) << " "
-                                          << "[2] Cautare depozit dupa ID\n"
+                                          << "[2] Search depot by ID\n"
                                           << std::setw(5) << " "
                                           << "[0] EXIT\n";
 
                                 underline(80, true);
 
                                 std::cout << std::setw(5) << " "
-                                          << "Introduceti numarul meniului: ";
-                                std::cin >> MENIU_3_1_6;
+                                          << "Enter menu number: ";
+                                std::cin >> MENU_3_1_6;
 
-                                switch (MENIU_3_1_6)
+                                switch (MENU_3_1_6)
                                 {
                                 case 1:
                                     CITY::CITY_NODE::searchCityByName();
@@ -342,7 +368,7 @@ int main(void)
                                     break;
                                 }
 
-                            } while (MENIU_3_1_6 != 0);
+                            } while (MENU_3_1_6 != 0);
 
                             break;
 
@@ -350,12 +376,12 @@ int main(void)
                             break;
                         }
 
-                    } while (MENIU_3_1 != 0);
+                    } while (MENU_3_1 != 0);
                 }
                 break;
                 case 2:
                 {
-                    unsigned int MENIU_3_2;
+                    unsigned int MENU_3_2;
 
                     do
                     {
@@ -364,32 +390,32 @@ int main(void)
                         PRODUCT::PRODUCT_NODE::displayProductData();
 
                         std::cout << std::setw(5) << " "
-                                  << "[1] Sortare dupa categoria produselor\n"
+                                  << "[1] Sort by product category\n"
                                   << std::setw(5) << " "
-                                  << "[2] Sortare alfabetic A-Z\n"
+                                  << "[2] Sort alphabetically A-Z\n"
                                   << std::setw(5) << " "
-                                  << "[3] Sortare alfabetic Z-A\n"
+                                  << "[3] Sort alphabetically Z-A\n"
                                   << std::setw(5) << " "
-                                  << "[4] Sortare descrescatoare dupa ID\n"
+                                  << "[4] Sort by ID descending\n"
                                   << std::setw(5) << " "
-                                  << "[5] Sortare in ordine crescatoare dupa pret\n"
+                                  << "[5] Sort by price ascending\n"
                                   << std::setw(5) << " "
-                                  << "[6] Sortare in ordine descrescatoare dupa pret\n"
+                                  << "[6] Sort by price descending\n"
                                   << std::setw(5) << " "
-                                  << "[7] Reseteaza afisarea\n"
+                                  << "[7] Reset data order\n"
                                   << std::setw(5) << " "
-                                  << "[8] Cautare date\n"
+                                  << "[8] Search data\n"
                                   << std::setw(5) << " "
                                   << "[0] EXIT\n";
 
                         underline(80, true);
 
                         std::cout << std::setw(5) << " "
-                                  << "Introduceti numarul meniului: ";
+                                  << "Enter menu number: ";
 
-                        std::cin >> MENIU_3_2;
+                        std::cin >> MENU_3_2;
 
-                        switch (MENIU_3_2)
+                        switch (MENU_3_2)
                         {
                         case 1:
                             PRODUCT::PRODUCT_NODE::filterProductByCategory();
@@ -413,7 +439,7 @@ int main(void)
                             PRODUCT::PRODUCT_NODE::sortData(1);
                             break;
                         case 8:
-                            unsigned int MENIU_3_2_8;
+                            unsigned int MENU_3_2_8;
 
                             do
                             {
@@ -422,19 +448,19 @@ int main(void)
                                 PRODUCT::PRODUCT_NODE::displayProductData();
 
                                 std::cout << std::setw(5) << " "
-                                          << "[1] Cautare produs dupa denumire\n"
+                                          << "[1] Search product by name\n"
                                           << std::setw(5) << " "
-                                          << "[2] Cautare produs dupa ID\n"
+                                          << "[2] Search product by ID\n"
                                           << std::setw(5) << " "
                                           << "[0] EXIT\n";
 
                                 underline(80, true);
 
                                 std::cout << std::setw(5) << " "
-                                          << "Introduceti numarul meniului: ";
-                                std::cin >> MENIU_3_2_8;
+                                          << "Enter menu number: ";
+                                std::cin >> MENU_3_2_8;
 
-                                switch (MENIU_3_2_8)
+                                switch (MENU_3_2_8)
                                 {
                                 case 1:
                                     PRODUCT::PRODUCT_NODE::searchProductByName();
@@ -447,7 +473,7 @@ int main(void)
                                     break;
                                 }
 
-                            } while (MENIU_3_2_8 != 0);
+                            } while (MENU_3_2_8 != 0);
 
                             break;
 
@@ -456,21 +482,21 @@ int main(void)
                             break;
                         }
 
-                    } while (MENIU_3_2 != 0);
+                    } while (MENU_3_2 != 0);
                 }
                 break;
 
                 default:
                     break;
                 }
-            } while (MENIU_3 != 0);
+            } while (MENU_3 != 0);
 
             break;
         case 4:
             speedyGo::MySQLconsole();
             break;
         case 5:
-            unsigned int MENIU_5;
+            unsigned int MENU_5;
 
             do
             {
@@ -478,30 +504,30 @@ int main(void)
 
                 std::cout << "\n\n"
                           << std::setw(15) << " "
-                          << "+------------------+\n"
+                          << "+-------------+\n"
                           << std::setw(15) << " "
-                          << "| ACTUALIZARE DATE |\n"
+                          << "| DATA UPDATE |\n"
                           << std::setw(15) << " "
-                          << "+------------------+\n";
+                          << "+-------------+\n";
 
                 underline(40, true);
 
                 std::cout << std::setw(5) << " "
-                          << "[1] Actualizare trasee GPS\n"
+                          << "[1] Update GPS routes\n"
                           << std::setw(5) << " "
-                          << "[2] Adauga un depozit\n"
+                          << "[2] Add a depot\n"
                           << std::setw(5) << " "
-                          << "[3] Sterge un depozit\n"
+                          << "[3] Delete a depot\n"
                           << std::setw(5) << " "
                           << "[0] EXIT\n";
 
                 underline(40, true);
 
                 std::cout << std::setw(5) << " "
-                          << "Introduceti numarul meniului: ";
-                std::cin >> MENIU_5;
+                          << "Enter menu number: ";
+                std::cin >> MENU_5;
 
-                switch (MENIU_5)
+                switch (MENU_5)
                 {
                 case 1:
                     _GOOGLE_MATRIX_API_INIT_();
@@ -527,14 +553,14 @@ int main(void)
                     break;
                 }
 
-            } while (MENIU_5 != 0);
+            } while (MENU_5 != 0);
             break;
 
         default:
             break;
         }
 
-    } while (MENIU != 0);
+    } while (MENU != 0);
 
     free_memory();
     clear_screen();

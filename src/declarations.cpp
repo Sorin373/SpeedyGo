@@ -5,35 +5,33 @@
 #include <string>
 
 ADJACENCY_MATRIX_INITIALIZER adjacency_matrix_init;
-DEPOT depot;
-CITY city;
+DEPOT   depot;
+CITY    city;
 PRODUCT product;
-ROUTE route;
-SUPPLY supply;
+ROUTE   route;
+SUPPLY  supply;
 
 #ifdef _WIN32
-HANDLE hConsole;
+HANDLE                     hConsole;
 CONSOLE_SCREEN_BUFFER_INFO csbi;
-WORD originalAttributes;
+WORD                       originalAttributes;
 #endif
 
-std::vector<std::vector<UNDIRECTED_GRAPH>> adjacencyMatrix(N, std::vector<UNDIRECTED_GRAPH>(N, {0.0, 0})); // Adjacency matrix
-std::vector<bool> centralDepos(N, false);                                                                  // Storage for central depots' IDs
-std::vector<bool> limitedStockCities(adjacencyMatrix.size(), false);                                       // Storage for limited stock depots' IDs
-std::vector<bool> isolatedVertex(adjacencyMatrix.size(), false);                                           // Storage for isolated depots' IDs
-std::vector<bool> oneEdgeVertex(adjacencyMatrix.size(), false);                                            // Storage for depots with a unique connection to the graph
-std::vector<int> stack(adjacencyMatrix.size() * adjacencyMatrix.size());                                   // Stack used in backtracking algorithms to determine the optimal route
-std::vector<int> minimumRouteTSP(adjacencyMatrix.size() * (adjacencyMatrix.size() - 1) / 2);               // Storage for the optimal TSP (Traveling Salesman Problem) route
+std::vector<std::vector<UNDIRECTED_GRAPH>> adjacencyMatrix(N, std::vector<UNDIRECTED_GRAPH>(N, {0.0, 0}));
+std::vector<bool> centralDepos(N, false);
+std::vector<bool> limitedStockCities(adjacencyMatrix.size(), false);
+std::vector<bool> isolatedVertex(adjacencyMatrix.size(), false);
+std::vector<bool> oneEdgeVertex(adjacencyMatrix.size(), false);
+std::vector<int>  stack(adjacencyMatrix.size() * adjacencyMatrix.size());
+std::vector<int>  minimumRouteTSP(adjacencyMatrix.size() * (adjacencyMatrix.size() - 1) / 2);
 
-long long unsigned int logCounter;
-int VERTEX_COUNT, limited_stock_cities_count, stackCounter, TSP_RouteCounter, consolePage = 1, ERROR_CNT;
-bool dijkstraRoutesCalculated = false, TSP_RoutesCompleted = false, buffer = true, _ENABLE_API = false;
+unsigned int logCounter;
+int    VERTEX_COUNT, limited_stock_cities_count, stackCounter, TSP_RouteCounter, consolePage = 1, ERROR_CNT;
+bool   dijkstraRoutesCalculated = false, TSP_RoutesCompleted = false, buffer = true, _ENABLE_API = false;
 double minimumDistanceCostTSP = INT_MAX, minimumDurationCostTSP = INT_MAX, traveledDistanceTSP, elapsedDurationTSP, totalSupplyCost, totalSuppliedQuantity;
-char *newCityName = (char *)malloc(MAXL * sizeof(char) + 1);
-
-// Variables used for precise console output alignment
-int maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
-    maxProductIDLength, maxProductQuantityLength;
+char   *newCityName = (char *)malloc(MAXL * sizeof(char) + 1);
+int    maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
+       maxProductIDLength, maxProductQuantityLength;
 
 int _strcasecmp_(const char *str1, const char *str2)
 {

@@ -1,6 +1,18 @@
+/*
+*
+*  DEPOT_HPP
+*  Depot Data Management
+*
+*  This C++ header file defines the Depot class
+*
+*  - Defines the DEPOT class and DEPOT_NODE structure.
+*  - Methods for sorting, refreshing, and retrieving depot data.
+*
+*/
+
 #pragma once
-#ifndef DEPOZIT_HPP
-#define DEPOZIT_HPP
+#ifndef DEPOT_HPP
+#define DEPOT_HPP
 
 class DEPOT
 {
@@ -37,4 +49,4 @@ public:
     ~DEPOT();
 };
 
-#endif
+#endif // DEPOT_HPP

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Others/LOGO.png" alt="Project Logo or Banner" width="200" height="200">
+  <img src="assets/LOGO.png" alt="Project Logo or Banner" width="200" height="200">
 </p>
 
 For my final project in computer science for grade 11, I was required to develop a console application that involved working with graphs. Therefore, I decided to create **SpeedyGo**, an app whose main purpose is to generate the most optimal path to supply different deposits in Romania.
@@ -227,7 +227,42 @@ double distanceCalculator(const double Latitude_City_1, const double Longitude_C
 Not only is the application able to generate the most efficient path between two points (eg. **Bucharest -> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
 
 ## Dijkstra's alghorithm
-1. This function takes a start node and two vectors (distanta and distanta_minima) as input. The distanta vector represents the distances from the start node to each node in the graph, while the distanta_minima vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the distanta vector and the shortest paths (previous nodes) in the distanta_minima vector.
+1. This function takes a start node and two vectors ("distance" and "pathVector") as input. The "distance" vector represents the distances from the start node to each node in the graph, while the "pathVector" vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the "distance" vector and the shortest paths (previous nodes) in the "pathVector" vector.
+```c++
+void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vector<int> &pathVector)
+{
+    std::vector<bool> visited(VERTEX_COUNT, false);
+    distance[start] = 0.0;
+
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+    {
+        int min_index = 0;
+        double min_dist = std::numeric_limits<double>::infinity();
+
+        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
+            if (!visited[j] && distance[j] < min_dist)
+            {
+                min_index = j;
+                min_dist = distance[j];
+            }
+
+        visited[min_index] = true;
+
+        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
+        {
+            double newDistance = distance[min_index] + adjacencyMatrix[min_index][j].distance;
+
+            if (!visited[j] && adjacencyMatrix[min_index][j].distance > 0 && newDistance < distance[j])
+            {
+                distance[j] = newDistance;
+                pathVector[j] = min_index;
+            }
+        }
+    }
+}
+```
+
+2. This function takes the start node, the "distance" vector, and the "pathVector" vector as input. It also accepts two boolean flags, "debug" and "createRoutes". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the "pathVector" vector from the start node to the current node. It reverses the path to display it in the correct order. If "createRoutes" is true, the function inserts the path into a data structure. The "debug" flag controls whether the results are printed to the console.
 ```c++
 void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &distance, std::vector<int> &pathVector, bool debug, bool createRoutes)
 {
@@ -258,41 +293,6 @@ void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &di
 
             if (debug) // Debugging option
                 std::cout << "\n";
-        }
-    }
-}
-```
-
-2. This function takes the start node, the "distanta vector", and the "distanta_minima" vector as input. It also accepts two boolean flags, "afisare" and "creare_trasee". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the "distanta_minima" vector from the start node to the current node. It reverses the path to display it in the correct order. If "creare_trasee" is true, the function inserts the path into a data structure. The "afisare" flag controls whether the results are printed to the console.
-```c++
-void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vector<int> &pathVector)
-{
-    std::vector<bool> visited(VERTEX_COUNT, false);
-    distance[start] = 0.0;
-
-    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
-    {
-        int min_index = 0;
-        double min_dist = std::numeric_limits<double>::infinity();
-
-        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
-            if (!visited[j] && distance[j] < min_dist)
-            {
-                min_index = j;
-                min_dist = distance[j];
-            }
-
-        visited[min_index] = true;
-
-        for (unsigned int j = 0; j < VERTEX_COUNT; j++)
-        {
-            double newDistance = distance[min_index] + adjacencyMatrix[min_index][j].distance;
-
-            if (!visited[j] && adjacencyMatrix[min_index][j].distance > 0 && newDistance < distance[j])
-            {
-                distance[j] = newDistance;
-                pathVector[j] = min_index;
-            }
         }
     }
 }

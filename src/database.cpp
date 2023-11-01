@@ -65,7 +65,7 @@ bool addGraphEdge(void)
     underline(80, true);
 
     std::ofstream edgeFile;
-    edgeFile.open("utils/legaturi.txt", std::ios::out | std::ios::app);
+    edgeFile.open(EDGES, std::ios::out | std::ios::app);
     if (!edgeFile.is_open())
     {
         std::cerr << std::setw(5) << " "

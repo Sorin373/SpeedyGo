@@ -1,3 +1,17 @@
+/*
+*
+*  LOGIC_HPP
+*  Application Logic and Algorithms
+*
+*  This C++ header file has the core function prototypes for the SpeedyGo application.
+*
+*  Contents:
+*  - Namespace 'speedyGo': Encapsulates MySQL credential validation, adjacency matrix initialization, and console operations.
+*  - Namespace 'Dijkstra': Dijkstra's shortest path calculations and distance solutions.
+*  - Namespace 'tsp': Solving Traveling Salesman Problems (TSP) with Hamiltonian and acyclic graph approaches.
+*
+*/
+
 #pragma once
 #ifndef LOGIC_HPP
 #define LOGIC_HPP
@@ -6,10 +20,10 @@
 
 namespace speedyGo
 {
-    bool validateMysqlCredentials(void);
-    bool _ADJACENCY_MATRIX_INIT_(void);
+    bool validateMysqlCredentials(void); // Check MySQL database credentials
+    bool _ADJACENCY_MATRIX_INIT_(void);  // Init graph
     void displaySpeedyGoDetails(void);
-    void MySQLconsole(void);
+    void MySQLconsole(void);             // Console to write SQL
 }
 
 void alignConsoleOutput(void);
@@ -30,7 +44,7 @@ namespace Dijkstra
     void CityToCityDistanceCalculator(void);
 }
 
-namespace tsp
+namespace tsp // I used backtracking to solve TSP (it is limited based on the no. of edges available) (I tried to cover as many possible outcomes as I could find)
 {
     namespace hamiltonianGraph
     {

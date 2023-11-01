@@ -39,6 +39,7 @@ include_directories(include)
 if (WIN32)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 elseif(UNIX)
+    # cmake was creating the .exe file in the build folder
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
 endif()
     
@@ -88,7 +89,7 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/Release/logs
 )
 
-configure_file(${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt ${CMAKE_BINARY_DIR}/Release/utils/legaturi.txt COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/src/utils/edges.txt ${CMAKE_BINARY_DIR}/Release/utils/edges.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt ${CMAKE_BINARY_DIR}/Release/utils/contor_TSP_log.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/src/logs/TSP_log.txt ${CMAKE_BINARY_DIR}/Release/logs/TSP_log.txt COPYONLY)
 

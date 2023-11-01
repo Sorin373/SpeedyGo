@@ -1,3 +1,13 @@
+/*
+*
+*  DISTANCE_HANDLER_HPP
+*
+*  This C++ header file defines the graph init class
+*  It holds the data which will later be used to init the graph. See in logic.cpp (speedyGo::_ADJACENCY_MATRIX_INIT_)
+*  This object is filled with data in GoogleMatrixAPI.cpp.
+*
+*/
+
 #pragma once
 #ifndef DISTANCE_HANDLER_HPP
 #define DISTANCE_HANDLER_HPP
@@ -33,4 +43,4 @@ public:
     ~ADJACENCY_MATRIX_INITIALIZER();
 };
 
-#endif
+#endif // DISTANCE_HANDLER_HPP

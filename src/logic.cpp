@@ -49,8 +49,8 @@ bool speedyGo::validateMysqlCredentials(void)
     }
 
     std::cout << "\n\n"
-              << std::setw(10) << " "
-              << "CONEXIUNE LA BAZA DE DATE\n"
+              << std::setw(13) << " "
+              << "DATABASE CONNECTION\n"
               << std::setw(4) << " "
               << "======================================\n"
               << std::setw(5) << " "
@@ -103,7 +103,7 @@ bool speedyGo::_ADJACENCY_MATRIX_INIT_(void)
                   << "-- Initialization of the Google API service could not be completed!\n";
         ERROR_CNT++;
 
-        if (_HAVERSINE_INIT_("utils/legaturi.txt") == EXIT_FAILURE)
+        if (_HAVERSINE_INIT_(EDGES) == EXIT_FAILURE)
         {
             std::cout << std::setw(5) << " "
                       << "-- Manual calculation using the Haversine formula was unsuccessful during initialization!\n";
@@ -1257,7 +1257,7 @@ void tsp::finalPageTSP(void)
     }
     else
     {
-        long long unsigned int contor_temp;
+        unsigned int contor_temp;
         get_contor >> contor_temp;
         logCounter = contor_temp;
     }
@@ -1266,7 +1266,7 @@ void tsp::finalPageTSP(void)
     TSP_RoutesCompleted = true;
     logCounter++;
 
-    std::ofstream file("utils/contor_TSP_log.txt");
+    std::ofstream file(LOGS);
     if (!file.is_open())
     {
         std::cerr << std::setw(5) << " "
@@ -1284,10 +1284,10 @@ void tsp::finalPageTSP(void)
     else if (fetchTables() == EXIT_FAILURE)
         _getch();
 
-    std::ofstream log_out;
-    log_out.open("logs/TSP_log.txt", std::ios::app);
+    std::ofstream log;
+    log.open(TSP_LOG, std::ios::app);
 
-    if (!log_out.is_open())
+    if (!log.is_open())
     {
         std::cerr << std::setw(5) << " "
                   << "Failed to open TSP log!\n";
@@ -1296,7 +1296,7 @@ void tsp::finalPageTSP(void)
     else
     {
         std::string s(500, '=');
-        log_out << "LOG [" << logCounter << "]\n";
+        log << "LOG [" << logCounter << "]\n";
 
         for (unsigned int i = 1; i <= TSP_RouteCounter; i++)
         {
@@ -1305,22 +1305,22 @@ void tsp::finalPageTSP(void)
                 int ID = std::stoi(city_data->getCityID());
                 if (ID == minimumRouteTSP[i])
                 {
-                    log_out << city_data->getCityName();
+                    log << city_data->getCityName();
                     if (i < TSP_RouteCounter)
-                        log_out << " --> ";
+                        log << " --> ";
                     break;
                 }
             }
         }
 
-        log_out << "\n"
+        log << "\n"
                 << s << "\n"
                 << "Distance traveled: " << minimumDistanceCostTSP << "km\n"
                 << "Cantitate totala transportata: " << totalSuppliedQuantity << "BUC.\n"
                 << "Cost total: " << totalSupplyCost << "RON\nEND-LOG\n"
                 << s << "\n\n\n";
 
-        log_out.close();
+        log.close();
     }
 
     clear_screen();

@@ -1,6 +1,19 @@
+/*
+*
+*  CITY_HPP
+*  City Data Management
+*
+*  This C++ header file defines the City class
+*
+*  - Defines the CITY class and CITY_NODE structure.
+*  - Various methods for adding, deleting, and retrieving city data.
+*  - Functions for sorting, searching, and filtering city data.
+*
+*/
+
 #pragma once
-#ifndef ORAS_HPP
-#define ORAS_HPP
+#ifndef CITY_HPP
+#define CITY_HPP
 
 class CITY
 {
@@ -45,4 +58,4 @@ public:
     ~CITY();
 };
 
-#endif
+#endif // CITY_HPP

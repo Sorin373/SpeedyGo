@@ -1,3 +1,10 @@
+/*
+*  DATABASE_HPP
+*  https://dev.mysql.com/doc/connector-cpp/1.1/en/connector-cpp-getting-started-examples.html
+*  
+*  This header file establishes the connection with a MySQL database using the MySQL Connector/C++ library
+*/
+
 #pragma once
 #ifndef DATABASE_HPP
 #define DATABASE_HPP
@@ -10,10 +17,10 @@
 #include <mysql_driver.h>
 #endif
 
-extern sql::Driver *driver;
+extern sql::Driver     *driver;
 extern sql::Connection *con;
 
-bool addGraphEdge(void);
 bool fetchTables(void);
+bool addGraphEdge(void); // This function is called by the city object
 
 #endif // DATABASE_HPP

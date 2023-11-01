@@ -120,7 +120,7 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
     {
         _ENABLE_API = true;
 
-        std::string API_KEY = _GET_API_KEY_("utils/config.json");
+        std::string API_KEY = _GET_API_KEY_(API);
 
         if (API_KEY.empty())
         {
@@ -140,7 +140,7 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
         underline(65, true);
 
-        std::ifstream edgeFile("utils/legaturi.txt");
+        std::ifstream edgeFile(EDGES);
 
         if (!edgeFile.is_open())
         {

@@ -1,3 +1,15 @@
+/*
+*
+*  PRODUCT_HPP
+*  Product Data Management
+*
+*  This C++ header file defines the Product class
+*
+*  - Various methods for adding, deleting, and retrieving city data.
+*  - Functions for sorting, searching, and filtering city data.
+*
+*/
+
 #pragma once
 #ifndef PRODUCT_HPP
 #define PRODUCT_HPP
@@ -42,4 +54,4 @@ public:
     ~PRODUCT();
 };
 
-#endif
+#endif // PRODUCT_HPP

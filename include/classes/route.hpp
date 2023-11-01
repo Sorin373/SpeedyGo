@@ -1,3 +1,12 @@
+/*
+*
+*  ROUTE_HPP
+*  Route (Dijkstra) management
+*
+*  This C++ header file defines the Route class which stores the data calculated by the Dijkstra alghorithm
+*
+*/
+
 #pragma once
 #ifndef ROUTE_HPP
 #define ROUTE_HPP
@@ -35,4 +44,4 @@ public:
     ~ROUTE();
 };
 
-#endif
+#endif // ROUTE_HPP
