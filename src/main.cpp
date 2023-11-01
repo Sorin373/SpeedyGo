@@ -8,7 +8,7 @@
 * Author: Sorin Tudose
 *
 * Description: This application manages depots restocking operations, including inventory analysis, database visualization, and more.
-*              This app has been created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
+*              This app was created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
 *
 *              (https://github.com/nlohmann/json)
 *              (https://curl.se/libcurl/c/)
