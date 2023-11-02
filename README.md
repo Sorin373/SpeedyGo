@@ -4,6 +4,8 @@
 
 For my final project in computer science for grade 11, I was required to develop a console application that involved working with graphs. Therefore, I decided to create **SpeedyGo**, an app whose main purpose is to generate the most optimal path to supply different deposits in Romania.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Table of Contents
 
 - [Installation](#installation)
@@ -346,24 +348,11 @@ $ mysql -u new_user -p
 ```
 
 - You can also view all users by running the following command. However, it is recommended not to delete the system users as they serve specific purposes (the first 5 users):
-
 ```sql
 mysql> SELECT user, host FROM mysql.user;
-+------------------+-----------+
-| user             | host      |
-+------------------+-----------+
-| debian-sys-maint | localhost |
-| mysql.infoschema | localhost |
-| mysql.session    | localhost |
-| mysql.sys        | localhost |
-| root             | localhost |
-| new_user         | localhost |
-+------------------+-----------+
-6 rows in set (0,00 sec)
 ```
 
 - Drop a user:
-
 ```sql
 mysql> DROP USER 'my_user'@'localhost';
 ```
@@ -376,19 +365,6 @@ The tables have fixed structures and require specific predefined columns. Howeve
 
 ```sql
 mysql> SHOW DATABASES;
-+--------------------+
-| Database           |
-+--------------------+
-| my_schema          |
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-+--------------------+
-5 rows in set (0,00 sec)
-```
-
-```sql
 mysql> USE my_schema;
 ```
 
