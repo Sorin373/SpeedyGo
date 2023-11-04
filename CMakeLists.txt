@@ -114,7 +114,7 @@ file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/Release/*.dll")
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/logs/ DESTINATION bin/logs FILES_MATCHING PATTERN "*")
 install(FILES ${CMAKE_SOURCE_DIR}/src/utils/contor_TSP_log.txt DESTINATION bin/utils)
-install(FILES ${CMAKE_SOURCE_DIR}/src/utils/legaturi.txt DESTINATION bin/utils)
+install(FILES ${CMAKE_SOURCE_DIR}/src/utils/edges.txt DESTINATION bin/utils)
 install(FILES ${DLL_FILES} DESTINATION bin)
 
 if(EXISTS "${CMAKE_BINARY_DIR}/Release/libcrypto-3-x64.dll" AND
