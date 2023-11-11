@@ -1,19 +1,19 @@
 /*
-*
-*  CITY_HPP
-*  City Data Management
-*
-*  This C++ header file defines the City class
-*
-*  - Defines the CITY class and CITY_NODE structure.
-*  - Various methods for adding, deleting, and retrieving city data.
-*  - Functions for sorting, searching, and filtering city data.
-*
-*/
+ *
+ *  CITY_HPP
+ *  City Data Management
+ *
+ *  This C++ header file defines the City class
+ *
+ *  - Defines the CITY class and CITY_NODE structure.
+ *  - Various methods for adding, deleting, and retrieving city data.
+ *  - Functions for sorting, searching, and filtering city data.
+ *
+ */
 
 #pragma once
-#ifndef CITY_HPP
-#define CITY_HPP
+#ifndef __CITY_HPP__
+#define __CITY_HPP__
 
 class CITY
 {
@@ -44,6 +44,8 @@ public:
         static void displayCityData(void);
         static void displayIsolatedCities(void);
         static void displayUniqueRouteDepots(void);
+        static void selectCityType(void);
+        static void printCentralDepots(void);
     };
 
     CITY_NODE *head_city = nullptr, *tail_city = nullptr;

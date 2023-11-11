@@ -1,8 +1,7 @@
-#include "../include/declarations.hpp"
+#include "../../include/declarations.hpp"
 
 #include <iostream>
 #include <iomanip>
-#include <string>
 
 ADJACENCY_MATRIX_INITIALIZER adjacency_matrix_init;
 DEPOT   depot;
@@ -94,8 +93,6 @@ void clear_screen(void)
 #ifdef _WIN32
     system("CLS");
 #elif __linux__
-    if (system("clear"))
-    {
-    };
+    if (system("clear")){};
 #endif
 }

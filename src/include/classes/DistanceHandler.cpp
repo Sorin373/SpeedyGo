@@ -1,5 +1,5 @@
-#include "../../include/classes/DistanceHandler.hpp"
-#include <cstring>
+#include "../../../include/classes/DistanceHandler.hpp"
+#include "../../../include/declarations.hpp"
 
 ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::ADJACENCY_MATRIX_INITIALIZER_NODE(const double distance, const int duration, const char *start, const char *destination)
 {
@@ -45,6 +45,20 @@ char *ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::getStart(
 char *ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::getDestination(void) const
 {
     return destination;
+}
+
+void ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::searchIsolatedVertices(void)
+{
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+    {
+        bool isolated = true;
+        for (unsigned int j = 0; j < VERTEX_COUNT && isolated; j++)
+            if (adjacencyMatrix[i][j].distance > 0)
+                isolated = false;
+
+        if (isolated)
+            isolatedVertex[i] = true;
+    }
 }
 
 void ADJACENCY_MATRIX_INITIALIZER::getData(const double distance, const int duration, const char *start, const char *destination)

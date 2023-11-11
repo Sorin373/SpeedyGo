@@ -1,16 +1,16 @@
 /*
-*
-*  DECLARATIONS_HPP
-*  Global Declarations and Header Includes
-*
-*  This C++ header file contains the main global varibles used in the codebase.
-*  It ensures that essential data is properly organized and accessible.
-*
-*/
+ *
+ *  DECLARATIONS_HPP
+ *  Global Declarations and Header Includes
+ *
+ *  This C++ header file contains the main global varibles used in the codebase.
+ *  It ensures that essential data is properly organized and accessible.
+ *
+ */
 
 #pragma once
-#ifndef DECLARATIONS_HPP
-#define DECLARATIONS_HPP
+#ifndef __DECLARATIONS_HPP__
+#define __DECLARATIONS_HPP__
 
 #include "classes/supply.hpp"
 #include "classes/authentification.hpp"
@@ -21,7 +21,7 @@
 #include "classes/route.hpp"
 
 #include <vector>
-#include <cstring>
+#include <string>
 #include <limits.h>
 #ifdef _WIN32
 #include <windows.h>

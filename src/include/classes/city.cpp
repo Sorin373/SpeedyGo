@@ -1,14 +1,11 @@
-#include "../../include/classes/city.hpp"
-#include "../include/database.hpp"
-#include "../include/declarations.hpp"
-#include "../include/logic.hpp"
+#include "../../../include/speedyGo.hpp"
+#include "../../../include/classes/city.hpp"
+#include "../../../include/database.hpp"
+#include "../../../include/declarations.hpp"
 
-#include <cstring>
 #include <iostream>
 #include <iomanip>
-#include <string>
 #include <fstream>
-#include <cmath>
 
 CITY::CITY_NODE::CITY_NODE(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude)
 {
@@ -296,6 +293,40 @@ void CITY::CITY_NODE::swapData(CITY_NODE &node)
     std::swap(City_Type, node.City_Type);
     std::swap(latitude, node.latitude);
     std::swap(longitude, node.longitude);
+}
+
+void CITY::CITY_NODE::selectCityType(void)
+{
+    CITY::CITY_NODE *city_data = city.getHead();
+    while (city_data != nullptr)
+    {
+        if (_strcasecmp_(city_data->getCityType(), "centralizat") == 0)
+            centralDepos[std::stoi(city_data->getCityID())] = true;
+        city_data = city_data->next;
+    }
+}
+
+void CITY::CITY_NODE::printCentralDepots(void)
+{
+    std::cout << "\n\n"
+              << std::setw(5) << " "
+              << "+----------------+\n"
+              << std::setw(5) << " "
+              << "| Central depots |\n"
+              << std::setw(5) << " "
+              << "+----------------+\n";
+    underline(40, true);
+
+    for (unsigned int i = 0; i < VERTEX_COUNT; i++)
+        if (centralDepos[i])
+            for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
+                if (std::stoi(city_data->getCityID()) == i)
+                {
+                    std::cout << std::setw(5 + 1) << " [" << std::stoi(city_data->getCityID()) << "] " << city_data->getCityName() << "\n";
+                    break;
+                }
+
+    underline(40, true);
 }
 
 void CITY::getData(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude)
@@ -790,11 +821,11 @@ bool CITY::addCity(void)
               << "Depot Type: " << Depot_Type << "\n"
               << std::setw(5) << " "
               << "Latitudine: ";
-    std::cin >> latitude;
+    speedyGo::cin >> latitude;
 
     std::cout << std::setw(5) << " "
               << "Longitudine: ";
-    std::cin >> longitude;
+    speedyGo::cin >> longitude;
 
     underline(60, true);
 

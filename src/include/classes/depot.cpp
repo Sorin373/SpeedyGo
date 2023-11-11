@@ -1,9 +1,7 @@
-#include "../../include/classes/depot.hpp"
-#include "../../include/declarations.hpp"
-#include "../../include/database.hpp"
+#include "../../../include/classes/depot.hpp"
+#include "../../../include/declarations.hpp"
+#include "../../../include/database.hpp"
 
-#include <cstring>
-#include <string>
 #include <iostream>
 #include <iomanip>
 
@@ -97,6 +95,31 @@ void DEPOT::DEPOT_NODE::sortData(void)
         }
         l_ptr = ptr;
     } while (!isSorted);
+}
+
+void DEPOT::DEPOT_NODE::searchLimitedStockCities(void)
+{
+    limited_stock_cities_count = 0;
+    CITY::CITY_NODE *city_data = city.getHead();
+    while (city_data != nullptr)
+    {
+        int CityID = std::stoi(city_data->getCityID());
+
+        DEPOT::DEPOT_NODE *depot_data = depot.getHead();
+        while (depot_data != nullptr)
+        {
+            int depotID = std::stoi(depot_data->getCityID());
+            if (depotID == CityID && centralDepos[depotID] == false)
+                if (depot_data->getProductQuantity() < MINIMUM_STOCK_VALUE)
+                {
+                    limitedStockCities[depotID] = true;
+                    limited_stock_cities_count++;
+                    break;
+                }
+            depot_data = depot_data->next;
+        }
+        city_data = city_data->next;
+    }
 }
 
 void DEPOT::DEPOT_NODE::updateQuantity(const double newQuantity)

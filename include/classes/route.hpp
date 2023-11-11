@@ -1,15 +1,15 @@
 /*
-*
-*  ROUTE_HPP
-*  Route (Dijkstra) management
-*
-*  This C++ header file defines the Route class which stores the data calculated by the Dijkstra alghorithm
-*
-*/
+ *
+ *  ROUTE_HPP
+ *  Route (Dijkstra) management
+ *
+ *  This C++ header file defines the Route class which stores the data calculated by the Dijkstra alghorithm
+ *
+ */
 
 #pragma once
-#ifndef ROUTE_HPP
-#define ROUTE_HPP
+#ifndef __ROUTE_HPP__
+#define __ROUTE_HPP__
 
 #include <vector>
 
@@ -22,7 +22,7 @@ public:
         int start = 0, destination = 0;
         double distance = 0.0;
         std::vector<int> route;
-    
+
     public:
         ROUTE_NODE *prev = nullptr, *next = nullptr;
 

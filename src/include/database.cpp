@@ -1,15 +1,12 @@
-#include "../include/database.hpp"
-#include "../include/declarations.hpp"
-#include "../include/haversine.hpp"
-#include "../include/logic.hpp"
+#include "../../include/speedyGo.hpp"
+#include "../../include/database.hpp"
+#include "../../include/declarations.hpp"
 
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <string>
-#include <cstring>
 
-sql::Driver *driver;
+sql::Driver     *driver;
 sql::Connection *con;
 
 bool fetchTables(void)

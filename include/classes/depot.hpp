@@ -1,18 +1,18 @@
 /*
-*
-*  DEPOT_HPP
-*  Depot Data Management
-*
-*  This C++ header file defines the Depot class
-*
-*  - Defines the DEPOT class and DEPOT_NODE structure.
-*  - Methods for sorting, refreshing, and retrieving depot data.
-*
-*/
+ *
+ *  DEPOT_HPP
+ *  Depot Data Management
+ *
+ *  This C++ header file defines the Depot class
+ *
+ *  - Defines the DEPOT class and DEPOT_NODE structure.
+ *  - Methods for sorting, refreshing, and retrieving depot data.
+ *
+ */
 
 #pragma once
-#ifndef DEPOT_HPP
-#define DEPOT_HPP
+#ifndef __DEPOT_HPP__
+#define __DEPOT_HPP__
 
 class DEPOT
 {
@@ -36,6 +36,7 @@ public:
         void updateQuantity(const double newQuantity);
 
         static void sortData(void);
+        static void searchLimitedStockCities(void);
     };
 
     DEPOT_NODE *head_depot = nullptr, *tail_depot = nullptr;

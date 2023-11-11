@@ -1,4 +1,5 @@
-#include "../../include/classes/authentification.hpp"
+#include "../../../include/classes/authentification.hpp"
+
 #include <cstring>
 
 AUTHENTICATION::AUTHENTICATION_NODE *AUTHENTICATION::data = nullptr;

@@ -1,4 +1,4 @@
-#include "../../include/classes/supply.hpp"
+#include "../../../include/classes/supply.hpp"
 #include <cstring>
 
 SUPPLY::SUPPLY_NODE::SUPPLY_NODE(char *Product_ID, int Cantitate_totala_necesara)

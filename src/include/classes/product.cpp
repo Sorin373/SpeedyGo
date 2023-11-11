@@ -1,12 +1,9 @@
-#include "../../include/classes/product.hpp"
-#include "../../include/declarations.hpp"
-#include "../../include/database.hpp"
-#include "../../include/logic.hpp"
+#include "../../../include/classes/product.hpp"
+#include "../../../include/declarations.hpp"
+#include "../../../include/database.hpp"
 
 #include <iostream>
 #include <iomanip>
-#include <cstring>
-#include <string>
 #ifdef __linux__
 #include <tgmath.h>
 #endif

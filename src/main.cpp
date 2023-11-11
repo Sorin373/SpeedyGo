@@ -1,31 +1,33 @@
 /*
-*
-*                                    SpeedyGo - A Depot Management Application
-*
-* Comaptibility: I provide both UNIX and WINDOWS executables since I also wanted to learn about system compatibility.
-*                It is tested on Ubuntu 22.04 and Windows 10 (22H2).
-*
-* Author: Sorin Tudose
-*
-* Description: This application manages depots restocking operations, including inventory analysis, database visualization, and more.
-*              This app was created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
-*
-*              (https://github.com/nlohmann/json)
-*              (https://curl.se/libcurl/c/)
-*              (https://dev.mysql.com/doc/connector-cpp/1.1/en/connector-cpp-getting-started-examples.html)
-*              (https://vcpkg.io/en/getting-started)
-*
-* Github: https://github.com/sorin373/SpeedyGo
-*
-* Test it: To run the app yourself I provided a demo database in the github repo and a set of instructions. 
-*          ! Please report any bugs !
-*
-* Thank you for checking out my project! :D
-*
-*/
+ *
+ *                                    SpeedyGo - A Depot Management Application
+ *
+ * Comaptibility: I provide both UNIX and WINDOWS executables since I also wanted to learn about system compatibility.
+ *                It is tested on Ubuntu 22.04 and Windows 10 (22H2).
+ *
+ * Author: Sorin Tudose
+ *
+ * Description: This application manages depots restocking operations, including inventory analysis, database visualization, and more.
+ *              This app was created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
+ *
+ *              (https://github.com/nlohmann/json)
+ *              (https://curl.se/libcurl/c/)
+ *              (https://dev.mysql.com/doc/connector-cpp/1.1/en/connector-cpp-getting-started-examples.html)
+ *              (https://vcpkg.io/en/getting-started)
+ *
+ * Github: https://github.com/sorin373/SpeedyGo
+ *
+ * Test it: To run the app yourself I provided a demo database in the github repo and a set of instructions.
+ *          ! Please report any bugs !
+ *
+ * Thank you for checking out my project! :D
+ *
+ */
 
+#include "../include/speedyGo.hpp"
+#include "../include/tsp.hpp"
+#include "../include/dijkstra.hpp"
 #include "../include/declarations.hpp"
-#include "../include/logic.hpp"
 #include "../include/GoogleMatrixAPI.hpp"
 #include "../include/haversine.hpp"
 #include "../include/database.hpp"
@@ -33,103 +35,14 @@
 #include <iostream>
 #include <iomanip>
 
-bool _INIT_(void)
-{
-#ifdef _WIN32
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    GetConsoleScreenBufferInfo(hConsole, &csbi);
-    originalAttributes = csbi.wAttributes;
-#endif
-
-    if (speedyGo::validateMysqlCredentials() == EXIT_FAILURE)
-    {
-        std::cerr << "\n"
-                  << std::setw(5) << " "
-                  << "-- Authentication process did not complete!\n";
-        ERROR_CNT++;
-        return EXIT_FAILURE;
-    }
-    else
-        std::cout << std::setw(5) << " "
-                  << "-- Authentication successful!\n";
-
-    if (speedyGo::_ADJACENCY_MATRIX_INIT_() == EXIT_FAILURE)
-    {
-        std::cerr << std::setw(5) << " "
-                  << "-- Application initialisation process did not complete!\n";
-        ERROR_CNT++;
-        return EXIT_FAILURE;
-    }
-    else if (ERROR_CNT == 1)
-        std::cout << std::setw(5) << " "
-                  << "-- All the necessary files were initialized with " << ERROR_CNT << " error!\n";
-    else
-        std::cout << std::setw(5) << " "
-                  << "-- All the necessary files were initialized with " << ERROR_CNT << " errors!\n";
-
-    std::cout << "\n"
-              << std::setw(5) << " "
-              << "-- Starting application configuration...\n\n";
-
-    DEPOT::DEPOT_NODE::sortData();
-    std::cout << std::setw(6) << " "
-              << "--> Data sort complete (1)\n";
-
-    CITY::CITY_NODE::sortData(1);
-    std::cout << std::setw(6) << " "
-              << "--> Data sort complete (2)\n";
-
-    PRODUCT::PRODUCT_NODE::sortData(1);
-    std::cout << std::setw(6) << " "
-              << "--> Data sort complete (3)\n";
-
-    selectDepotType();
-    std::cout << std::setw(6) << " "
-              << "--> Data configuration complete (1)\n";
-
-    searchLimitedStockCities();
-    std::cout << std::setw(6) << " "
-              << "--> Data configuration complete (2)\n";
-
-    searchIsolatedVertices();
-    std::cout << std::setw(6) << " "
-              << "--> Data configuration complete (3)\n";
-
-    tsp::productTransportTSP();
-    std::cout << std::setw(6) << " "
-              << "--> Data configuration complete (4)\n";
-
-    alignConsoleOutput();
-    std::cout << std::setw(6) << " "
-              << "--> Data configuration complete (5)\n";
-
-    minimumRouteTSP[1] = -1;
-
-    return EXIT_SUCCESS;
-}
-
-void free_memory(void)
-{
-    adjacencyMatrix.clear();
-    centralDepos.clear();
-    limitedStockCities.clear();
-    isolatedVertex.clear();
-    oneEdgeVertex.clear();
-    stack.clear();
-    minimumRouteTSP.clear();
-    free(newCityName);
-    AUTHENTICATION::cleanup();
-    delete con;
-}
-
 int main(void)
 {
-    if (_INIT_() == EXIT_FAILURE)
+    if (speedyGo::_INIT_() == EXIT_FAILURE)
     {
         std::cerr << std::setw(5) << " "
                   << "-- Can not start the application!\n";
         _getch();
-        free_memory();
+        speedyGo::free_memory();
         return EXIT_FAILURE;
     }
     else if (ERROR_CNT == 1)
@@ -190,7 +103,7 @@ int main(void)
         std::cout << std::setw(5) << " "
                   << "Enter menu number: ";
 
-        std::cin >> MENU;
+        speedyGo::cin >> MENU;
 
         switch (MENU)
         {
@@ -224,7 +137,7 @@ int main(void)
 
                 std::cout << std::setw(5) << " "
                           << "Enter menu number: ";
-                std::cin >> MENU_1;
+                speedyGo::cin >> MENU_1;
 
                 switch (MENU_1)
                 {
@@ -250,7 +163,7 @@ int main(void)
 
             break;
         case 2:
-            stockStatusVisualization();
+            speedyGo::stockStatusVisualization();
             break;
         case 3:
             unsigned int MENU_3;
@@ -280,7 +193,7 @@ int main(void)
 
                 std::cout << std::setw(5) << " "
                           << "Enter menu number: ";
-                std::cin >> MENU_3;
+                speedyGo::cin >> MENU_3;
 
                 switch (MENU_3)
                 {
@@ -314,7 +227,7 @@ int main(void)
                         std::cout << std::setw(5) << " "
                                   << "Enter menu number: ";
 
-                        std::cin >> MENU_3_1;
+                        speedyGo::cin >> MENU_3_1;
 
                         switch (MENU_3_1)
                         {
@@ -353,7 +266,7 @@ int main(void)
 
                                 std::cout << std::setw(5) << " "
                                           << "Enter menu number: ";
-                                std::cin >> MENU_3_1_6;
+                                speedyGo::cin >> MENU_3_1_6;
 
                                 switch (MENU_3_1_6)
                                 {
@@ -413,7 +326,7 @@ int main(void)
                         std::cout << std::setw(5) << " "
                                   << "Enter menu number: ";
 
-                        std::cin >> MENU_3_2;
+                        speedyGo::cin >> MENU_3_2;
 
                         switch (MENU_3_2)
                         {
@@ -458,7 +371,7 @@ int main(void)
 
                                 std::cout << std::setw(5) << " "
                                           << "Enter menu number: ";
-                                std::cin >> MENU_3_2_8;
+                                speedyGo::cin >> MENU_3_2_8;
 
                                 switch (MENU_3_2_8)
                                 {
@@ -525,7 +438,7 @@ int main(void)
 
                 std::cout << std::setw(5) << " "
                           << "Enter menu number: ";
-                std::cin >> MENU_5;
+                speedyGo::cin >> MENU_5;
 
                 switch (MENU_5)
                 {
@@ -562,7 +475,7 @@ int main(void)
 
     } while (MENU != 0);
 
-    free_memory();
+    speedyGo::free_memory();
     clear_screen();
 
     return EXIT_SUCCESS;

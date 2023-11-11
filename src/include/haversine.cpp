@@ -1,10 +1,8 @@
-#include "../include/haversine.hpp"
-#include "../include/declarations.hpp"
+#include "../../include/haversine.hpp"
+#include "../../include/declarations.hpp"
 
 #include <fstream>
-#include <string>
 #include <cmath>
-#include <cstring>
 
 double toRadians(const double degrees)
 {

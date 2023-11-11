@@ -45,18 +45,20 @@ endif()
     
 add_executable(${PROJECT_NAME}
     "src/main.cpp" 
-    "src/declarations.cpp"
-    "src/classes/supply.cpp"
-    "src/classes/authentification.cpp"
-    "src/classes/depot.cpp"
-    "src/classes/product.cpp"
-    "src/classes/city.cpp"
-    "src/classes/DistanceHandler.cpp"
-    "src/classes/route.cpp"
-    "src/logic.cpp"
-    "src/GoogleMatrixAPI.cpp"
-    "src/database.cpp"
-    "src/haversine.cpp"
+    "src/include/declarations.cpp"
+    "src/include/classes/supply.cpp"
+    "src/include/classes/authentification.cpp"
+    "src/include/classes/depot.cpp"
+    "src/include/classes/product.cpp"
+    "src/include/classes/city.cpp"
+    "src/include/classes/DistanceHandler.cpp"
+    "src/include/classes/route.cpp"
+    "src/include/GoogleMatrixAPI.cpp"
+    "src/include/database.cpp"
+    "src/include/haversine.cpp"
+    "src/include/speedyGo.cpp"
+    "src/include/tsp.cpp"
+    "src/include/dijkstra.cpp"
     ${WIN32_RESOURCES}
 )
 

@@ -1,10 +1,9 @@
-#include "../include/GoogleMatrixAPI.hpp"
-#include "../include/declarations.hpp"
+#include "../../include/GoogleMatrixAPI.hpp"
+#include "../../include/declarations.hpp"
 
 #include <iostream>
-#include <string.h>
-#include <fstream>
 #include <iomanip>
+#include <fstream>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 

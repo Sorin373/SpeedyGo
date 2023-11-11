@@ -6,8 +6,8 @@
 */
 
 #pragma once
-#ifndef DATABASE_HPP
-#define DATABASE_HPP
+#ifndef __DATABASE_HPP__
+#define __DATABASE_HPP__
 
 #ifdef _WIN32
 #include <jdbc/mysql_connection.h>
