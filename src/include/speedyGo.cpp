@@ -244,7 +244,7 @@ void speedyGo::displaySpeedyGoDetails(void)
 
     std::cout << "\033[3m"
               << std::setw(5) << " "
-              << "Bun venit in Consola MySQL. Introduceti o interogare SQL (sau 'exit' pentru a incheia)\n"
+              << "Welcome to the MySQL Console. Enter an SQL query (or 'exit' to end)\n"
               << "\033[0m";
 
     underline(100, true);
@@ -256,7 +256,7 @@ void speedyGo::displaySpeedyGoDetails(void)
               << "+" << std::string(22, '-') << "+"
               << "\n";
     std::cout << std::setw(5) << " "
-              << "| " << std::left << std::setw(20) << "SpeedyGo - Tabele"
+              << "| " << std::left << std::setw(20) << "SpeedyGo - Tables"
               << " |"
               << "\n";
     std::cout << std::setw(5) << " "
