@@ -1,26 +1,26 @@
 /*
  *
- *                                    SpeedyGo - A Depot Management Application
+ *                sSpeedyGo - A Depot Management Application
  *
  * Comaptibility: I provide both UNIX and WINDOWS executables since I also wanted to learn about system compatibility.
  *                It is tested on Ubuntu 22.04 and Windows 10 (22H2).
  *
- * Author: Sorin Tudose
+ * Author:        Sorin Tudose
  *
- * Description: This application manages depots restocking operations, including inventory analysis, database visualization, and more.
- *              This app was created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
+ * Description:   This application manages depots restocking operations, including inventory analysis, database visualization, and more.
+ *                This app was created from scratch as a final project only by using some sources and documentation for the 3rd party libraries and vcpkg
  *
- *              (https://github.com/nlohmann/json)
- *              (https://curl.se/libcurl/c/)
- *              (https://dev.mysql.com/doc/connector-cpp/1.1/en/connector-cpp-getting-started-examples.html)
- *              (https://vcpkg.io/en/getting-started)
+ *                (https://github.com/nlohmann/json)
+ *                (https://curl.se/libcurl/c/)
+ *                (https://dev.mysql.com/doc/connector-cpp/1.1/en/connector-cpp-getting-started-examples.html)
+ *                (https://vcpkg.io/en/getting-started)
  *
- * Github: https://github.com/sorin373/SpeedyGo
+ * Github:        https://github.com/sorin373/SpeedyGo
  *
- * Test it: To run the app yourself I provided a demo database in the github repo and a set of instructions.
- *          ! Please report any bugs !
+ * Test it:       To run the app yourself I provided a demo database in the github repo and a set of instructions.
+ *                ! Please report any bugs !
  *
- * Thank you for checking out my project! :D
+ *                Thank you for checking out my project! :D
  *
  */
 
