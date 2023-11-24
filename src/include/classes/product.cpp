@@ -4,8 +4,13 @@
 
 #include <iostream>
 #include <iomanip>
-#ifdef __linux__
+#ifdef _WIN32
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
+#elif __linux__
 #include <tgmath.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
 #endif
 
 PRODUCT::PRODUCT_NODE::PRODUCT_NODE(const char *Product_ID, const char *Product_Name, const char *Product_Category, const double Product_Price)
@@ -20,9 +25,9 @@ PRODUCT::PRODUCT_NODE::PRODUCT_NODE(const char *Product_ID, const char *Product_
 
 PRODUCT::PRODUCT_NODE::~PRODUCT_NODE()
 {
-    delete[] Product_ID;
-    delete[] Product_Name;
-    delete[] Product_Category;
+    free(Product_ID);
+    free(Product_Name);
+    free(Product_Category);
 }
 
 PRODUCT::PRODUCT_NODE *PRODUCT::getHead() const
@@ -607,6 +612,18 @@ void PRODUCT::fetchTable(void)
     stmt->close();
     delete res;
     delete stmt;
+}
+
+void PRODUCT::clear() noexcept
+{
+    while (head_product != nullptr)
+    {
+        PRODUCT_NODE *temp = head_product;
+        head_product = head_product->next;
+        delete temp;
+    }
+
+    tail_product = nullptr;
 }
 
 PRODUCT::~PRODUCT()

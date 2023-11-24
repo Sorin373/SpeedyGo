@@ -99,7 +99,7 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
     if (input == NULL)
         return EXIT_FAILURE;
-
+        
     if (!_ENABLE_API)
     {
         std::cout << std::setw(5) << " "
@@ -117,6 +117,8 @@ bool _GOOGLE_MATRIX_API_INIT_(void)
 
     if (_strcasecmp_(input, "Y") == 0 || _ENABLE_API)
     {
+        free(input);
+
         _ENABLE_API = true;
 
         std::string API_KEY = _GET_API_KEY_(API);

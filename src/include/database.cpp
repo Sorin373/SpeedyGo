@@ -6,32 +6,47 @@
 #include <iomanip>
 #include <fstream>
 
-sql::Driver     *driver;
-sql::Connection *con;
+sql::Driver     *driver = nullptr;
+sql::Connection *con    = nullptr;
 
 bool fetchTables(void)
 {
+    std::cout << std::setw(5) << " "
+              << "-- Connecting..."; 
+
     try
     {
-        driver = sql::mysql::get_mysql_driver_instance();
+        if (!__MySQL_CONNECTED)
+        {
 
-        con = driver->connect("tcp://" + std::string(AUTHENTICATION::getNode()->host_name),
-                              std::string(AUTHENTICATION::getNode()->username),
-                              std::string(AUTHENTICATION::getNode()->password));
+            driver = sql::mysql::get_mysql_driver_instance();
 
-        if (con == nullptr)
-            return EXIT_FAILURE;
+            con = driver->connect("tcp://" + std::string(AUTHENTICATION::getNode()->host_name),
+                                  std::string(AUTHENTICATION::getNode()->username),
+                                  std::string(AUTHENTICATION::getNode()->password));
 
-        con->setSchema(AUTHENTICATION::getNode()->database);
+            if (con == nullptr)
+                return EXIT_FAILURE;
 
-        depot.~DEPOT();
+            con->setSchema(AUTHENTICATION::getNode()->database);
+
+            __MySQL_CONNECTED = true;
+        }
+
+        VERTEX_COUNT = 0;
+
+        if (__DATABASE_RETRIEVED)
+        {
+            depot.clear();
+            product.clear();
+            city.clear();
+        }
+
         depot.fetchTable();
-
-        product.~PRODUCT();
         product.fetchTable();
-
-        city.~CITY();
         city.fetchTable();
+
+        __DATABASE_RETRIEVED = true;
     }
     catch (sql::SQLException &e)
     {
@@ -45,6 +60,8 @@ bool fetchTables(void)
 
         return EXIT_FAILURE;
     }
+
+    std::cout << "\n";
 
     return EXIT_SUCCESS;
 }

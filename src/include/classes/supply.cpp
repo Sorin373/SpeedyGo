@@ -1,4 +1,6 @@
 #include "../../../include/classes/supply.hpp"
+
+#include <stdlib.h>
 #include <cstring>
 
 SUPPLY::SUPPLY_NODE::SUPPLY_NODE(char *Product_ID, int Cantitate_totala_necesara)
@@ -11,7 +13,7 @@ SUPPLY::SUPPLY_NODE::SUPPLY_NODE(char *Product_ID, int Cantitate_totala_necesara
 
 SUPPLY::SUPPLY_NODE::~SUPPLY_NODE(void)
 {
-    delete[] Product_ID;
+    free(Product_ID);
 }
 
 char *SUPPLY::SUPPLY_NODE::getID(void) const

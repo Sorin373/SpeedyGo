@@ -123,6 +123,11 @@ bool tsp::acyclicGraph::solution(void)
 bool tsp::acyclicGraph::valid(void)
 {
     if (stackCounter == VERTEX_COUNT + 1)
+    {  
+        for (unsigned int i = 0; i < VERTEX_COUNT - 1; i++)
+            if (stack[i] == stack[VERTEX_COUNT - 1])
+                return false;
+
         for (unsigned int i = 0; i < VERTEX_COUNT; i++)
         {
             bool isFound = false;
@@ -136,6 +141,7 @@ bool tsp::acyclicGraph::valid(void)
                     return false;
             }
         }
+    }
 
     if (stackCounter > 1)
         if (adjacencyMatrix[stack[stackCounter]][stack[stackCounter - 1]].distance == 0)
@@ -762,8 +768,7 @@ void tsp::rightPageTSP(void)
                         resetText();
 #elif __linux__
                         std::cout << "\033[4m"
-                                  << "\033[1m" << city_data->getCityName() << "\033[0m"
-                                  << " --> ";
+                                  << "\033[1m" << city_data->getCityName() << "\033[0m";
 #endif
                         if (i < TSP_RouteCounter)
                             std::cout << " --> ";

@@ -6,6 +6,14 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <cmath>
+#ifdef _WIN32
+#include <jdbc/cppconn/prepared_statement.h>
+#include <jdbc/cppconn/statement.h>
+#elif __linux__
+#include <cppconn/prepared_statement.h>
+#include <cppconn/statement.h>
+#endif
 
 CITY::CITY_NODE::CITY_NODE(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude)
 {
@@ -20,9 +28,9 @@ CITY::CITY_NODE::CITY_NODE(const char *City_ID, const char *City_Name, const cha
 
 CITY::CITY_NODE::~CITY_NODE(void)
 {
-    delete[] City_ID;
-    delete[] City_Name;
-    delete[] City_Type;
+    free(City_ID);
+    free(City_Name);
+    free(City_Type);
 }
 
 CITY::CITY_NODE *CITY::getHead(void) const
@@ -247,13 +255,13 @@ void CITY::CITY_NODE::displayUniqueRouteDepots(void)
                     int ID = std::stoi(city_data->getCityID());
                     if (ID == i)
                     {
-                        std::cout << std::setw(5 + 1) 
+                        std::cout << std::setw(5 + 1)
                                   << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
-                                  << " " << city_data->getCityName() 
+                                  << " " << city_data->getCityName()
                                   << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
-                                  << " " << city_data->getCityType() 
+                                  << " " << city_data->getCityType()
                                   << std::setw(11 - strlen(city_data->getCityType()) + 5)
-                                  << " " << std::fixed << std::setprecision(2) 
+                                  << " " << std::fixed << std::setprecision(2)
                                   << city_data->getLatitude();
 #ifdef _WIN32
                         std::cout << "\370";
@@ -834,7 +842,10 @@ bool CITY::addCity(void)
     std::cin >> input;
 
     if (_strcasecmp_(input, "N") == 0)
+    {
+        free(input);
         return EXIT_FAILURE;
+    }
     else if (_strcasecmp_(input, "Y") == 0)
     {
         try
@@ -850,8 +861,8 @@ bool CITY::addCity(void)
 
             stmt = con->createStatement();
             stmt->execute(query);
-            stmt->close();
 
+            stmt->close();
             delete stmt;
 
             std::cout << std::setw(5) << " "
@@ -875,10 +886,10 @@ bool CITY::addCity(void)
     free(Depot_Type);
     free(input);
 
-    VERTEX_COUNT = 0;
-
     if (fetchTables() == EXIT_FAILURE)
     {
+        std::cerr << std::setw(5) << " "
+                  << "Failed to retrive tables!\n";
         _getch();
         return EXIT_FAILURE;
     }
@@ -924,8 +935,8 @@ bool CITY::deleteCity(void)
 
         stmt = con->createStatement();
         stmt->execute(query);
-        stmt->close();
 
+        stmt->close();
         delete stmt;
 
         std::cout << std::setw(5) << " "
@@ -966,10 +977,10 @@ bool CITY::deleteCity(void)
 
     edgeFile.close();
 
-    VERTEX_COUNT = 0;
-
     if (fetchTables() == EXIT_FAILURE)
     {
+        std::cerr << std::setw(5) << " "
+                  << "Failed to retrive tables!\n";
         _getch();
         return EXIT_FAILURE;
     }
@@ -1018,6 +1029,18 @@ void CITY::fetchTable(void)
 
     delete res;
     delete stmt;
+}
+
+void CITY::clear() noexcept
+{
+    while (head_city != nullptr)
+    {
+        CITY_NODE *temp = head_city;
+        head_city = head_city->next;
+        delete temp;
+    }
+
+    tail_city = nullptr;
 }
 
 CITY::~CITY()

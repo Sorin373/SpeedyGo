@@ -51,6 +51,7 @@ public:
     PRODUCT_NODE *getTail() const;
     void getData(const char *Product_ID, const char *Product_Name, const char *Product_Category, const double Product_Price);
     void fetchTable(void);
+    void clear(void) noexcept;
     ~PRODUCT();
 };
 

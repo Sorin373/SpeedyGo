@@ -1,6 +1,7 @@
 #include "../../../include/classes/authentification.hpp"
 
 #include <cstring>
+#include <stdlib.h>
 
 AUTHENTICATION::AUTHENTICATION_NODE *AUTHENTICATION::data = nullptr;
 
@@ -14,10 +15,10 @@ AUTHENTICATION::AUTHENTICATION_NODE::AUTHENTICATION_NODE(const char *host_name, 
 
 AUTHENTICATION::AUTHENTICATION_NODE::~AUTHENTICATION_NODE(void)
 {
-    delete[] host_name;
-    delete[] username;
-    delete[] password;
-    delete[] database;
+    free(host_name);
+    free(username);
+    free(password);
+    free(database);
 }
 
 void AUTHENTICATION::getData(const char *host_name, const char *username, const char *password, const char *database)

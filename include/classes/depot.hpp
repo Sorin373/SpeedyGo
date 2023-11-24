@@ -47,6 +47,7 @@ public:
     void getData(const char *Product_ID, const char *City_ID, const double Product_Quantity);
     void fetchTable(void);
     bool refreshData(void);
+    void clear(void) noexcept;
     ~DEPOT();
 };
 

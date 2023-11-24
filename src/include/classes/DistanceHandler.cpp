@@ -1,6 +1,8 @@
 #include "../../../include/classes/DistanceHandler.hpp"
 #include "../../../include/declarations.hpp"
 
+#include <stdlib.h>
+
 ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::ADJACENCY_MATRIX_INITIALIZER_NODE(const double distance, const int duration, const char *start, const char *destination)
 {
     this->distance = distance;
@@ -13,8 +15,8 @@ ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::ADJACENCY_MATRI
 
 ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE::~ADJACENCY_MATRIX_INITIALIZER_NODE()
 {
-    delete[] start;
-    delete[] destination;
+    free(start);
+    free(destination);
 }
 
 ADJACENCY_MATRIX_INITIALIZER::ADJACENCY_MATRIX_INITIALIZER_NODE *ADJACENCY_MATRIX_INITIALIZER::getHead(void) const

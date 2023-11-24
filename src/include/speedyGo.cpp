@@ -8,6 +8,15 @@
 #include <iostream>
 #include <iomanip>
 
+#ifdef _WIN32
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
+#elif __linux__
+#include <tgmath.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
+#endif
+
 #ifdef max
 #undef max
 #endif
@@ -669,5 +678,10 @@ void speedyGo::free_memory(void)
     minimumRouteTSP.clear();
     free(newCityName);
     AUTHENTICATION::cleanup();
-    delete con;
+
+    if (con != nullptr)
+    {
+        con->close();
+        delete con;
+    }
 }

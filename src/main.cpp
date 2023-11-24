@@ -1,6 +1,6 @@
 /*
  *
- *                sSpeedyGo - A Depot Management Application
+ *                SpeedyGo - A Depot Management Application
  *
  * Comaptibility: I provide both UNIX and WINDOWS executables since I also wanted to learn about system compatibility.
  *                It is tested on Ubuntu 22.04 and Windows 10 (22H2).

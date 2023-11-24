@@ -26,7 +26,7 @@ std::vector<int>  minimumRouteTSP(adjacencyMatrix.size() * (adjacencyMatrix.size
 
 unsigned int logCounter;
 int    VERTEX_COUNT, limited_stock_cities_count, stackCounter, TSP_RouteCounter, consolePage = 1, ERROR_CNT;
-bool   dijkstraRoutesCalculated = false, TSP_RoutesCompleted = false, buffer = true, _ENABLE_API = false;
+bool   dijkstraRoutesCalculated = false, TSP_RoutesCompleted = false, buffer = true, _ENABLE_API = false, __DATABASE_RETRIEVED = false, __MySQL_CONNECTED = false;
 double minimumDistanceCostTSP = INT_MAX, minimumDurationCostTSP = INT_MAX, traveledDistanceTSP, elapsedDurationTSP, totalSupplyCost, totalSuppliedQuantity;
 char   *newCityName = (char *)malloc(MAXL * sizeof(char) + 1);
 int    maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,

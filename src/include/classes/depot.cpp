@@ -4,6 +4,13 @@
 
 #include <iostream>
 #include <iomanip>
+#ifdef _WIN32
+#include <jdbc/cppconn/prepared_statement.h>
+#include <jdbc/cppconn/statement.h>
+#elif __linux__
+#include <cppconn/prepared_statement.h>
+#include <cppconn/statement.h>
+#endif
 
 DEPOT::DEPOT_NODE::DEPOT_NODE(const char *Product_ID, const char *City_ID, const double Product_Quantity)
 {
@@ -16,8 +23,8 @@ DEPOT::DEPOT_NODE::DEPOT_NODE(const char *Product_ID, const char *City_ID, const
 
 DEPOT::DEPOT_NODE::~DEPOT_NODE(void)
 {
-    delete[] Product_ID;
-    delete[] City_ID;
+    free(Product_ID);
+    free(City_ID);
 }
 
 char *DEPOT::DEPOT_NODE::getProductID(void) const
@@ -201,6 +208,18 @@ void DEPOT::fetchTable(void)
     stmt->close();
     delete res;
     delete stmt;
+}
+
+void DEPOT::clear() noexcept
+{
+    while (head_depot != nullptr)
+    {
+        DEPOT_NODE *temp = head_depot;
+        head_depot = head_depot->next;
+        delete temp;
+    }
+
+    tail_depot = nullptr;
 }
 
 DEPOT::~DEPOT()

@@ -21,29 +21,17 @@
 #include "classes/route.hpp"
 
 #include <vector>
-#include <string>
+#include <string.h>
 #include <limits.h>
+#include <limits>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
-#include <jdbc/mysql_connection.h>
-#include <jdbc/mysql_driver.h>
-#include <jdbc/mysql_error.h>
-#include <jdbc/cppconn/prepared_statement.h>
-#include <jdbc/cppconn/resultset.h>
-#include <jdbc/cppconn/statement.h>
 #define STRCASECMP _stricmp
 #elif __linux__
 #define STRCASECMP strcasecmp
-#include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
-#include <mysql_connection.h>
-#include <mysql_driver.h>
-#include <mysql_error.h>
-#include <cppconn/prepared_statement.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
 #endif
 
 #define TSP_LOG             "logs/TSP_log.txt"         // keeps track of routes
@@ -88,13 +76,13 @@ extern std::vector<int>  minimumRouteTSP;                          // Storage fo
 
 extern unsigned int logCounter;
 extern int    VERTEX_COUNT, limited_stock_cities_count, stackCounter, TSP_RouteCounter, consolePage, ERROR_CNT;
-extern bool   dijkstraRoutesCalculated, TSP_RoutesCompleted, buffer, _ENABLE_API;
+extern bool   dijkstraRoutesCalculated, TSP_RoutesCompleted, buffer, _ENABLE_API, __DATABASE_RETRIEVED, __MySQL_CONNECTED;
 extern double minimumDistanceCostTSP, minimumDurationCostTSP, traveledDistanceTSP, elapsedDurationTSP, totalSupplyCost, totalSuppliedQuantity;
 extern char   *newCityName;
 
 // Variables used for precise console output alignment
-extern int    maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
-              maxProductIDLength, maxProductQuantityLength;
+extern int maxProductNameLength, maxCityNameLength, maxProductCategoryLength, maxProductPriceLength, maxCityIDLength, maxCityLatitudeLength,
+           maxProductIDLength, maxProductQuantityLength;
 
 int  _strcasecmp_(const char *str1, const char *str2);        // Cross platform case-insensitive string comparison function
 void underline(const unsigned int vWidth, const bool bSetw);  // I am using this custom function to style the output in the console window

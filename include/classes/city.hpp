@@ -57,6 +57,7 @@ public:
     void fetchTable(void);
     static bool addCity(void);
     static bool deleteCity(void);
+    void clear(void) noexcept;
     ~CITY();
 };
 
