@@ -28,10 +28,10 @@ public:
         ADJACENCY_MATRIX_INITIALIZER_NODE(const double distance, const int duration, const char *start, const char *destination);
         ~ADJACENCY_MATRIX_INITIALIZER_NODE();
 
-        double getDistance(void) const;
-        int getDuration(void) const;
-        char *getStart(void) const;
-        char *getDestination(void) const;
+        double getDistance(void) const noexcept;
+        int getDuration(void) const noexcept;
+        char *getStart(void) const noexcept;
+        char *getDestination(void) const noexcept;
 
         static void searchIsolatedVertices(void);
     };
@@ -39,8 +39,8 @@ public:
     ADJACENCY_MATRIX_INITIALIZER_NODE *head = nullptr, *tail = nullptr;
 
 public:
-    ADJACENCY_MATRIX_INITIALIZER_NODE *getHead(void) const;
-    ADJACENCY_MATRIX_INITIALIZER_NODE *getTail(void) const;
+    ADJACENCY_MATRIX_INITIALIZER_NODE *getHead(void) const noexcept;
+    ADJACENCY_MATRIX_INITIALIZER_NODE *getTail(void) const noexcept;
     void getData(const double distance, const int duration, const char *start, const char *destination);
     ~ADJACENCY_MATRIX_INITIALIZER();
 };

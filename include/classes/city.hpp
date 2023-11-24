@@ -29,11 +29,11 @@ public:
 
         CITY_NODE(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude);
         ~CITY_NODE();
-        char *getCityID(void) const;
-        char *getCityName(void) const;
-        char *getCityType(void) const;
-        double getLatitude(void) const;
-        double getLongitude(void) const;
+        char *getCityID(void) const noexcept;
+        char *getCityName(void) const noexcept;
+        char *getCityType(void) const noexcept;
+        double getLatitude(void) const noexcept;
+        double getLongitude(void) const noexcept;
         void swapData(CITY_NODE &node);
 
         static void sortData(const int sortType);
@@ -51,13 +51,13 @@ public:
     CITY_NODE *head_city = nullptr, *tail_city = nullptr;
 
 public:
-    CITY_NODE *getHead(void) const;
-    CITY_NODE *getTail(void) const;
+    CITY_NODE *getHead(void) const noexcept;
+    CITY_NODE *getTail(void) const noexcept;
     void getData(const char *City_ID, const char *City_Name, const char *City_Type, const double latitude, const double longitude);
     void fetchTable(void);
     static bool addCity(void);
     static bool deleteCity(void);
-    void clear(void) noexcept;
+    void clear(void);
     ~CITY();
 };
 

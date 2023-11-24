@@ -29,9 +29,9 @@ public:
         DEPOT_NODE(const char *Product_ID, const char *City_ID, const double Product_Quantity);
         ~DEPOT_NODE();
 
-        char *getProductID(void) const;
-        char *getCityID(void) const;
-        double getProductQuantity(void) const;
+        char *getProductID(void) const noexcept;
+        char *getCityID(void) const noexcept;
+        double getProductQuantity(void) const noexcept;
         void swapData(DEPOT_NODE &node);
         void updateQuantity(const double newQuantity);
 
@@ -42,12 +42,12 @@ public:
     DEPOT_NODE *head_depot = nullptr, *tail_depot = nullptr;
 
 public:
-    DEPOT_NODE *getHead(void) const;
-    DEPOT_NODE *getTail(void) const;
+    DEPOT_NODE *getHead(void) const noexcept;
+    DEPOT_NODE *getTail(void) const noexcept;
     void getData(const char *Product_ID, const char *City_ID, const double Product_Quantity);
     void fetchTable(void);
     bool refreshData(void);
-    void clear(void) noexcept;
+    void clear(void);
     ~DEPOT();
 };
 

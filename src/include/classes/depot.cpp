@@ -27,27 +27,27 @@ DEPOT::DEPOT_NODE::~DEPOT_NODE(void)
     free(City_ID);
 }
 
-char *DEPOT::DEPOT_NODE::getProductID(void) const
+char *DEPOT::DEPOT_NODE::getProductID(void) const noexcept
 {
     return Product_ID;
 }
 
-char *DEPOT::DEPOT_NODE::getCityID(void) const
+char *DEPOT::DEPOT_NODE::getCityID(void) const noexcept
 {
     return City_ID;
 }
 
-double DEPOT::DEPOT_NODE::getProductQuantity(void) const
+double DEPOT::DEPOT_NODE::getProductQuantity(void) const noexcept
 {
     return Product_Quantity;
 }
 
-DEPOT::DEPOT_NODE *DEPOT::getHead(void) const
+DEPOT::DEPOT_NODE *DEPOT::getHead(void) const noexcept
 {
     return head_depot;
 }
 
-DEPOT::DEPOT_NODE *DEPOT::getTail(void) const
+DEPOT::DEPOT_NODE *DEPOT::getTail(void) const noexcept
 {
     return tail_depot;
 }
@@ -210,7 +210,7 @@ void DEPOT::fetchTable(void)
     delete stmt;
 }
 
-void DEPOT::clear() noexcept
+void DEPOT::clear()
 {
     while (head_depot != nullptr)
     {

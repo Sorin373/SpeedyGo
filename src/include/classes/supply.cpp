@@ -16,12 +16,12 @@ SUPPLY::SUPPLY_NODE::~SUPPLY_NODE(void)
     free(Product_ID);
 }
 
-char *SUPPLY::SUPPLY_NODE::getID(void) const
+char *SUPPLY::SUPPLY_NODE::getID(void) const noexcept
 {
     return Product_ID;
 }
 
-int SUPPLY::SUPPLY_NODE::getQuantity(void) const
+int SUPPLY::SUPPLY_NODE::getQuantity(void) const noexcept
 {
     return total_necessary_quantity;
 }
@@ -31,12 +31,12 @@ void SUPPLY::SUPPLY_NODE::updateQuantity(const int newQuantity)
     total_necessary_quantity = newQuantity;
 }
 
-SUPPLY::SUPPLY_NODE *SUPPLY::getHead(void) const
+SUPPLY::SUPPLY_NODE *SUPPLY::getHead(void) const noexcept
 {
     return head_supply;
 }
 
-SUPPLY::SUPPLY_NODE *SUPPLY::getTail(void) const
+SUPPLY::SUPPLY_NODE *SUPPLY::getTail(void) const noexcept
 {
     return tail_supply;
 }

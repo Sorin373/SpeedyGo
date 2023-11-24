@@ -26,7 +26,7 @@ private:
 
 public:
     static void getData(const char *host_name, const char *username, const char *password, const char *database);
-    static AUTHENTICATION_NODE *getNode(void);
+    static AUTHENTICATION_NODE *getNode(void) noexcept;
     static void cleanup(void);
     ~AUTHENTICATION() = default;
 };

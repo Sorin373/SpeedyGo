@@ -29,10 +29,10 @@ public:
         PRODUCT_NODE(const char *Product_ID, const char *Product_Name, const char *Product_Category, const double Product_Price);
         ~PRODUCT_NODE();
 
-        char *getProductID(void) const;
-        char *getProductName(void) const;
-        char *getProductCategory(void) const;
-        double getProductPrice(void) const;
+        char *getProductID(void) const noexcept;
+        char *getProductName(void) const noexcept;
+        char *getProductCategory(void) const noexcept;
+        double getProductPrice(void) const noexcept;
         void swapData(PRODUCT_NODE &node);
 
         static void sortData(const int sortType);
@@ -47,11 +47,11 @@ public:
     PRODUCT_NODE *head_product = nullptr, *tail_product = nullptr;
 
 public:
-    PRODUCT_NODE *getHead() const;
-    PRODUCT_NODE *getTail() const;
+    PRODUCT_NODE *getHead() const noexcept;
+    PRODUCT_NODE *getTail() const noexcept;
     void getData(const char *Product_ID, const char *Product_Name, const char *Product_Category, const double Product_Price);
     void fetchTable(void);
-    void clear(void) noexcept;
+    void clear(void);
     ~PRODUCT();
 };
 

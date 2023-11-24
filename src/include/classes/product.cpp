@@ -30,32 +30,32 @@ PRODUCT::PRODUCT_NODE::~PRODUCT_NODE()
     free(Product_Category);
 }
 
-PRODUCT::PRODUCT_NODE *PRODUCT::getHead() const
+PRODUCT::PRODUCT_NODE *PRODUCT::getHead() const noexcept
 {
     return head_product;
 }
 
-PRODUCT::PRODUCT_NODE *PRODUCT::getTail() const
+PRODUCT::PRODUCT_NODE *PRODUCT::getTail() const noexcept
 {
     return tail_product;
 }
 
-char *PRODUCT::PRODUCT_NODE::getProductID(void) const
+char *PRODUCT::PRODUCT_NODE::getProductID(void) const noexcept
 {
     return Product_ID;
 }
 
-char *PRODUCT::PRODUCT_NODE::getProductName(void) const
+char *PRODUCT::PRODUCT_NODE::getProductName(void) const noexcept
 {
     return Product_Name;
 }
 
-char *PRODUCT::PRODUCT_NODE::getProductCategory(void) const
+char *PRODUCT::PRODUCT_NODE::getProductCategory(void) const noexcept
 {
     return Product_Category;
 }
 
-double PRODUCT::PRODUCT_NODE::getProductPrice(void) const
+double PRODUCT::PRODUCT_NODE::getProductPrice(void) const noexcept
 {
     return Product_Price;
 }
@@ -614,7 +614,7 @@ void PRODUCT::fetchTable(void)
     delete stmt;
 }
 
-void PRODUCT::clear() noexcept
+void PRODUCT::clear()
 {
     while (head_product != nullptr)
     {

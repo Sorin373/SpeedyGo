@@ -27,7 +27,7 @@ void AUTHENTICATION::getData(const char *host_name, const char *username, const 
     data = new AUTHENTICATION_NODE(host_name, username, password, database);
 }
 
-AUTHENTICATION::AUTHENTICATION_NODE *AUTHENTICATION::getNode(void)
+AUTHENTICATION::AUTHENTICATION_NODE *AUTHENTICATION::getNode(void) noexcept
 {
     return data;
 }

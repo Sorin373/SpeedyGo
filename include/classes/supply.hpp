@@ -27,16 +27,16 @@ public:
         SUPPLY_NODE(char *Product_ID, int total_necessary_quantity);
         ~SUPPLY_NODE();
 
-        char *getID(void) const;
-        int getQuantity(void) const;
+        char *getID(void) const noexcept;
+        int getQuantity(void) const noexcept;
         void updateQuantity(const int newQuantity);
     };
 
     SUPPLY_NODE *head_supply = nullptr, *tail_supply = nullptr;
 
 public:
-    SUPPLY_NODE *getHead(void) const;
-    SUPPLY_NODE *getTail(void) const;
+    SUPPLY_NODE *getHead(void) const noexcept;
+    SUPPLY_NODE *getTail(void) const noexcept;
     void getData(char *ID_Produs, int Cantitate_totala_necesara);
     ~SUPPLY();
 };

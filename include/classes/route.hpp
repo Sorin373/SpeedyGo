@@ -29,17 +29,17 @@ public:
         ROUTE_NODE(const int start, const int destination, const double distance, std::vector<int> &route);
         ~ROUTE_NODE();
 
-        int getStart(void) const;
-        int getDestination(void) const;
-        double getDistance(void) const;
-        std::vector<int> getRoute(void) const;
+        int getStart(void) const noexcept;
+        int getDestination(void) const noexcept;
+        double getDistance(void) const noexcept;
+        std::vector<int> getRoute(void) const noexcept;
     };
 
     ROUTE_NODE *head_route = nullptr, *tail_route = nullptr;
 
 public:
-    ROUTE_NODE *getHead() const;
-    ROUTE_NODE *getTail() const;
+    ROUTE_NODE *getHead() const noexcept;
+    ROUTE_NODE *getTail() const noexcept;
     void getData(const int start, const int destination, const double distance, std::vector<int> &route);
     ~ROUTE();
 };

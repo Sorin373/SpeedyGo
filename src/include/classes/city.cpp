@@ -33,37 +33,37 @@ CITY::CITY_NODE::~CITY_NODE(void)
     free(City_Type);
 }
 
-CITY::CITY_NODE *CITY::getHead(void) const
+CITY::CITY_NODE *CITY::getHead(void) const noexcept
 {
     return head_city;
 }
 
-CITY::CITY_NODE *CITY::getTail(void) const
+CITY::CITY_NODE *CITY::getTail(void) const noexcept
 {
     return tail_city;
 }
 
-char *CITY::CITY_NODE::getCityID(void) const
+char *CITY::CITY_NODE::getCityID(void) const noexcept
 {
     return City_ID;
 }
 
-char *CITY::CITY_NODE::getCityName(void) const
+char *CITY::CITY_NODE::getCityName(void) const noexcept
 {
     return City_Name;
 }
 
-char *CITY::CITY_NODE::getCityType(void) const
+char *CITY::CITY_NODE::getCityType(void) const noexcept
 {
     return City_Type;
 }
 
-double CITY::CITY_NODE::getLatitude(void) const
+double CITY::CITY_NODE::getLatitude(void) const noexcept
 {
     return latitude;
 }
 
-double CITY::CITY_NODE::getLongitude(void) const
+double CITY::CITY_NODE::getLongitude(void) const noexcept
 {
     return longitude;
 }
@@ -161,16 +161,16 @@ void CITY::CITY_NODE::displayIsolatedCities(void)
                               << " [" << city_data->getCityID() << "]"
                               << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
                               << " " << city_data->getCityName()
-                              << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
+                              << std::setw(maxCityNameLength - strlen(city_data->getCityName()))
                               << " " << city_data->getCityType()
-                              << std::setw(11 - strlen(city_data->getCityType()) + 5) << " " << std::fixed << std::setprecision(2)
+                              << std::setw(11 - strlen(city_data->getCityType()) + 3) << " " << std::fixed << std::setprecision(2)
                               << city_data->getLatitude();
 #ifdef _WIN32
                     std::cout << "\370";
 #elif __linux__
                     std::cout << "\u00B0";
 #endif
-                    std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
+                    std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 11)
                               << " " << city_data->getLongitude();
 #ifdef _WIN32
                     std::cout << "\370"
@@ -1031,7 +1031,7 @@ void CITY::fetchTable(void)
     delete stmt;
 }
 
-void CITY::clear() noexcept
+void CITY::clear()
 {
     while (head_city != nullptr)
     {
