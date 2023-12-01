@@ -24,13 +24,7 @@
  *
  */
 
-#include "../include/speedyGo.hpp"
-#include "../include/tsp.hpp"
-#include "../include/dijkstra.hpp"
-#include "../include/declarations.hpp"
-#include "../include/GoogleMatrixAPI.hpp"
-#include "../include/haversine.hpp"
-#include "../include/database.hpp"
+#include "include/SpeedyGoAll.hpp"
 
 #include <iostream>
 #include <iomanip>
