@@ -74,22 +74,22 @@ void CITY::CITY_NODE::displayCityData(void)
 
     std::cout << "\n\n"
               << std::setw(5) << " "
-              << "+---------------+\n"
+              << "+-------------+\n"
               << std::setw(5) << " "
-              << "| TABEL-DEPOT |\n"
+              << "| DEPOT TABLE |\n"
               << std::setw(5) << " "
-              << "+---------------+\n\n";
+              << "+-------------+\n\n";
 
     std::cout << std::setw(5) << " "
-              << "ID_Oras"
+              << "City_ID"
               << std::setw(5) << " "
-              << "Denumire_Oras"
+              << "City_Name"
+              << std::setw(9) << " "
+              << "Depot_Type"
               << std::setw(5) << " "
-              << "Tip_Depozit"
+              << "Latitude"
               << std::setw(5) << " "
-              << "Latitudine"
-              << std::setw(5) << " "
-              << "Longitudine\n";
+              << "Longitude\n";
     underline(80, true);
 
     for (CITY::CITY_NODE *date_oras = city.getHead(); date_oras != nullptr; date_oras = date_oras->next)
@@ -258,9 +258,9 @@ void CITY::CITY_NODE::displayUniqueRouteDepots(void)
                         std::cout << std::setw(5 + 1)
                                   << " [" << city_data->getCityID() << "]" << std::setw(maxCityIDLength - strlen(city_data->getCityID()) + 8)
                                   << " " << city_data->getCityName()
-                                  << std::setw(maxCityNameLength - strlen(city_data->getCityName()) + 4)
+                                  << std::setw(maxCityNameLength - strlen(city_data->getCityName()))
                                   << " " << city_data->getCityType()
-                                  << std::setw(11 - strlen(city_data->getCityType()) + 5)
+                                  << std::setw(11 - strlen(city_data->getCityType()) + 3)
                                   << " " << std::fixed << std::setprecision(2)
                                   << city_data->getLatitude();
 #ifdef _WIN32
@@ -268,7 +268,7 @@ void CITY::CITY_NODE::displayUniqueRouteDepots(void)
 #elif __linux__
                         std::cout << "\u00B0";
 #endif
-                        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 13)
+                        std::cout << std::setw(maxCityLatitudeLength - std::to_string(round(city_data->getLatitude())).length() + 11)
                                   << " " << city_data->getLongitude();
 #ifdef _WIN32
                         std::cout << "\370"
@@ -438,7 +438,7 @@ void CITY::CITY_NODE::filterCityByCategory(void)
                   << "City_ID"
                   << std::setw(5) << " "
                   << "City_Name"
-                  << std::setw(5) << " "
+                  << std::setw(9) << " "
                   << "Depot_Type"
                   << std::setw(5) << " "
                   << "Latitude"
@@ -447,9 +447,13 @@ void CITY::CITY_NODE::filterCityByCategory(void)
 
         underline(80, true);
 
+        bool isFound = false;
+
         for (CITY::CITY_NODE *city_data = city.getHead(); city_data != nullptr; city_data = city_data->next)
             if (_strcasecmp_(city_data->City_Type, UserInput_City_Type) == 0)
             {
+                isFound = true;
+
                 std::cout << std::setw(5 + 1)
                           << " [" << city_data->City_ID << "]"
                           << std::setw(maxCityIDLength - strlen(city_data->City_ID) + 8)
@@ -475,13 +479,26 @@ void CITY::CITY_NODE::filterCityByCategory(void)
 
         underline(80, true);
 
-        std::cout << "\n\n"
-                  << std::setw(5) << " "
-                  << "Press 'ENTER' to return...";
+        if (!isFound)
+        {
+            std::cout << "\n\n"
+                      << std::setw(5) << " "
+                      << "Invalid user input!";
 
-        free(UserInput_City_Type);
-        _getch();
-        filterCityByCategory();
+            free(UserInput_City_Type);
+            _getch();
+            filterCityByCategory();
+        }
+        else
+        {
+            std::cout << "\n"
+                      << std::setw(5) << " "
+                      << "Press 'ENTER' to return...";
+
+            _getch();
+            free(UserInput_City_Type);
+            filterCityByCategory();
+        }
     }
 }
 

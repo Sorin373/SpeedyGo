@@ -359,13 +359,6 @@ void speedyGo::MySQLconsole(void)
 
                 underline(100, true);
 
-                city.~CITY();
-                product.~PRODUCT();
-                depot.~DEPOT();
-
-                if (fetchTables() == EXIT_FAILURE)
-                    _getch();
-
                 delete stmt;
                 delete res;
             }
