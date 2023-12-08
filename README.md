@@ -208,12 +208,6 @@ $$
 d = R \cdot c
 $$
 
-```txt
-a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2)
-
-c = 2 * atan2(sqrt(a), sqrt(1 - a))
-```
-
 ```c++
 double distanceCalculator(const double Latitude_City_1, const double Longitude_City_1, const double lat_2, const double long_2)
 {
