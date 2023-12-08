@@ -44,7 +44,7 @@ For my final project in computer science for grade 11, I was required to develop
 2. Install the package using the software installer
 3. By default, SpeedyGo will be installed in the `/usr/bin` directory. To run the application, open your terminal here and execute:
 ```bash
-$ ./SpeedyGo
+./SpeedyGo
 ```
 
 ## Unix (RPM-based)
@@ -52,11 +52,11 @@ $ ./SpeedyGo
 1. Download the RPM package (`.rpm` file) for SpeedyGo from the [GitHub Releases](https://github.com/sorin373/SpeedyGo/releases/tag/v1.0.0) page.
 2. Install the package using the rpm command:
 ```bash
-$ sudo rpm -i SpeedyGo-1.0.0-Linux.rpm
+sudo rpm -i SpeedyGo-1.0.0-Linux.rpm
 ```
 3. By default, SpeedyGo will be installed in the `/usr/bin` directory. To run the application, open your terminal here and execute:
 ```bash
-$ ./SpeedyGo
+./SpeedyGo
 ```
 
 ## Configuring Google API Services
@@ -105,23 +105,23 @@ In order to successfully set up and build the app, this section will walk you th
 ## Debian
 
 ```bash
-$ sudo apt-get update && sudo apt-get upgrade
+sudo apt-get update && sudo apt-get upgrade
 ```
 1. **Install** [CMake](https://cmake.org/download/)
 ```bash
-$ sudo snap install cmake --classic
+sudo snap install cmake --classic
 ```
 2. **MySql-Connector-CPP**
 ```bash
-$ sudo apt-get install libmysqlcppconn-dev
+sudo apt-get install libmysqlcppconn-dev
 ```
 3. **Nlohmann-json**
 ```bash
-$ sudo apt-get install nlohmann-json3-dev
+sudo apt-get install nlohmann-json3-dev
 ```
 4. **Curl**
 ```bash
-$ sudo apt-get install curl
+sudo apt-get install curl
 ```
 
 - After acquiring the zip file containing the project files, open the folder in Visual Studio Code and use the CMake commands to build the application (or install the [CMake](https://marketplace.visualstudio.com/items?itemName=twxs.cmake) and [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extensions).
@@ -192,6 +192,10 @@ HTTP_RESPONSE _http_request_(const std::string &url)
 
 - The Haversine formula provides an approximation of the distance between two points on a sphere, such as the Earth.
 
+1. This is the first part of the Haversine formula. It represents the square of half the chord length between the two points on the Earth's surface.
+
+2. This is the second part of the Haversine formula. It calculates the angular distance between the two points in radians.
+
 $$
 a = \sin^2\left(\frac{\Delta\text{Lat}}{2}\right) + \cos(\text{Lat}_1) \cdot \cos(\text{Lat}_2) \cdot \sin^2\left(\frac{\Delta\text{Lon}}{2}\right)
 $$
@@ -204,12 +208,9 @@ $$
 d = R \cdot c
 $$
 
-1. This is the first part of the Haversine formula. It represents the square of half the chord length between the two points on the Earth's surface.
 ```txt
 a = sin(dLat / 2) * sin(dLat / 2) + cos(toRadians(lat_1)) * cos(toRadians(lat_2)) * sin(dLon / 2) * sin(dLon / 2)
-```
-2. This is the second part of the Haversine formula. It calculates the angular distance between the two points in radians.
-```txt
+
 c = 2 * atan2(sqrt(a), sqrt(1 - a))
 ```
 
@@ -226,7 +227,7 @@ double distanceCalculator(const double Latitude_City_1, const double Longitude_C
 ```
 
 # Distances
-Not only is the application able to generate the most efficient path between two points (eg. **Bucharest -> Cluj*) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
+Not only is the application able to generate the most efficient path between two points (eg. **Bucharest -> Cluj**) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
 
 ## Dijkstra's alghorithm
 1. This function takes a start node and two vectors ("distance" and "pathVector") as input. The "distance" vector represents the distances from the start node to each node in the graph, while the "pathVector" vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the "distance" vector and the shortest paths (previous nodes) in the "pathVector" vector.
@@ -311,137 +312,137 @@ In order to use the application you first need to create a local MySql database 
 
 - If you have recently installed MySQL, you can execute other MySQL commands using the default user, "root." Access the MySQL command line by entering:
 
-```sql
-$ mysql -u root
+```shell
+mysql -u root
 ```
 
 - If you have assigned a password to the "root" user, use the following command, and it will prompt you to log in:
 
-```sql
-$ mysql -u root -p
+```bash
+mysql -u root -p
 ```
 
 - To enhance the security of the "root" user, you can set a password using the following command:
 
 ```sql
-mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
 ```
 
 - Now you are ready to create the Database (replace my_schema with the desired Database name):
 
 ```sql
-mysql> CREATE DATABASE my_schema;
+CREATE DATABASE my_schema;
 ```
 
 - If you want to create additional users and grant them access to the new database, follow these steps:
 
 ```sql
-mysql> CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'user_password';
-mysql> GRANT ALL PRIVILEGES ON my_schema.* TO 'new_user'@'localhost';
-mysql> FLUSH PRIVILEGES;
+CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'user_password';
+GRANT ALL PRIVILEGES ON my_schema.* TO 'new_user'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
 - Login as the new user:
 
-```sql
-$ mysql -u new_user -p
+```bash
+mysql -u new_user -p
 ```
 
 - You can also view all users by running the following command. However, it is recommended not to delete the system users as they serve specific purposes (the first 5 users):
+
 ```sql
-mysql> SELECT user, host FROM mysql.user;
+SELECT user, host FROM mysql.user;
 ```
 
 - Drop a user:
 ```sql
-mysql> DROP USER 'my_user'@'localhost';
+DROP USER 'my_user'@'localhost';
 ```
 
 ## Create the required tables
 
 The tables have fixed structures and require specific predefined columns. However, you have the freedom to select the name of the table.
 
-- Select the DB we created earlier:
+- Select the database we created earlier:
 
 ```sql
-mysql> SHOW DATABASES;
-mysql> USE my_schema;
+SHOW DATABASES;
+USE my_schema;
 ```
 
 - Create the tables:
 
 ```sql
-mysql> CREATE TABLE table_name_1 (
-           ID_Oras INT PRIMARY KEY,
-           Denumire_Oras VARCHAR(100) NOT NULL,
-           latitudine DECIMAL(10, 7) NOT NULL,
-           longitudine DECIMAL(10, 7) NOT NULL,
-           Tip_Depozit VARCHAR(50)
-       );
-mysql> CREATE TABLE table_name_2 (
-           ID_Produs INT,
-           ID_Oras INT,
-           Cantitate_Produs INT
-       );
-mysql> CREATE TABLE table_name_3 (
-           ID_Produs INT PRIMARY KEY,
-           Denumire_Produs VARCHAR(100),
-           Categorie_Produs VARCHAR(50),
-           Pret_Produs DECIMAL(10, 2)
-       );
+CREATE TABLE table_name_1 (
+        ID_Oras INT PRIMARY KEY,
+        Denumire_Oras VARCHAR(100) NOT NULL,
+        latitudine DECIMAL(10, 7) NOT NULL,
+        longitudine DECIMAL(10, 7) NOT NULL,
+        Tip_Depozit VARCHAR(50)
+    );
+
+CREATE TABLE table_name_2 (
+        ID_Produs INT,
+        ID_Oras INT,
+        Cantitate_Produs INT
+    );
+       
+CREATE TABLE table_name_3 (
+        ID_Produs INT PRIMARY KEY,
+        Denumire_Produs VARCHAR(100),
+        Categorie_Produs VARCHAR(50),
+        Pret_Produs DECIMAL(10, 2)
+    );
 ```
 
 - Show all the tables:
 
 ```sql
-mysql> SHOW TABLES;
-+---------------------+
-| Tables_in_my_schema |
-+---------------------+
-| table_name_1        |
-| table_name_2        |
-| table_name_3        |
-+---------------------+
-3 rows in set (0,00 sec)
+SHOW TABLES;
 ```
 
-- Add data (you need to execute this cmd for all the tables):
-- Replace '/path/to/your/data.csv' with the path to your CSV file and fill in the correct table names.
+- Add data (Replace `/path/to/your/data.csv` with the path to your CSV file and fill in the correct table names)
 
 ```sql
-mysql> SET GLOBAL local_infile=1;
-Query OK, 0 rows affected (0.00 sec)
-mysql> quit;
-Bye
+SET GLOBAL local_infile=1;
+quit;
 ```
+
+- Go back to the MySQL command line
 
 ```bash
-$ mysql --local-infile=1 -u root -p
+mysql --local-infile=1 -u root -p
 ```
 
 ```sql
-mysql> USE my_schema;
-mysql> LOAD DATA LOCAL INFILE '/path/to/your/table_name_1.csv'
-       INTO TABLE table_name_1
-       FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-       LINES TERMINATED BY '\n'
-       IGNORE 1 LINES;
-mysql> LOAD DATA LOCAL INFILE '/path/to/your/table_name_2.csv'
-       INTO TABLE table_name_2
-       FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-       LINES TERMINATED BY '\n'
-       IGNORE 1 LINES;
-mysql> LOAD DATA LOCAL INFILE '/path/to/your/table_name_3.csv'
-       INTO TABLE table_name_3
-       FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-       LINES TERMINATED BY '\n'
-       IGNORE 1 LINES;
+USE my_schema;
+
+LOAD DATA LOCAL INFILE '/path/to/your/table_name_1.csv'
+INTO TABLE table_name_1
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+LOAD DATA LOCAL INFILE '/path/to/your/table_name_2.csv'
+INTO TABLE table_name_2
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+LOAD DATA LOCAL INFILE '/path/to/your/table_name_3.csv'
+INTO TABLE table_name_3
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
 ```
 
 - Visualize the data (sample data utilized for testing - the CSV files are available in the repository if you wish to use them):
 
 ```sql
-mysql> SELECT * FROM oras;
+SELECT * FROM oras;
+```
+
+```txt
 +---------+----------------+------------+-------------+-------------+
 | ID_Oras | Denumire_Oras  | latitudine | longitudine | Tip_Depozit |
 +---------+----------------+------------+-------------+-------------+
@@ -460,8 +461,13 @@ mysql> SELECT * FROM oras;
 11 rows in set (0,00 sec)
 ```
 
+#
+
 ```sql
-mysql> Select * from produs;
+SELECT * FROM produs;
+```
+
+```txt
 +-----------+----------------------+------------------+-------------+
 | ID_Produs | Denumire_Produs      | Categorie_Produs | Pret_Produs |
 +-----------+----------------------+------------------+-------------+
@@ -488,10 +494,13 @@ mysql> Select * from produs;
 +-----------+----------------------+------------------+-------------+
 20 rows in set (0,00 sec)
 ```
+
+#
+
 - If you want to run the MySQL server locally and only allow connections from the same machine (localhost), you can use localhost as the hostname when connecting to the MySQL server. By default, the MySQL server is configured to listen on 127.0.0.1, which is the loopback IP address for the local machine. As a result, the complete hostname will be "localhost:3306," with "3306" representing the port number.
 - Check the port number:
 ```sql
-mysql> SHOW VARIABLES LIKE 'port';
+SHOW VARIABLES LIKE 'port';
 ```
 # Contact
 I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal Email: sorin.andrei.tudose@gmail.com.<br><br>Have a delightful day :D
