@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <cmath>
+#include <string>
 
 double toRadians(const double degrees)
 {
