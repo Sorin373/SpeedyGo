@@ -4,7 +4,7 @@
 
 For my final project in computer science for grade 11, I was required to develop a console application that involved working with graphs. Therefore, I decided to create **SpeedyGo**, an app whose main purpose is to generate the most optimal path to supply different deposits in Romania.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/sorin373/SpeedyGo/blob/main/LICENSE)
 
 # Table of Contents
 
