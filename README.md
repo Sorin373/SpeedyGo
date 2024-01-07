@@ -224,7 +224,7 @@ double distanceCalculator(const double Latitude_City_1, const double Longitude_C
 Not only is the application able to generate the most efficient path between two points (eg. **Bucharest -> Cluj**) which is done using __Dijkstra's alghorithm__, but it can also help create the most effective route to supply all required deposites in one trip using __Backtracking__.
 
 ## Dijkstra's alghorithm
-1. This function takes a start node and two vectors ("distance" and "pathVector") as input. The "distance" vector represents the distances from the start node to each node in the graph, while the "pathVector" vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the "distance" vector and the shortest paths (previous nodes) in the "pathVector" vector.
+1. This function takes a start node and two vectors (`distance` and `pathVector`) as input. The `distance` vector represents the distances from the start node to each node in the graph, while the `pathVector` vector stores the previous node on the shortest path to each node. The function implements Dijkstra's algorithm, which iteratively finds the shortest distance from the start node to all other nodes in the graph. It maintains a set of visited nodes and updates the distances and predecessors using a greedy approach. The function computes the shortest distances and stores them in the `distance` vector and the shortest paths (previous nodes) in the `pathVector` vector.
 ```c++
 void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vector<int> &pathVector)
 {
@@ -259,7 +259,7 @@ void Dijkstra::dijkstra(const int start, std::vector<double> &distance, std::vec
 }
 ```
 
-2. This function takes the start node, the "distance" vector, and the "pathVector" vector as input. It also accepts two boolean flags, "debug" and "createRoutes". The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the "pathVector" vector from the start node to the current node. It reverses the path to display it in the correct order. If "createRoutes" is true, the function inserts the path into a data structure. The "debug" flag controls whether the results are printed to the console.
+2. This function takes the start node, the `distance` vector, and the `pathVector` vector as input. It also accepts two boolean flags, `debug` and `createRoutes`. The function uses the calculated shortest distances and paths to display the results. For each node in the graph (excluding the start node), it prints the shortest distance from the start node to that node and the path taken to reach that node. The function retrieves the path by following the `pathVector` vector from the start node to the current node. It reverses the path to display it in the correct order. If `createRoutes` is true, the function inserts the path into a data structure. The `debug` flag controls whether the results are printed to the console.
 ```c++
 void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &distance, std::vector<int> &pathVector, bool debug, bool createRoutes)
 {
@@ -296,7 +296,7 @@ void Dijkstra::generateDistanceSolution(const int start, std::vector<double> &di
 ```
 
 ## Backtracking
-When I analyzed how to build this part of the program, 2 posible different situations came to my mind. The first was the best case cenario where the graph is Hamiltonian, which means it consists of a Hamiltonian cycle representing the most efficient route and the other one was when the graph was acyclic (has no cycles). Therefore, I needed to build 2 Backtracking alghorithms for managing both Acyclic and Hamiltonian graphs. The functions were mostly similar to the point when I needed to create the solutions. In the first case the solution has to have the same amount of elements as the number of towns we need to supply. However if the graph is acyclic the elements in a solution will most definitely surpass that number, because in some situations we will need to visit a town twice in order to get to other towns.
+When I analyzed how to build this part of the program, two posible situations came to my mind. The first was the best case cenario where the graph is **Hamiltonian**, which means it consists of a **Hamiltonian cycle** representing the most efficient route and the other one was when the graph was **acyclic** (has no cycles). Therefore, I needed to build 2 Backtracking alghorithms for managing both **Acyclic** and **Hamiltonian** graphs. The functions were mostly similar to the point when I needed to create the solutions. In the first case the solution has to have the same amount of elements as the number of towns we need to supply. However if the graph is acyclic the elements in a solution will most definitely surpass that number, because in some situations we will need to visit a town twice in order to get to other towns.
 
 # MySql Service
 
@@ -304,19 +304,19 @@ In order to use the application you first need to create a local MySql database 
 
 ## Database initialisation
 
-- If you have recently installed MySQL, you can execute other MySQL commands using the default user, "root." Access the MySQL command line by entering:
+- If you have recently installed MySQL, you can execute other MySQL commands using the default user, `root`. Access the MySQL command line by entering:
 
 ```shell
 mysql -u root
 ```
 
-- If you have assigned a password to the "root" user, use the following command, and it will prompt you to log in:
+- If you have assigned a password to the `root` user, use the following command, and it will prompt you to log in:
 
 ```bash
 mysql -u root -p
 ```
 
-- To enhance the security of the "root" user, you can set a password using the following command:
+- To enhance the security of the `root` user, you can set a password using the following command:
 
 ```sql
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
@@ -389,12 +389,6 @@ CREATE TABLE table_name_3 (
     );
 ```
 
-- Show all the tables:
-
-```sql
-SHOW TABLES;
-```
-
 - Add data (Replace `/path/to/your/data.csv` with the path to your CSV file and fill in the correct table names)
 
 ```sql
@@ -430,71 +424,12 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 ```
 
-- Visualize the data (sample data utilized for testing - the CSV files are available in the repository if you wish to use them):
-
-```sql
-SELECT * FROM oras;
-```
-
-```txt
-+---------+----------------+------------+-------------+-------------+
-| ID_Oras | Denumire_Oras  | latitudine | longitudine | Tip_Depozit |
-+---------+----------------+------------+-------------+-------------+
-|       0 | Brasov         | 45.6579752 |  25.6011985 | local       |
-|       1 | Bucuresti      | 44.4267674 |  26.1025384 | centralizat |
-|       2 | Cluj           | 46.7712101 |  23.6236359 | local       |
-|       3 | Constanta      | 44.1760175 |  28.6155619 | local       |
-|       4 | Pitesti        | 44.8561453 |  24.8698545 | local       |
-|       5 | Ramnicu Valcea | 45.0999934 |  24.3651926 | local       |
-|       6 | Sibiu          | 45.7979713 |  24.1374603 | centralizat |
-|       7 | Suceava        | 47.6443858 |  26.2575613 | local       |
-|       8 | Targu Mures    | 46.5546502 |  24.5620975 | local       |
-|       9 | Timisoara      | 45.7488716 |  21.2086793 | local       |
-|      10 | Iasi           | 47.1598400 |  27.5877532 | local       |
-+---------+----------------+------------+-------------+-------------+
-11 rows in set (0,00 sec)
-```
-
 #
 
-```sql
-SELECT * FROM produs;
-```
-
-```txt
-+-----------+----------------------+------------------+-------------+
-| ID_Produs | Denumire_Produs      | Categorie_Produs | Pret_Produs |
-+-----------+----------------------+------------------+-------------+
-|         0 | Apa plata            | nealcoolice      |         2.5 |
-|         1 | Suc de portocale     | nealcoolice      |           3 |
-|         2 | Cola                 | nealcoolice      |           2 |
-|         3 | Cafea                | nealcoolice      |         4.5 |
-|         4 | Ceai verde           | nealcoolice      |         3.5 |
-|         5 | Bere blonda          | alcoolice        |           5 |
-|         6 | Vin rosu             | alcoolice        |          12 |
-|         7 | Vodca                | alcoolice        |          20 |
-|         8 | Whisky               | alcoolice        |          35 |
-|         9 | Lichior de ciocolata | alcoolice        |          18 |
-|        10 | Suc de mere          | nealcoolice      |         2.8 |
-|        11 | Limonada             | nealcoolice      |         2.5 |
-|        12 | Ceai de fructe       | nealcoolice      |         3.2 |
-|        13 | Vin alb              | alcoolice        |        10.5 |
-|        14 | Bere neagra          | alcoolice        |         6.5 |
-|        15 | Gin                  | alcoolice        |          25 |
-|        16 | Rom                  | alcoolice        |          22 |
-|        17 | Vodca aromata        | alcoolice        |          21 |
-|        18 | Apa minerala         | nealcoolice      |         2.3 |
-|        19 | Suc de ananas        | nealcoolice      |         3.2 |
-+-----------+----------------------+------------------+-------------+
-20 rows in set (0,00 sec)
-```
-
-#
-
-- If you want to run the MySQL server locally and only allow connections from the same machine (localhost), you can use localhost as the hostname when connecting to the MySQL server. By default, the MySQL server is configured to listen on 127.0.0.1, which is the loopback IP address for the local machine. As a result, the complete hostname will be "localhost:3306," with "3306" representing the port number.
+- If you want to run the MySQL server locally and only allow connections from the same machine (localhost), you can use localhost as the hostname when connecting to the MySQL server. By default, the MySQL server is configured to listen on `127.0.0.1`, which is the loopback IP address for the local machine. As a result, the complete hostname will be `localhost:3306`, with `3306` representing the port number.
 - Check the port number:
 ```sql
 SHOW VARIABLES LIKE 'port';
 ```
 # Contact
-I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal Email: sorin.andrei.tudose@gmail.com.<br><br>Have a delightful day :D
+I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal email: **sorin.andrei.tudose@gmail.com**.<br><br>Have a delightful day!
