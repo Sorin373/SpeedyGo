@@ -432,4 +432,4 @@ IGNORE 1 LINES;
 SHOW VARIABLES LIKE 'port';
 ```
 # Contact
-I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal email: **sorin.andrei.tudose@gmail.com**.<br><br>Have a delightful day!
+I hope you enjoyed my application and found this project helpful.<br> If you want to get in touch with me you can do so through my personal email: <br>**sorin.andrei.tudose@gmail.com**.<br><br>Have a delightful day!
